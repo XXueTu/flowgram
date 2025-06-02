@@ -1,0 +1,122 @@
+# Flowgram 项目编码规范
+
+## 项目结构
+
+项目采用模块化的目录结构，主要包含以下核心模块：
+
+### 1. 核心模块
+- `src/app.tsx`: 应用程序入口文件
+- `src/editor.tsx`: 编辑器核心组件
+- `src/initial-data.ts`: 初始数据配置
+
+### 2. 功能模块
+- `components/`: UI组件
+  - `tools/`: 工具栏组件
+  - `sidebar/`: 侧边栏组件
+  - `base-node/`: 基础节点组件
+  - `node-panel/`: 节点面板组件
+  - `node-menu/`: 节点菜单组件
+  - `selector-box-popover/`: 选择框弹出组件
+  - `add-node/`: 添加节点组件
+  - `line-add-button/`: 线条添加按钮组件
+  - `comment/`: 注释组件
+  - `group/`: 分组组件
+
+- `nodes/`: 节点相关逻辑
+- `hooks/`: React Hooks
+- `context/`: React Context
+- `services/`: 服务层
+- `utils/`: 工具函数
+- `styles/`: 样式文件
+- `typings/`: TypeScript 类型定义
+- `plugins/`: 插件系统
+- `form-components/`: 表单组件
+- `assets/`: 静态资源
+- `shortcuts/`: 快捷键配置
+
+## 编码规范
+
+### 1. 文件命名
+- 组件文件使用 PascalCase（如：`Editor.tsx`）
+- 工具函数和 hooks 使用 camelCase（如：`useEditorProps.ts`）
+- 样式文件与组件同名（如：`Editor.css`）
+
+### 2. 组件规范
+- 使用函数式组件和 React Hooks
+- 组件文件结构：
+  ```typescript
+  import React from 'react';
+  import './ComponentName.css';
+  
+  interface Props {
+    // 属性定义
+  }
+  
+  export const ComponentName: React.FC<Props> = (props) => {
+    // 组件实现
+  };
+  ```
+
+### 3. TypeScript 规范
+- 使用 TypeScript 进行开发
+- 为所有组件和函数定义清晰的类型
+- 使用 interface 定义对象类型
+- 使用 type 定义联合类型和工具类型
+
+### 4. 样式规范
+- 使用 CSS Modules 或 CSS-in-JS
+- 遵循 BEM 命名规范
+- 使用相对单位（rem, em）而不是固定像素值
+
+### 5. 状态管理
+- 使用 React Context 进行全局状态管理
+- 使用 React Hooks 进行局部状态管理
+- 复杂状态逻辑抽离到自定义 Hooks
+
+### 6. 代码组织
+- 相关功能放在同一目录下
+- 每个模块都应该有清晰的职责
+- 避免过深的目录嵌套（建议不超过4层）
+
+### 7. 注释规范
+- 使用 JSDoc 风格的注释
+- 为复杂逻辑添加必要的注释
+- 组件顶部添加功能说明注释
+
+### 8. 性能优化
+- 合理使用 React.memo 和 useMemo
+- 避免不必要的重渲染
+- 使用 React.lazy 进行代码分割
+
+### 9. 错误处理
+- 使用 Error Boundary 捕获渲染错误
+- 异步操作使用 try-catch 处理异常
+- 提供友好的错误提示
+
+### 10. 测试规范
+- 编写单元测试和集成测试
+- 使用 Jest 和 React Testing Library
+- 保持测试覆盖率在合理水平
+
+## 开发流程
+
+1. 功能开发
+   - 创建功能分支
+   - 遵循 Git Flow 工作流
+   - 提交信息要清晰明确
+
+2. 代码审查
+   - 提交 Pull Request
+   - 确保代码符合规范
+   - 进行必要的测试
+
+3. 部署流程
+   - 遵循 CI/CD 流程
+   - 确保构建通过
+   - 进行必要的环境配置
+
+## 文档维护
+
+- 及时更新文档
+- 保持文档的准确性
+- 使用 Markdown 格式编写文档 

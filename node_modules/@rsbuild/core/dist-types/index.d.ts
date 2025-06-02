@@ -1,0 +1,22 @@
+/**
+ * The methods and types exported from this file are considered as
+ * the public API of @rsbuild/core.
+ */
+import { rspack } from '@rspack/core';
+import type * as Rspack from '@rspack/core';
+export { loadEnv, type LoadEnvOptions, type LoadEnvResult } from './loadEnv';
+export { createRsbuild } from './createRsbuild';
+export { loadConfig, defineConfig, type ConfigParams, type LoadConfigOptions, type LoadConfigResult, } from './loadConfig';
+export { runCLI } from './cli';
+export declare const version: string;
+export { rspack };
+export type { Rspack };
+export { logger } from './logger';
+export { mergeRsbuildConfig } from './mergeConfig';
+export { ensureAssetPrefix } from './helpers';
+export { defaultAllowedOrigins } from './defaultConfig';
+export { PLUGIN_SWC_NAME, PLUGIN_CSS_NAME } from './constants';
+export type { AppIcon, AppIconItem, AliasStrategy, Build, BuildOptions, BundlerPluginInstance, Charset, ClientConfig, CliShortcut, CleanDistPath, CleanDistPathObject, ConfigChain, ConfigChainWithContext, ConsoleType, CreateCompiler, CreateRsbuildOptions, CrossOrigin, CSSLoaderOptions, CSSModules, CSSModulesLocalsConvention, DataUriLimit, Decorators, DevConfig, DistPathConfig, EnvironmentContext, EnvironmentConfig, FilenameConfig, HistoryApiFallbackContext, HistoryApiFallbackOptions, HtmlConfig, HtmlRspackPlugin, HtmlBasicTag, HtmlFallback, HtmlTagHandler, HtmlTagDescriptor, HtmlTagContext, InspectConfigOptions, InspectConfigResult, InlineChunkConfig, InlineChunkTest, InlineChunkTestFunction, InternalContext, LegalComments, ManifestData, ManifestConfig, ManifestObjectConfig, MetaAttrs, MetaOptions, Minify, ModifyBundlerChainFn, ModifyBundlerChainUtils, ModifyChainUtils, ModifyEnvironmentConfigFn, ModifyEnvironmentConfigUtils, ModifyHTMLContext, ModifyHTMLFn, ModifyHTMLTagsContext, ModifyHTMLTagsFn, ModifyRsbuildConfigUtils, ModifyRspackConfigFn, ModifyRspackConfigUtils, ModifyRsbuildConfigFn, ModifyWebpackChainFn, ModifyWebpackChainUtils, ModifyWebpackConfigFn, ModifyWebpackConfigUtils, ModuleFederationConfig, MergedEnvironmentConfig, NormalizedConfig, NormalizedDevConfig, NormalizedEnvironmentConfig, NormalizedHtmlConfig, NormalizedModuleFederationConfig, NormalizedOutputConfig, NormalizedPerformanceConfig, NormalizedSecurityConfig, NormalizedServerConfig, NormalizedSourceConfig, NormalizedToolsConfig, OnAfterEnvironmentCompileFn, OnBeforeEnvironmentCompileFn, OnCloseBuildFn, OnAfterBuildFn, OnAfterCreateCompilerFn, OnAfterStartDevServerFn, OnAfterStartProdServerFn, OnBeforeBuildFn, OnBeforeCreateCompilerFn, OnBeforeStartDevServerFn, OnBeforeStartProdServerFn, OnCloseDevServerFn, OnDevCompileDoneFn, OnExitFn, OutputConfig, OutputStructure, PerformanceConfig, PluginManager, Polyfill, PostCSSLoaderOptions, PostCSSOptions, PostCSSPlugin, PreviewOptions, PreconnectOption, ProcessAssetsDescriptor, ProcessAssetsHook, ProcessAssetsHandler, ProxyBypass, ProxyConfig, ProxyFilter, ProxyOptions, PrintUrls, PublicDir, PublicDirOptions, ProgressBarConfig, RequestHandler, ResolveHook, ResolveHandler, ResolvedCreateRsbuildOptions, RsbuildConfig, RsbuildContext, RsbuildEntry, RsbuildEntryDescription, RsbuildInstance, RsbuildMode, RsbuildPlugin, RsbuildPluginAPI, RsbuildPlugins, RsbuildProvider, RsbuildProviderHelpers, RsbuildTarget, RspackChain, RspackRule, ResourceHintsIncludeType, StartDevServerOptions, SriOptions, SriAlgorithm, ScriptInject, ScriptLoading, SecurityConfig, SourceMap, SetupMiddlewaresFn, SetupMiddlewaresServer, ServerConfig, SourceConfig, SplitChunks, StyleLoaderOptions, TransformContext, TransformDescriptor, ToolsConfig, TransformHook, TransformHandler, TransformImport, WatchFiles, } from './types';
+export type { ChainIdentifier } from './configChain';
+export type { RsbuildDevServer } from './server/devServer';
+export type { StartServerResult } from './server/helper';
