@@ -1,49 +1,24 @@
 import { IconCrossCircleStroked, IconPlus } from '@douyinfe/semi-icons';
 import { Button } from '@douyinfe/semi-ui';
 import { ConditionRow, ConditionRowValueType } from '@flowgram.ai/form-materials';
-import { ASTMatch, BaseType, BaseVariableField, Field, FieldArray, useScopeAvailable } from '@flowgram.ai/free-layout-editor';
+import { Field, FieldArray } from '@flowgram.ai/free-layout-editor';
 import { nanoid } from 'nanoid';
 
 import { Feedback, FormItem } from '../../../form-components';
 import { useNodeRenderContext } from '../../../hooks';
 import { ConditionPort } from './styles';
+import { getTypeByContentPath } from './utils';
+
 
 interface ConditionValue {
   key: string;
   value?: ConditionRowValueType;
+  leftType?: string;
+  rightType?: string;
 }
 
 export function ConditionInputs() {
-  const { readonly } = useNodeRenderContext();
-  const scopeAvailable = useScopeAvailable();
-
-  const getTypeChildren = (type?: BaseType): BaseVariableField[] => {
-    if (!type) return [];
-
-    // get properties of Object
-    if (ASTMatch.isObject(type)) return type.properties;
-
-    // get items type of Array
-    if (ASTMatch.isArray(type)) return getTypeChildren(type.items);
-
-    return [];
-  };
-
-  const renderVariable = (variable: BaseVariableField): BaseVariableField => {
-    console.log('variable', variable);
-    // debugger
-    return {
-      title: variable.meta?.title,
-      key: variable.key,
-      type: variable.type.kind,
-      // kind: variable.kind,
-      // Only Object Type can drilldown
-      children: getTypeChildren(variable.type).map(renderVariable),
-
-    }
-  };
-  console.log('scopeAvailable', scopeAvailable.variables.map(renderVariable));
-  // debugger
+  const { readonly,...ctx } = useNodeRenderContext();
   return (
     <FieldArray name="conditions">
       {({ field }) => (
@@ -58,9 +33,9 @@ export function ConditionInputs() {
                       style={{ flexGrow: 1 }}
                       value={childField.value.value}
                       onChange={(v) => {
-                        // debugger
-
-                        childField.onChange({ value: v, key: childField.value.key})
+                        const ltp = getTypeByContentPath(ctx, v?.left?.content as string[] || []);
+                        const rtp = getTypeByContentPath(ctx, v?.right?.content as string[] || []);
+                        childField.onChange({ value: v, key: childField.value.key, leftType:ltp, rightType:rtp})
                       }}
                     />
 
