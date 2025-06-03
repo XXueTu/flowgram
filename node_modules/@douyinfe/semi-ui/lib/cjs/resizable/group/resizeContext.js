@@ -1,8 +1,0 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ResizeContext = void 0;
-var _react = require("react");
-const ResizeContext = exports.ResizeContext = /*#__PURE__*/(0, _react.createContext)(undefined);
