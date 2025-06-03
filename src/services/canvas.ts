@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { CanvasDetailRequest, CanvasDetailResponse, CanvasDraftRequest, CanvasDraftResponse } from '../typings/canvas';
+import axios from "axios";
+import { CanvasDetailRequest, CanvasDetailResponse, CanvasDraftRequest, CanvasDraftResponse } from "../typings/canvas";
 
-const API_BASE_URL = 'http://127.0.0.1:8888/workflow';
+const API_BASE_URL = "http://10.8.0.61:8888/workflow";
 
 interface ApiResponse<T> {
   code: number;
@@ -39,24 +39,24 @@ export class CanvasService {
    */
   public async getDetail(request: CanvasDetailRequest): Promise<CanvasDetailResponse> {
     try {
-      console.log('开始请求画布详情:', request);
+      console.log("开始请求画布详情:", request);
       const response = await axios.post(`${API_BASE_URL}/canvas/detail`, request);
-      console.log('接口响应状态:', response.status);
+      console.log("接口响应状态:", response.status);
       if (response.status !== 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const result = response.data as ApiResponse<CanvasDetailResponse>;
-      console.log('接口返回数据:', result);
+      console.log("接口返回数据:", result);
 
       if (!result.data || !result.data.graph) {
-        console.error('接口返回数据格式不正确:', result);
-        throw new Error('画布数据格式不正确');
+        console.error("接口返回数据格式不正确:", result);
+        throw new Error("画布数据格式不正确");
       }
 
       return result.data;
     } catch (error) {
-      console.error('获取画布详情失败:', error);
+      console.error("获取画布详情失败:", error);
       throw error;
     }
   }
@@ -67,27 +67,27 @@ export class CanvasService {
    */
   public async saveDraft(request: CanvasDraftRequest): Promise<CanvasDraftResponse> {
     try {
-      console.log('开始保存画布:', request);
+      console.log("开始保存画布:", request);
       const response = await axios.post(`${API_BASE_URL}/canvas/draft`, request);
 
-      console.log('保存接口响应状态:', response.status);
+      console.log("保存接口响应状态:", response.status);
 
-      const result = await response.data as ApiResponse<CanvasDraftResponse>;
-      console.log('保存接口返回数据:', result);
+      const result = (await response.data) as ApiResponse<CanvasDraftResponse>;
+      console.log("保存接口返回数据:", result);
 
       if (result.code !== 0) {
-        throw new Error(result.msg || '保存失败');
+        throw new Error(result.msg || "保存失败");
       }
 
       return {
         success: true,
-        message: '保存成功',
-      }
+        message: "保存成功",
+      };
     } catch (error) {
-      console.error('保存画布草稿失败:', error);
+      console.error("保存画布草稿失败:", error);
       return {
         success: false,
-        message: error instanceof Error ? error.message : '保存失败',
+        message: error instanceof Error ? error.message : "保存失败",
       };
     }
   }
@@ -96,4 +96,4 @@ export class CanvasService {
     const response = await axios.post(`${API_BASE_URL}/canvas/run`, params);
     return response.data;
   }
-} 
+}

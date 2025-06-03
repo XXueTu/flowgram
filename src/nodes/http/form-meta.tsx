@@ -1,71 +1,251 @@
-import { Input } from '@douyinfe/semi-ui';
-import { JsonSchemaEditor } from '@flowgram.ai/form-materials';
-import {
-    Field,
-    FieldRenderProps,
-    FormMeta,
-    FormRenderProps,
-    ValidateTrigger,
-} from '@flowgram.ai/free-layout-editor';
+import { Input, Select, Switch } from "@douyinfe/semi-ui";
+import { Collapse, Tag, JsonViewer } from "@douyinfe/semi-ui";
+import React, { useRef, useCallback } from "react";
 
-import { FormContent, FormHeader, FormItem, FormOutputs } from '../../form-components';
-import { useIsSidebar } from '../../hooks';
-import { FlowNodeJSON, JsonSchema } from '../../typings';
+import { IFlowValue } from "@flowgram.ai/form-materials";
+import { Field, FieldRenderProps, FormMeta, FormRenderProps, ValidateTrigger } from "@flowgram.ai/free-layout-editor";
+import { mapValues } from "lodash-es";
+
+import { FormContent, FormHeader, FormItem, FormOutputs, PropertiesEdit, TypeTag } from "../../form-components";
+import { useIsSidebar } from "../../hooks";
+import { FlowNodeJSON, JsonSchema } from "../../typings";
+
+const apiMethods = [
+  { label: "GET", value: "GET" },
+  { label: "POST", value: "POST" },
+  { label: "PUT", value: "PUT" },
+  { label: "DELETE", value: "DELETE" },
+  // 可根据需要添加更多方法
+];
+
+const bodyTypes = [
+  { label: "none", value: "none" },
+  { label: "json", value: "json" },
+  { label: "form-data", value: "form-data" },
+  // 可根据需要添加更多类型
+];
 
 export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
-    const isSidebar = useIsSidebar();
-    if (isSidebar) {
-        return (
-            <>
-                <FormHeader />
-                <FormContent>
-                    <Field
-                        name="ccc1"
-                    >
-                        {({ field }) => (
-                            <FormItem name="ccc1" type="string">
-                                <Input />
-                            </FormItem>
-                        )}
-                    </Field>
-                    <Field
-                        name="xxx1"
-                        render={({ field: { value, onChange } }: FieldRenderProps<JsonSchema>) => (
-                            <FormItem  name="xxx1" type="object">
-                                <JsonSchemaEditor
-                                    value={value}
-                                    onChange={(value) => onChange(value as JsonSchema)}
-                                />
-                            </FormItem>
-                        )}
-                    />
-                    <Field
-                        name="ccc2"
-                    >
-                        {({ field }) => (
-                            <FormItem name="ccc2" type="string">
-                                <Input />
-                            </FormItem>
-                        )}
-                    </Field>
-                </FormContent>
-            </>
-        );
-    }
+  const isSidebar = useIsSidebar();
+  if (isSidebar) {
     return (
-        <>
-            <FormHeader />
-            <FormContent>
-                <FormOutputs name="xxx1" />
-            </FormContent>
-        </>
+      <>
+        <FormHeader />
+        <FormContent>
+          {/* API 方法和URL */}
+          <Collapse defaultActiveKey={["1", "2", "3", "4", "5", "6"]}>
+            <Collapse.Panel header="API" itemKey="1">
+              <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
+                <Field name="apiMethod">{({ field }) => <Select value={field.value as string} onChange={field.onChange} optionList={apiMethods} />}</Field>
+                <Field name="apiUrl">
+                  {({ field }) => <Input value={field.value as string} onChange={field.onChange as (v: string) => void} placeholder="请输入接口URL" />}
+                </Field>
+              </div>
+            </Collapse.Panel>
+            <Collapse.Panel header="请求参数" itemKey="2">
+              <Field
+                name="requestParams.properties"
+                render={({ field: { value: propertiesSchemaValue, onChange: propertiesSchemaChange } }: FieldRenderProps<Record<string, JsonSchema>>) => (
+                  <Field<Record<string, IFlowValue>> name="requestParamsValues">
+                    {({ field: { value: propertiesValue, onChange: propertiesValueChange } }) => {
+                      const onChange = (newProperties: Record<string, JsonSchema>) => {
+                        const newPropertiesValue = mapValues(newProperties, (v) => v.default);
+                        const newPropetiesSchema = mapValues(newProperties, (v) => {
+                          delete v.default;
+                          return v;
+                        });
+                        propertiesValueChange(newPropertiesValue);
+                        propertiesSchemaChange(newPropetiesSchema);
+                      };
+                      const value = mapValues(propertiesSchemaValue, (v, key) => ({
+                        ...v,
+                        default: propertiesValue?.[key],
+                      }));
+                      return <PropertiesEdit value={value} onChange={onChange} useFx={true} />;
+                    }}
+                  </Field>
+                )}
+              />
+            </Collapse.Panel>
+            <Collapse.Panel header="请求头" itemKey="3">
+              <Field
+                name="requestHeaders.properties"
+                render={({ field: { value: propertiesSchemaValue, onChange: propertiesSchemaChange } }: FieldRenderProps<Record<string, JsonSchema>>) => (
+                  <Field<Record<string, IFlowValue>> name="requestHeadersValues">
+                    {({ field: { value: propertiesValue, onChange: propertiesValueChange } }) => {
+                      const onChange = (newProperties: Record<string, JsonSchema>) => {
+                        const newPropertiesValue = mapValues(newProperties, (v) => v.default);
+                        const newPropetiesSchema = mapValues(newProperties, (v) => {
+                          delete v.default;
+                          return v;
+                        });
+                        propertiesValueChange(newPropertiesValue);
+                        propertiesSchemaChange(newPropetiesSchema);
+                      };
+                      const value = mapValues(propertiesSchemaValue, (v, key) => ({
+                        ...v,
+                        default: propertiesValue?.[key],
+                      }));
+                      return <PropertiesEdit value={value} onChange={onChange} useFx={true} />;
+                    }}
+                  </Field>
+                )}
+              />
+            </Collapse.Panel>
+            <Collapse.Panel header="请求体" itemKey="4">
+              <Field name="bodyType">
+                {({ field }) => (
+                  <FormItem name="请求体类型" type="string">
+                    <Select value={field.value as string} style={{ width: "100%" }} onChange={field.onChange} optionList={bodyTypes} placeholder="请选择" />
+                  </FormItem>
+                )}
+              </Field>
+
+              {/* 根据bodyType动态显示不同的组件 */}
+              <Field name="bodyType">
+                {({ field: bodyTypeField }) => {
+                  if (bodyTypeField.value === "json") {
+                    return (
+                      <Field name="bodyData">
+                        {({ field: bodyDataField }) => {
+                          const jsonViewerRef = useRef<any>(null);
+
+                          // 确保初始值是有效的JSON字符串
+                          const initialValue = React.useMemo(() => {
+                            try {
+                              if (!bodyDataField.value) return "{}";
+                              if (typeof bodyDataField.value === "string") {
+                                return bodyDataField.value;
+                              }
+                              return bodyDataField.value;
+                            } catch {
+                              return "{}";
+                            }
+                          }, []);
+
+                          const handleChange = useCallback(
+                            (value: string) => {
+                              bodyDataField.onChange(value);
+                            },
+                            [bodyDataField.onChange]
+                          );
+
+                          return (
+                            <div style={{ border: "1px solid rgb(222,222,222)", borderRadius: "4px", height: "200px", paddingBottom: "25px" }}>
+                              <JsonViewer
+                                value={initialValue}
+                                showSearch={false}
+                                options={{ autoWrap: true }}
+                                ref={jsonViewerRef}
+                                defaultValue={initialValue}
+                                onChange={handleChange}
+                                editable
+                                width="100%"
+                                height="100%"
+                              />
+                            </div>
+                          );
+                        }}
+                      </Field>
+                    );
+                  } else if (bodyTypeField.value === "form-data") {
+                    return (
+                      <Field
+                        name="bodyFormData.properties"
+                        render={({
+                          field: { value: propertiesSchemaValue, onChange: propertiesSchemaChange },
+                        }: FieldRenderProps<Record<string, JsonSchema>>) => (
+                          <Field<Record<string, IFlowValue>> name="bodyFormDataValues">
+                            {({ field: { value: propertiesValue, onChange: propertiesValueChange } }) => {
+                              const onChange = (newProperties: Record<string, JsonSchema>) => {
+                                const newPropertiesValue = mapValues(newProperties, (v) => v.default);
+                                const newPropetiesSchema = mapValues(newProperties, (v) => {
+                                  delete v.default;
+                                  return v;
+                                });
+                                propertiesValueChange(newPropertiesValue);
+                                propertiesSchemaChange(newPropetiesSchema);
+                              };
+                              const value = mapValues(propertiesSchemaValue, (v, key) => ({
+                                ...v,
+                                default: propertiesValue?.[key],
+                              }));
+                              return (
+                                <div style={{ padding: "10px" }}>
+                                  <PropertiesEdit value={value} onChange={onChange} useFx={true} />
+                                </div>
+                              );
+                            }}
+                          </Field>
+                        )}
+                      />
+                    );
+                  }
+                  return <></>;
+                }}
+              </Field>
+            </Collapse.Panel>
+            <Collapse.Panel header="其他" itemKey="5">
+              <Field name="timeout">
+                {({ field }) => (
+                  <FormItem name="超时设置（s）" type="number">
+                    <Input type="number" value={field.value as number | string} onChange={field.onChange as (v: string) => void} placeholder="请输入" />
+                  </FormItem>
+                )}
+              </Field>
+              <Field name="retry">
+                {({ field }) => (
+                  <FormItem name="重试次数" type="number">
+                    <Input type="number" value={field.value as number | string} onChange={field.onChange as (v: string) => void} placeholder="请输入" />
+                  </FormItem>
+                )}
+              </Field>
+              <Field name="ignoreError">
+                {({ field }) => (
+                  <FormItem name="异常忽略" type="boolean">
+                    <Switch checked={!!field.value} onChange={field.onChange as (v: boolean) => void} />
+                  </FormItem>
+                )}
+              </Field>
+            </Collapse.Panel>
+            <Collapse.Panel header="输出" itemKey="6">
+              <Field<JsonSchema> name="outputs">
+                {({ field }) => {
+                  const properties = field.value?.properties;
+                  if (properties) {
+                    const content = Object.keys(properties).map((key) => {
+                      const property = properties[key];
+                      return <TypeTag key={key} name={key} type={property.type as string} />;
+                    });
+                    return <div style={{ display: "flex", gap: 10 }}>{content}</div>;
+                  }
+                  return <></>;
+                }}
+              </Field>
+            </Collapse.Panel>
+          </Collapse>
+        </FormContent>
+      </>
     );
+  }
+  return (
+    <>
+      <FormHeader />
+      <FormContent>
+        <div style={{ display: "flex", gap: 10, fontSize: "12px", alignItems: "baseline" }}>
+          <Field name="apiMethod">{({ field }: any) => <Tag>{field.value}</Tag>}</Field>
+          <Field name="apiUrl">{({ field }: any) => <div style={{ fontSize: "14px" }}>{field.value}</div>}</Field>
+        </div>
+        <FormOutputs />
+      </FormContent>
+    </>
+  );
 };
 
 export const formMeta: FormMeta<FlowNodeJSON> = {
-    render: renderForm,
-    validateTrigger: ValidateTrigger.onChange,
-    validate: {
-        title: ({ value }: { value: string }) => (value ? undefined : 'Title is required'),
-    },
-}; 
+  render: renderForm,
+  validateTrigger: ValidateTrigger.onChange,
+  validate: {
+    title: ({ value }: { value: string }) => (value ? undefined : "Title is required"),
+  },
+};
