@@ -1,9 +1,9 @@
-import { FormRenderProps, FlowNodeJSON, Field } from '@flowgram.ai/free-layout-editor';
-import { SubCanvasRender } from '@flowgram.ai/free-container-plugin';
 import { BatchVariableSelector, IFlowRefValue } from '@flowgram.ai/form-materials';
+import { SubCanvasRender } from '@flowgram.ai/free-container-plugin';
+import { Field, FlowNodeJSON, FormRenderProps } from '@flowgram.ai/free-layout-editor';
 
+import { Feedback, FormContent, FormHeader, FormItem, FormOutputs } from '../../form-components';
 import { useIsSidebar, useNodeRenderContext } from '../../hooks';
-import { FormHeader, FormContent, FormOutputs, FormItem, Feedback } from '../../form-components';
 
 interface LoopNodeJSON extends FlowNodeJSON {
   data: {
@@ -14,7 +14,6 @@ interface LoopNodeJSON extends FlowNodeJSON {
 export const LoopFormRender = ({ form }: FormRenderProps<LoopNodeJSON>) => {
   const isSidebar = useIsSidebar();
   const { readonly } = useNodeRenderContext();
-
   const batchFor = (
     <Field<IFlowRefValue> name={`batchFor`}>
       {({ field, fieldState }) => (

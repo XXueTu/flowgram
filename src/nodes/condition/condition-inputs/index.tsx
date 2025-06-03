@@ -1,12 +1,11 @@
-import { nanoid } from 'nanoid';
-import { Field, FieldArray } from '@flowgram.ai/free-layout-editor';
-import { ConditionRow, ConditionRowValueType, VariableSelector } from '@flowgram.ai/form-materials';
+import { IconCrossCircleStroked, IconPlus } from '@douyinfe/semi-icons';
 import { Button } from '@douyinfe/semi-ui';
-import { IconPlus, IconCrossCircleStroked } from '@douyinfe/semi-icons';
+import { ConditionRow, ConditionRowValueType } from '@flowgram.ai/form-materials';
+import { ASTMatch, BaseType, BaseVariableField, Field, FieldArray, useScopeAvailable } from '@flowgram.ai/free-layout-editor';
+import { nanoid } from 'nanoid';
 
+import { Feedback, FormItem } from '../../../form-components';
 import { useNodeRenderContext } from '../../../hooks';
-import { FormItem } from '../../../form-components';
-import { Feedback } from '../../../form-components';
 import { ConditionPort } from './styles';
 
 interface ConditionValue {
@@ -16,6 +15,35 @@ interface ConditionValue {
 
 export function ConditionInputs() {
   const { readonly } = useNodeRenderContext();
+  const scopeAvailable = useScopeAvailable();
+
+  const getTypeChildren = (type?: BaseType): BaseVariableField[] => {
+    if (!type) return [];
+
+    // get properties of Object
+    if (ASTMatch.isObject(type)) return type.properties;
+
+    // get items type of Array
+    if (ASTMatch.isArray(type)) return getTypeChildren(type.items);
+
+    return [];
+  };
+
+  const renderVariable = (variable: BaseVariableField): BaseVariableField => {
+    console.log('variable', variable);
+    // debugger
+    return {
+      title: variable.meta?.title,
+      key: variable.key,
+      type: variable.type.kind,
+      // kind: variable.kind,
+      // Only Object Type can drilldown
+      children: getTypeChildren(variable.type).map(renderVariable),
+
+    }
+  };
+  console.log('scopeAvailable', scopeAvailable.variables.map(renderVariable));
+  // debugger
   return (
     <FieldArray name="conditions">
       {({ field }) => (
@@ -29,7 +57,11 @@ export function ConditionInputs() {
                       readonly={readonly}
                       style={{ flexGrow: 1 }}
                       value={childField.value.value}
-                      onChange={(v) => childField.onChange({ value: v, key: childField.value.key })}
+                      onChange={(v) => {
+                        // debugger
+
+                        childField.onChange({ value: v, key: childField.value.key})
+                      }}
                     />
 
                     <Button

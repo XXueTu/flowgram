@@ -1,17 +1,17 @@
 import { Field } from '@flowgram.ai/free-layout-editor';
 
-import { TypeTag } from '../type-tag';
-import { JsonSchema } from '../../typings';
 import { useIsSidebar } from '../../hooks';
+import { JsonSchema } from '../../typings';
+import { TypeTag } from '../type-tag';
 import { FormOutputsContainer } from './styles';
 
-export function FormOutputs() {
+export function FormOutputs({ name = 'outputs' }: { name?: string }) {
   const isSidebar = useIsSidebar();
   if (isSidebar) {
     return null;
   }
   return (
-    <Field<JsonSchema> name={'outputs'}>
+    <Field<JsonSchema> name={name}>
       {({ field }) => {
         const properties = field.value?.properties;
         if (properties) {

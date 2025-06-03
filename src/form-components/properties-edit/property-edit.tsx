@@ -1,8 +1,8 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 
-import { VariableSelector, TypeSelector, DynamicValueInput } from '@flowgram.ai/form-materials';
-import { Input, Button } from '@douyinfe/semi-ui';
 import { IconCrossCircleStroked } from '@douyinfe/semi-icons';
+import { Button, Input } from '@douyinfe/semi-ui';
+import { DynamicValueInput, TypeSelector } from '@flowgram.ai/form-materials';
 
 import { JsonSchema } from '../../typings';
 import { LeftColumn, Row } from './styles';

@@ -8,6 +8,8 @@ import {
   WorkflowNodeEntity,
   WorkflowNodeLinesData,
 } from '@flowgram.ai/free-layout-editor';
+import { CanvasService } from './canvas';
+
 const RUNNING_INTERVAL = 1000;
 
 @injectable()
@@ -30,13 +32,26 @@ export class RunningService {
     await Promise.all(nextNodes.map((nextNode) => this.addRunningNode(nextNode)));
   }
 
-  async startRun(): Promise<void> {
-    await this.addRunningNode(this.document.getNode('start_0')!);
-    this._runningNodes.forEach((node) => {
-      node.renderData.node.classList.remove('node-running');
-    });
-    this._runningNodes = [];
-    this.document.linesManager.forceUpdate();
+  async startRun(params: Record<string, any> = {}): Promise<void> {
+    try {
+      const canvasService = CanvasService.getInstance();
+      await canvasService.run({
+        id: 'default',
+        params
+      });
+
+      await this.addRunningNode(this.document.getNode('start_0')!);
+      this._runningNodes.forEach((node) => {
+        node.renderData.node.classList.remove('node-running');
+      });
+    } catch (error) {
+      console.error('Run canvas failed:', error);
+      throw error;
+    } finally {
+      // 清空状态
+      this._runningNodes = [];
+      this.document.linesManager.forceUpdate();
+    }
   }
 
   isFlowingLine(line: WorkflowLineEntity) {

@@ -1,11 +1,11 @@
-import { mapValues } from 'lodash-es';
-import { Field, FieldRenderProps, FormMeta } from '@flowgram.ai/free-layout-editor';
 import { IFlowValue } from '@flowgram.ai/form-materials';
+import { Field, FieldRenderProps, FormMeta } from '@flowgram.ai/free-layout-editor';
+import { mapValues } from 'lodash-es';
 
-import { defaultFormMeta } from '../default-form-meta';
-import { JsonSchema } from '../../typings';
+import { FormContent, FormHeader, FormOutputs, PropertiesEdit } from '../../form-components';
 import { useIsSidebar } from '../../hooks';
-import { FormHeader, FormContent, FormOutputs, PropertiesEdit } from '../../form-components';
+import { JsonSchema } from '../../typings';
+import { defaultFormMeta } from '../default-form-meta';
 
 export const renderForm = () => {
   const isSidebar = useIsSidebar();
