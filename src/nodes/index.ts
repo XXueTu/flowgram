@@ -11,9 +11,9 @@ import { StartNodeRegistry } from './start';
 export { WorkflowNodeType } from './constants';
 
 export const nodeRegistries: FlowNodeRegistry[] = [
-  ConditionNodeRegistry,
   StartNodeRegistry,
   EndNodeRegistry,
+  ConditionNodeRegistry,
   LLMNodeRegistry,
   CodeNodeRegistry,
   LoopNodeRegistry,

@@ -1,6 +1,5 @@
-import { Input, Select, Switch } from "@douyinfe/semi-ui";
-import { Collapse, Tag, JsonViewer } from "@douyinfe/semi-ui";
-import React, { useRef, useCallback } from "react";
+import { Collapse, Input, JsonViewer, Select, Switch, Tag } from "@douyinfe/semi-ui";
+import React, { useCallback, useRef } from "react";
 
 import { IFlowValue } from "@flowgram.ai/form-materials";
 import { Field, FieldRenderProps, FormMeta, FormRenderProps, ValidateTrigger } from "@flowgram.ai/free-layout-editor";
@@ -25,6 +24,8 @@ const bodyTypes = [
   // 可根据需要添加更多类型
 ];
 
+
+
 export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
   const isSidebar = useIsSidebar();
   if (isSidebar) {
@@ -34,19 +35,11 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
         <FormContent>
           {/* API 方法和URL */}
           <Collapse defaultActiveKey={["1", "2", "3", "4", "5", "6"]}>
-            <Collapse.Panel header="API" itemKey="1">
-              <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
-                <Field name="apiMethod">{({ field }) => <Select value={field.value as string} onChange={field.onChange} optionList={apiMethods} />}</Field>
-                <Field name="apiUrl">
-                  {({ field }) => <Input value={field.value as string} onChange={field.onChange as (v: string) => void} placeholder="请输入接口URL" />}
-                </Field>
-              </div>
-            </Collapse.Panel>
-            <Collapse.Panel header="请求参数" itemKey="2">
+          <Collapse.Panel header="输入" itemKey="1">
               <Field
-                name="requestParams.properties"
+                name="custom.requestParams.properties"
                 render={({ field: { value: propertiesSchemaValue, onChange: propertiesSchemaChange } }: FieldRenderProps<Record<string, JsonSchema>>) => (
-                  <Field<Record<string, IFlowValue>> name="requestParamsValues">
+                  <Field<Record<string, IFlowValue>> name="custom.requestParamsValues">
                     {({ field: { value: propertiesValue, onChange: propertiesValueChange } }) => {
                       const onChange = (newProperties: Record<string, JsonSchema>) => {
                         const newPropertiesValue = mapValues(newProperties, (v) => v.default);
@@ -67,11 +60,20 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                 )}
               />
             </Collapse.Panel>
+            <Collapse.Panel header="URL" itemKey="2">
+              <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
+                <Field name="custom.apiMethod">{({ field }) => <Select value={field.value as string} onChange={field.onChange} optionList={apiMethods} />}</Field>
+                <Field name="custom.apiUrl">
+                  {({ field }) => <Input value={field.value as string} onChange={field.onChange as (v: string) => void} placeholder="请输入接口URL" />}
+                </Field>
+              </div>
+            </Collapse.Panel>
+            
             <Collapse.Panel header="请求头" itemKey="3">
               <Field
-                name="requestHeaders.properties"
+                name="custom.requestHeaders.properties"
                 render={({ field: { value: propertiesSchemaValue, onChange: propertiesSchemaChange } }: FieldRenderProps<Record<string, JsonSchema>>) => (
-                  <Field<Record<string, IFlowValue>> name="requestHeadersValues">
+                  <Field<Record<string, IFlowValue>> name="custom.requestHeadersValues">
                     {({ field: { value: propertiesValue, onChange: propertiesValueChange } }) => {
                       const onChange = (newProperties: Record<string, JsonSchema>) => {
                         const newPropertiesValue = mapValues(newProperties, (v) => v.default);
@@ -93,7 +95,7 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
               />
             </Collapse.Panel>
             <Collapse.Panel header="请求体" itemKey="4">
-              <Field name="bodyType">
+              <Field name="custom.bodyType">
                 {({ field }) => (
                   <FormItem name="请求体类型" type="string">
                     <Select value={field.value as string} style={{ width: "100%" }} onChange={field.onChange} optionList={bodyTypes} placeholder="请选择" />
@@ -102,11 +104,11 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
               </Field>
 
               {/* 根据bodyType动态显示不同的组件 */}
-              <Field name="bodyType">
+              <Field name="custom.bodyType">
                 {({ field: bodyTypeField }) => {
                   if (bodyTypeField.value === "json") {
                     return (
-                      <Field name="bodyData">
+                      <Field name="custom.bodyData">
                         {({ field: bodyDataField }) => {
                           const jsonViewerRef = useRef<any>(null);
 
@@ -151,11 +153,11 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                   } else if (bodyTypeField.value === "form-data") {
                     return (
                       <Field
-                        name="bodyFormData.properties"
+                        name="custom.bodyFormData.properties"
                         render={({
                           field: { value: propertiesSchemaValue, onChange: propertiesSchemaChange },
                         }: FieldRenderProps<Record<string, JsonSchema>>) => (
-                          <Field<Record<string, IFlowValue>> name="bodyFormDataValues">
+                          <Field<Record<string, IFlowValue>> name="custom.bodyFormDataValues">
                             {({ field: { value: propertiesValue, onChange: propertiesValueChange } }) => {
                               const onChange = (newProperties: Record<string, JsonSchema>) => {
                                 const newPropertiesValue = mapValues(newProperties, (v) => v.default);
@@ -186,21 +188,21 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
               </Field>
             </Collapse.Panel>
             <Collapse.Panel header="其他" itemKey="5">
-              <Field name="timeout">
+              <Field name="custom.timeout">
                 {({ field }) => (
                   <FormItem name="超时设置（s）" type="number">
                     <Input type="number" value={field.value as number | string} onChange={field.onChange as (v: string) => void} placeholder="请输入" />
                   </FormItem>
                 )}
               </Field>
-              <Field name="retry">
+              <Field name="custom.retry">
                 {({ field }) => (
                   <FormItem name="重试次数" type="number">
                     <Input type="number" value={field.value as number | string} onChange={field.onChange as (v: string) => void} placeholder="请输入" />
                   </FormItem>
                 )}
               </Field>
-              <Field name="ignoreError">
+              <Field name="custom.ignoreError">
                 {({ field }) => (
                   <FormItem name="异常忽略" type="boolean">
                     <Switch checked={!!field.value} onChange={field.onChange as (v: boolean) => void} />
@@ -233,8 +235,8 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
       <FormHeader />
       <FormContent>
         <div style={{ display: "flex", gap: 10, fontSize: "12px", alignItems: "baseline" }}>
-          <Field name="apiMethod">{({ field }: any) => <Tag>{field.value}</Tag>}</Field>
-          <Field name="apiUrl">{({ field }: any) => <div style={{ fontSize: "14px" }}>{field.value}</div>}</Field>
+          <Field name="custom.apiMethod">{({ field }: any) => <Tag>{field.value}</Tag>}</Field>
+          <Field name="custom.apiUrl">{({ field }: any) => <div style={{ fontSize: "14px" }}>{field.value}</div>}</Field>
         </div>
         <FormOutputs />
       </FormContent>

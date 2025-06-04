@@ -22,12 +22,27 @@ export const HttpNodeRegistry: FlowNodeRegistry = {
       type: "http",
       data: {
         title: "http",
-        apiUrl: "https://api.example.com",
-        apiMethod: "GET",
-        bodyType: "none",
-        timeout: 10,
-        retry: 2,
-        ignoreError: false,
+        custom: {
+          apiUrl: "https://api.example.com",
+          apiMethod: "GET",
+          bodyType: "none",
+          timeout: 10,
+          retry: 2,
+          ignoreError: false,
+          requestHeaders: {
+            properties: {
+              "Content-Type": {
+                type: "string"
+              }
+            }
+          },
+          requestHeadersValues: {
+            "Content-Type": {
+              type: "constant",
+              content: "application/json"
+            }
+          }
+        },
         // 可根据需要添加默认 inputs/outputs
         outputs: {
           type: "object",

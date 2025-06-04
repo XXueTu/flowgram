@@ -1,9 +1,9 @@
 import { nanoid } from 'nanoid';
 
-import { FlowNodeRegistry } from '../../typings';
 import iconCondition from '../../assets/icon-condition.svg';
-import { formMeta } from './form-meta';
+import { FlowNodeRegistry } from '../../typings';
 import { WorkflowNodeType } from '../constants';
+import { formMeta } from './form-meta';
 
 export const ConditionNodeRegistry: FlowNodeRegistry = {
   type: WorkflowNodeType.Condition,

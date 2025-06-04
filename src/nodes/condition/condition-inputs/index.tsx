@@ -1,13 +1,13 @@
 import { IconCrossCircleStroked, IconPlus } from '@douyinfe/semi-icons';
 import { Button } from '@douyinfe/semi-ui';
 import { ConditionRow, ConditionRowValueType } from '@flowgram.ai/form-materials';
-import { Field, FieldArray } from '@flowgram.ai/free-layout-editor';
+import { Field, FieldArray, useScopeAvailable } from '@flowgram.ai/free-layout-editor';
 import { nanoid } from 'nanoid';
 
+import { JsonSchemaUtils } from '@flowgram.ai/form-materials';
 import { Feedback, FormItem } from '../../../form-components';
 import { useNodeRenderContext } from '../../../hooks';
 import { ConditionPort } from './styles';
-import { getTypeByContentPath } from './utils';
 
 
 interface ConditionValue {
@@ -18,7 +18,8 @@ interface ConditionValue {
 }
 
 export function ConditionInputs() {
-  const { readonly,...ctx } = useNodeRenderContext();
+  const { readonly } = useNodeRenderContext();
+  const available = useScopeAvailable();
   return (
     <FieldArray name="conditions">
       {({ field }) => (
@@ -33,8 +34,21 @@ export function ConditionInputs() {
                       style={{ flexGrow: 1 }}
                       value={childField.value.value}
                       onChange={(v) => {
-                        const ltp = getTypeByContentPath(ctx, v?.left?.content as string[] || []);
-                        const rtp = getTypeByContentPath(ctx, v?.right?.content as string[] || []);
+                        var ltp: any
+                        var rtp: any
+                        const ltpVariable = available.getByKeyPath(v?.left?.content as string[]);
+                        const rtpVariable = available.getByKeyPath(v?.right?.content as string[]);
+                        if (!ltpVariable){
+                          ltp = "undefined"
+                        }else{
+                          ltp = JsonSchemaUtils.astToSchema(ltpVariable.type, { drilldown: false })?.type;
+                        }
+                        if (!rtpVariable){
+                          rtp = "undefined"
+                        }else{
+                          rtp = JsonSchemaUtils.astToSchema(rtpVariable.type, { drilldown: false })?.type;
+                        }
+                    
                         childField.onChange({ value: v, key: childField.value.key, leftType:ltp, rightType:rtp})
                       }}
                     />
