@@ -24,8 +24,6 @@ const bodyTypes = [
   // 可根据需要添加更多类型
 ];
 
-
-
 export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
   const isSidebar = useIsSidebar();
   if (isSidebar) {
@@ -35,7 +33,7 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
         <FormContent>
           {/* API 方法和URL */}
           <Collapse defaultActiveKey={["1", "2", "3", "4", "5", "6"]}>
-          <Collapse.Panel header="输入" itemKey="1">
+            <Collapse.Panel header="输入" itemKey="1">
               <Field
                 name="custom.requestParams.properties"
                 render={({ field: { value: propertiesSchemaValue, onChange: propertiesSchemaChange } }: FieldRenderProps<Record<string, JsonSchema>>) => (
@@ -62,13 +60,15 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
             </Collapse.Panel>
             <Collapse.Panel header="URL" itemKey="2">
               <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
-                <Field name="custom.apiMethod">{({ field }) => <Select value={field.value as string} onChange={field.onChange} optionList={apiMethods} />}</Field>
+                <Field name="custom.apiMethod">
+                  {({ field }) => <Select value={field.value as string} onChange={field.onChange} optionList={apiMethods} />}
+                </Field>
                 <Field name="custom.apiUrl">
                   {({ field }) => <Input value={field.value as string} onChange={field.onChange as (v: string) => void} placeholder="请输入接口URL" />}
                 </Field>
               </div>
             </Collapse.Panel>
-            
+
             <Collapse.Panel header="请求头" itemKey="3">
               <Field
                 name="custom.requestHeaders.properties"
@@ -151,37 +151,82 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                       </Field>
                     );
                   } else if (bodyTypeField.value === "form-data") {
-                    return (
-                      <Field
-                        name="custom.bodyFormData.properties"
-                        render={({
-                          field: { value: propertiesSchemaValue, onChange: propertiesSchemaChange },
-                        }: FieldRenderProps<Record<string, JsonSchema>>) => (
-                          <Field<Record<string, IFlowValue>> name="custom.bodyFormDataValues">
-                            {({ field: { value: propertiesValue, onChange: propertiesValueChange } }) => {
-                              const onChange = (newProperties: Record<string, JsonSchema>) => {
-                                const newPropertiesValue = mapValues(newProperties, (v) => v.default);
-                                const newPropetiesSchema = mapValues(newProperties, (v) => {
-                                  delete v.default;
-                                  return v;
-                                });
-                                propertiesValueChange(newPropertiesValue);
-                                propertiesSchemaChange(newPropetiesSchema);
-                              };
-                              const value = mapValues(propertiesSchemaValue, (v, key) => ({
-                                ...v,
-                                default: propertiesValue?.[key],
-                              }));
-                              return (
-                                <div style={{ padding: "10px" }}>
-                                  <PropertiesEdit value={value} onChange={onChange} useFx={true} />
-                                </div>
-                              );
-                            }}
+                    // 简化form-data处理，避免复杂的嵌套Field
+                    try {
+                      return (
+                        <div style={{ padding: "10px" }}>
+                          <Field name="custom.bodyFormData.properties" defaultValue={{}}>
+                            {({ field: propertiesField }) => (
+                              <Field name="custom.bodyFormDataValues" defaultValue={{}}>
+                                {({ field: valuesField }) => {
+                                  // 简化onChange处理
+                                  const handlePropertiesChange = useCallback(
+                                    (newProperties: Record<string, JsonSchema>) => {
+                                      try {
+                                        if (!newProperties || typeof newProperties !== "object") {
+                                          newProperties = {};
+                                        }
+
+                                        // 更新properties schema
+                                        const cleanSchema = { ...newProperties };
+                                        Object.values(cleanSchema).forEach((schema) => {
+                                          if (schema && typeof schema === "object") {
+                                            delete schema.default;
+                                          }
+                                        });
+                                        propertiesField.onChange(cleanSchema);
+
+                                        // 更新values
+                                        const newValues = Object.keys(newProperties).reduce((acc, key) => {
+                                          const schema = newProperties[key];
+                                          if (schema && typeof schema === "object") {
+                                            acc[key] = schema.default;
+                                          }
+                                          return acc;
+                                        }, {} as Record<string, any>);
+                                        valuesField.onChange(newValues);
+                                      } catch (error) {
+                                        console.error("Form-data update error:", error);
+                                        // 保持当前状态，不做任何更改
+                                      }
+                                    },
+                                    [propertiesField.onChange, valuesField.onChange]
+                                  );
+
+                                  // 安全地构建PropertiesEdit的value
+                                  let propertiesEditValue = {};
+                                  try {
+                                    const properties = propertiesField.value || {};
+                                    const values = valuesField.value || {};
+
+                                    if (typeof properties === "object" && properties !== null) {
+                                      propertiesEditValue = Object.keys(properties).reduce((acc, key) => {
+                                        const schema = (properties as Record<string, any>)[key];
+                                        if (schema && typeof schema === "object") {
+                                          acc[key] = {
+                                            ...schema,
+                                            default: (values as Record<string, any>)[key],
+                                          };
+                                        }
+                                        return acc;
+                                      }, {} as Record<string, any>);
+                                    }
+                                  } catch (error) {
+                                    console.error("PropertiesEdit value construction error:", error);
+                                    propertiesEditValue = {};
+                                  }
+
+                                  return <PropertiesEdit value={propertiesEditValue} onChange={handlePropertiesChange} useFx={true} />;
+                                }}
+                              </Field>
+                            )}
                           </Field>
-                        )}
-                      />
-                    );
+                        </div>
+                      );
+                    } catch (error) {
+                      console.error("Form-data render error:", error);
+                      return <div style={{ padding: "10px", color: "#999" }}>Form-data 组件加载失败，请刷新页面重试</div>;
+                    }
                   }
                   return <></>;
                 }}
