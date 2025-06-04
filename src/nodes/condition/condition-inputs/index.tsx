@@ -82,6 +82,12 @@ export function ConditionInputs() {
               </Button>
             </div>
           )}
+          <div style={{ position: 'relative', marginTop: '10px' }}>
+            <span style={{ color: '#666' }}>Else</span>
+            <div style={{ position: 'absolute', right: '1px', top: '50%', transform: 'translateY(-50%)' }}>
+              <ConditionPort data-port-id="else" data-port-type="output" />
+            </div>
+          </div>
         </>
       )}
     </FieldArray>
