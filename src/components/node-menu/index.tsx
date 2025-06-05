@@ -1,5 +1,8 @@
 import { FC, useCallback, useState, type MouseEvent } from 'react';
 
+import { IconMore } from '@douyinfe/semi-icons';
+import { Dropdown, IconButton } from '@douyinfe/semi-ui';
+import { NodeIntoContainerService } from '@flowgram.ai/free-container-plugin';
 import {
   delay,
   useClientContext,
@@ -8,20 +11,18 @@ import {
   WorkflowNodeEntity,
   WorkflowSelectService,
 } from '@flowgram.ai/free-layout-editor';
-import { NodeIntoContainerService } from '@flowgram.ai/free-container-plugin';
-import { IconButton, Dropdown } from '@douyinfe/semi-ui';
-import { IconMore } from '@douyinfe/semi-icons';
 
-import { FlowNodeRegistry } from '../../typings';
-import { PasteShortcut } from '../../shortcuts/paste';
 import { CopyShortcut } from '../../shortcuts/copy';
+import { PasteShortcut } from '../../shortcuts/paste';
+import { FlowNodeRegistry } from '../../typings';
 
 interface NodeMenuProps {
   node: WorkflowNodeEntity;
+  updateTitleEdit: (setEditing: boolean) => void;
   deleteNode: () => void;
 }
 
-export const NodeMenu: FC<NodeMenuProps> = ({ node, deleteNode }) => {
+export const NodeMenu: FC<NodeMenuProps> = ({ node, deleteNode, updateTitleEdit }) => {
   const [visible, setVisible] = useState(true);
   const clientContext = useClientContext();
   const registry = node.getNodeRegistry<FlowNodeRegistry>();
@@ -77,6 +78,9 @@ export const NodeMenu: FC<NodeMenuProps> = ({ node, deleteNode }) => {
     },
     [clientContext, node]
   );
+  const handleEditTitle = useCallback(() => {
+    updateTitleEdit(true);
+  }, [updateTitleEdit]);
 
   if (!visible) {
     return;
@@ -88,6 +92,7 @@ export const NodeMenu: FC<NodeMenuProps> = ({ node, deleteNode }) => {
       position="bottomRight"
       render={
         <Dropdown.Menu>
+          <Dropdown.Item onClick={handleEditTitle}>Edit Title</Dropdown.Item>
           {canMoveOut && <Dropdown.Item onClick={handleMoveOut}>Move out</Dropdown.Item>}
           <Dropdown.Item onClick={handleCopy} disabled={registry.meta!.copyDisable === true}>
             Create Copy

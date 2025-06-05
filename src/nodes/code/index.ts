@@ -1,67 +1,63 @@
-import { nanoid } from 'nanoid';
-import { FlowNodeRegistry } from '../../typings';
-import { WorkflowNodeType } from '../constants';
-let index = 0;
+import iconStart from "../../assets/icon-start.jpg";
+import { FlowNodeRegistry } from "../../typings";
+import { WorkflowNodeType } from "../constants";
+import { formMeta } from './form-meta';
+const defaultCode = `function main(params) {
+  return {
+      key0: params.input + params.input,
+      key1: ["hello", "world"],
+      key2: {
+          key21: "hi"
+      },
+  };
+}`;
 export const CodeNodeRegistry: FlowNodeRegistry = {
   type: WorkflowNodeType.Code,
-  info: {
-    icon: 'icon-code', // 这么写不对,但是现在这个问题不重要
-    description:
-      'Write code to achieve specific functions.',
-  },
   meta: {
     size: {
       width: 360,
-      height: 305,
+      height: 211,
     },
   },
+  info: {
+    icon: iconStart,
+    description: "代码执行节点，支持 JavaScript 和 Golang 代码执行。",
+  },
+  formMeta,
   onAdd() {
     return {
-      id: `code_${nanoid(5)}`,
-      type: 'code',
+      id: `code_${Date.now()}`,
+      type: "code",
       data: {
-        title: `Code_${++index}`,
-        inputsValues: {
-          modelType: {
-            type: 'constant',
-            content: 'gpt-3.5-turbo',
-          },
-          temperature: {
-            type: 'constant',
-            content: 0.5,
-          },
-          systemPrompt: {
-            type: 'constant',
-            content: 'You are an AI assistant.',
-          },
-          prompt: {
-            type: 'constant',
-            content: '',
-          },
+        title: "代码执行",
+        custom: {
+          language: "javascript",
+          code: defaultCode,
+          timeout: 30,
+          retry: 3,
+          errorHandlingMode: "abort",
         },
         inputs: {
-          type: 'object',
-          required: ['modelType', 'temperature', 'prompt'],
           properties: {
-            modelType: {
-              type: 'string',
-            },
-            temperature: {
-              type: 'number',
-            },
-            systemPrompt: {
-              type: 'string',
-            },
-            prompt: {
-              type: 'string',
-            },
-          },
+            input1: {
+              type: "string",
+              title: "输入1"
+            }
+          }
+        },
+        inputsValues: {
+          input1: {
+            type: "constant",
+            content: ""
+          }
         },
         outputs: {
-          type: 'object',
+          type: "object",
           properties: {
-            result: { type: 'string' },
+            result: { type: "string", default: "" },
+            error: { type: "string", default: "" }
           },
+          required: ["result", "error"],
         },
       },
     };

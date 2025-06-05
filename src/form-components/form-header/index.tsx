@@ -1,19 +1,19 @@
-import { Field, FieldRenderProps } from '@flowgram.ai/free-layout-editor';
-import { useClientContext, CommandService } from '@flowgram.ai/free-layout-editor';
-import { Typography, Button } from '@douyinfe/semi-ui';
+import { useState } from 'react';
+
 import { IconSmallTriangleDown, IconSmallTriangleLeft } from '@douyinfe/semi-icons';
+import { Button } from '@douyinfe/semi-ui';
+import { CommandService, useClientContext } from '@flowgram.ai/free-layout-editor';
 
-import { Feedback } from '../feedback';
-import { FlowCommandId } from '../../shortcuts';
-import { useIsSidebar, useNodeRenderContext } from '../../hooks';
 import { NodeMenu } from '../../components/node-menu';
+import { useIsSidebar, useNodeRenderContext } from '../../hooks';
+import { FlowCommandId } from '../../shortcuts';
+import { Header, Operators } from './styles';
+import { TitleInput } from './title-input';
 import { getIcon } from './utils';
-import { Header, Operators, Title } from './styles';
-
-const { Text } = Typography;
 
 export function FormHeader() {
   const { node, expanded, toggleExpand, readonly } = useNodeRenderContext();
+  const [titleEdit, updateTitleEdit] = useState<boolean>(false);
   const ctx = useClientContext();
   const isSidebar = useIsSidebar();
   const handleExpand = (e: React.MouseEvent) => {
@@ -27,16 +27,7 @@ export function FormHeader() {
   return (
     <Header>
       {getIcon(node)}
-      <Title>
-        <Field name="title">
-          {({ field: { value, onChange }, fieldState }: FieldRenderProps<string>) => (
-            <div style={{ height: 24 }}>
-              <Text ellipsis={{ showTooltip: true }}>{value}</Text>
-              <Feedback errors={fieldState?.errors} />
-            </div>
-          )}
-        </Field>
-      </Title>
+      <TitleInput readonly={readonly} updateTitleEdit={updateTitleEdit} titleEdit={titleEdit} />
       {node.renderData.expandable && !isSidebar && (
         <Button
           type="primary"
@@ -48,7 +39,7 @@ export function FormHeader() {
       )}
       {readonly ? undefined : (
         <Operators>
-          <NodeMenu node={node} deleteNode={handleDelete} />
+          <NodeMenu node={node} deleteNode={handleDelete} updateTitleEdit={updateTitleEdit} />
         </Operators>
       )}
     </Header>

@@ -1,10 +1,10 @@
-import { Field } from '@flowgram.ai/free-layout-editor';
 import { DynamicValueInput } from '@flowgram.ai/form-materials';
+import { Field } from '@flowgram.ai/free-layout-editor';
 
-import { FormItem } from '../form-item';
-import { Feedback } from '../feedback';
-import { JsonSchema } from '../../typings';
 import { useNodeRenderContext } from '../../hooks';
+import { JsonSchema } from '../../typings';
+import { Feedback } from '../feedback';
+import { FormItem } from '../form-item';
 
 export function FormInputs() {
   const { readonly } = useNodeRenderContext();

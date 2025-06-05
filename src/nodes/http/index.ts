@@ -47,10 +47,11 @@ export const HttpNodeRegistry: FlowNodeRegistry = {
         outputs: {
           type: "object",
           properties: {
-            body: { type: "string" },
-            statusCode: { type: "number" },
-            headers: { type: "string" },
+            body: { type: "string" ,default:"{}"},
+            statusCode: { type: "number" ,default:0},
+            headers: { type: "string" ,default:"{}"},
           },
+          required: ["body", "statusCode", "headers"],
         },
       },
     };

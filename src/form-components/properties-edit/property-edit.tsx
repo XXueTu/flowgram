@@ -59,7 +59,7 @@ export const PropertyEdit: React.FC<PropertyEditProps> = (props) => {
         <DynamicValueInput
           value={value.default}
           onChange={(val) => updateProperty('default', val)}
-          schema={value}
+          schema={{...value, extra: { weak: true }}}
           style={{ flexGrow: 1 }}
         />
       }
