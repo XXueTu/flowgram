@@ -26,23 +26,23 @@ const codeTips: CodeTip[] = [
   {
     title: "获取输入",
     code: "const input = params.input;",
-    description: "获取节点输入中参数名为 input 的值"
+    description: "获取节点输入中参数名为 input 的值",
   },
   {
     title: "输出结果",
     code: `const ret = { "name": '小明', "hobbies": ["看书", "旅游"] };`,
-    description: "输出一个包含多种数据类型的对象"
+    description: "输出一个包含多种数据类型的对象",
   },
   {
     title: "解析 JSON 对象",
     code: `const ret = { "name": '小明', "hobbies": ["看书", "旅游"] };`,
-    description: "输出一个包含多种数据类型的对象"
+    description: "输出一个包含多种数据类型的对象",
   },
   {
     title: "加解密处理",
     code: `const ret = { "name": '小明', "hobbies": ["看书", "旅游"] };`,
-    description: "输出一个包含多种数据类型的对象"
-  }
+    description: "输出一个包含多种数据类型的对象",
+  },
 ];
 
 export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
@@ -56,7 +56,7 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
     editorRef.current = editor;
     monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
   };
-
+  console.log(currentCode, "currentCode");
   if (isSidebar) {
     return (
       <>
@@ -90,20 +90,20 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
             </Collapse.Panel>
 
             <Collapse.Panel header="代码编辑器" itemKey="2">
-              <div style={{ padding: '8px 0' }}>
+              <div style={{ padding: "8px 0" }}>
                 <Field name="custom.language">
                   {({ field }) => (
-                    <Select 
-                      value={field.value as string} 
-                      style={{ width: "100%", marginBottom: 8 }} 
+                    <Select
+                      value={field.value as string}
+                      style={{ width: "100%", marginBottom: 8 }}
                       onChange={(value) => {
                         field.onChange(value);
-                        if (typeof value === 'string') {
+                        if (typeof value === "string") {
                           setCurrentLanguage(value.toLowerCase());
                         }
-                      }} 
-                      optionList={languages} 
-                      placeholder="请选择编程语言" 
+                      }}
+                      optionList={languages}
+                      placeholder="请选择编程语言"
                     />
                   )}
                 </Field>
@@ -111,12 +111,12 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                 <Field name="custom.code">
                   {({ field }) => (
                     <>
-                      <div 
-                        style={{ 
-                          height: "300px", 
+                      <div
+                        style={{
+                          height: "300px",
                           border: "1px solid var(--semi-color-border)",
                           cursor: "pointer",
-                          position: "relative"
+                          position: "relative",
                         }}
                         onClick={() => {
                           setCurrentCode(field.value as string);
@@ -138,19 +138,21 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                             automaticLayout: true,
                             formatOnPaste: true,
                             formatOnType: true,
-                            readOnly: true
+                            readOnly: true,
                           }}
                         />
-                        <div style={{
-                          position: "absolute",
-                          top: 8,
-                          right: 8,
-                          background: "var(--semi-color-bg-2)",
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          fontSize: "12px",
-                          color: "var(--semi-color-text-2)"
-                        }}>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            background: "var(--semi-color-bg-2)",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            fontSize: "12px",
+                            color: "var(--semi-color-text-2)",
+                          }}
+                        >
                           点击编辑
                         </div>
                       </div>
@@ -165,6 +167,7 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                       >
                         <div style={{ height: "calc(80vh - 120px)" }}>
                           <Editor
+                            // loading={false}
                             height="100%"
                             defaultLanguage="javascript"
                             language={currentLanguage}
@@ -185,7 +188,7 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                               formatOnType: true,
                               tabSize: 2,
                               insertSpaces: true,
-                              wordWrap: "on"
+                              wordWrap: "on",
                             }}
                           />
                         </div>
@@ -200,10 +203,7 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
               <Field
                 name="outputs"
                 render={({ field: { value, onChange } }: FieldRenderProps<JsonSchema>) => (
-                  <JsonSchemaEditor
-                    value={value}
-                    onChange={(value) => onChange(value as JsonSchema)}
-                  />
+                  <JsonSchemaEditor value={value} onChange={(value) => onChange(value as JsonSchema)} />
                 )}
               />
             </Collapse.Panel>
@@ -211,13 +211,13 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
             <Collapse.Panel header="异常处理" itemKey="4">
               <Field name="custom.timeout">
                 {({ field }) => (
-                  <div style={{ marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <span style={{ width: 100 }}>超时时间（秒）</span>
-                    <Input 
-                      type="number" 
-                      value={field.value as number | string} 
-                      onChange={field.onChange as (v: string) => void} 
-                      placeholder="请输入" 
+                    <Input
+                      type="number"
+                      value={field.value as number | string}
+                      onChange={field.onChange as (v: string) => void}
+                      placeholder="请输入"
                       min={1}
                       style={{ width: 120 }}
                     />
@@ -226,13 +226,13 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
               </Field>
               <Field name="custom.retry">
                 {({ field }) => (
-                  <div style={{ marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <span style={{ width: 100 }}>重试次数</span>
-                    <Input 
-                      type="number" 
-                      value={field.value as number | string} 
-                      onChange={field.onChange as (v: string) => void} 
-                      placeholder="请输入" 
+                    <Input
+                      type="number"
+                      value={field.value as number | string}
+                      onChange={field.onChange as (v: string) => void}
+                      placeholder="请输入"
                       min={0}
                       style={{ width: 120 }}
                     />
@@ -241,14 +241,14 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
               </Field>
               <Field name="custom.errorHandlingMode">
                 {({ field }) => (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <span style={{ width: 100 }}>异常处理方式</span>
-                    <Select 
-                      value={field.value as string} 
-                      style={{ width: 120 }} 
-                      onChange={field.onChange} 
-                      optionList={errorHandlingModes} 
-                      placeholder="请选择" 
+                    <Select
+                      value={field.value as string}
+                      style={{ width: 120 }}
+                      onChange={field.onChange}
+                      optionList={errorHandlingModes}
+                      placeholder="请选择"
                     />
                   </div>
                 )}
@@ -279,4 +279,4 @@ export const formMeta: FormMeta<FlowNodeJSON> = {
   validate: {
     title: ({ value }: { value: string }) => (value ? undefined : "Title is required"),
   },
-}; 
+};
