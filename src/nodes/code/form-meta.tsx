@@ -6,7 +6,7 @@ import { IFlowValue, JsonSchemaEditor } from "@flowgram.ai/form-materials";
 import { Field, FieldRenderProps, FormMeta, FormRenderProps, ValidateTrigger } from "@flowgram.ai/free-layout-editor";
 import { mapValues } from "lodash-es";
 
-import { FormContent, FormHeader, FormOutputs, PropertiesEdit } from "../../form-components";
+import { FormContent, FormHeader, FormInputs, FormOutputs, PropertiesEdit } from "../../form-components";
 import { useIsSidebar } from "../../hooks";
 import { FlowNodeJSON, JsonSchema } from "../../typings";
 import { CodeTip, CodeTips } from "./components/CodeTips";
@@ -266,6 +266,7 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
         <div style={{ display: "flex", gap: 10, fontSize: "12px", alignItems: "baseline" }}>
           <Field name="custom.language">{({ field }: any) => <Tag>{field.value}</Tag>}</Field>
         </div>
+        <FormInputs />
         <FormOutputs />
       </FormContent>
     </>
