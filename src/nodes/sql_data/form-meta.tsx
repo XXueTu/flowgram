@@ -9,54 +9,74 @@ import { mapValues } from "lodash-es";
 import { FormContent, FormHeader, FormInputs, FormOutputs, PropertiesEdit } from "../../form-components";
 import { useIsSidebar } from "../../hooks";
 import { FlowNodeJSON, JsonSchema } from "../../typings";
-import { CodeTip, CodeTips } from "./components/CodeTips";
-
-const languages = [
-  { label: "JavaScript", value: "javascript" },
-  { label: "Golang", value: "golang" },
-  { label: "Python", value: "python" },
-];
 
 const errorHandlingModes = [
   { label: "中断", value: "abort" },
   { label: "重试", value: "retry" },
 ];
 
-const codeTips: CodeTip[] = [
-  {
-    title: "获取输入",
-    code: "const input = params.input;",
-    description: "获取节点输入中参数名为 input 的值",
-  },
-  {
-    title: "输出结果",
-    code: `const ret = { "name": '小明', "hobbies": ["看书", "旅游"] };`,
-    description: "输出一个包含多种数据类型的对象",
-  },
-  {
-    title: "解析 JSON 对象",
-    code: `const ret = { "name": '小明', "hobbies": ["看书", "旅游"] };`,
-    description: "输出一个包含多种数据类型的对象",
-  },
-  {
-    title: "加解密处理",
-    code: `const ret = { "name": '小明', "hobbies": ["看书", "旅游"] };`,
-    description: "输出一个包含多种数据类型的对象",
-  },
-];
+// SQL 格式化规则
+const formatSQL = (sql: string): string => {
+  if (!sql) return '';
+  
+  try {
+    // 在关键字前添加换行和缩进
+    const keywords = ['select', 'from', 'where', 'group by', 'order by', 'having', 'join', 'left join', 'right join', 'inner join', 'union', 'limit'];
+    keywords.forEach(keyword => {
+      const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
+      sql = sql.replace(regex, `\n  $&`);
+    });
+
+    // 处理逗号
+    sql = sql.replace(/,\s*/g, ',\n    ');
+
+    // 处理 AND/OR
+    sql = sql.replace(/\b(and|or)\b/gi, '\n    $&');
+
+    // 移除多余的空行
+    sql = sql.replace(/\n\s*\n/g, '\n');
+
+    // 移除首尾空白
+    sql = sql.trim();
+
+    return sql;
+  } catch (error) {
+    console.error('SQL 格式化失败:', error);
+    return sql; // 如果格式化失败，返回原始 SQL
+  }
+};
 
 export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
   const isSidebar = useIsSidebar();
   const editorRef = useRef<any>(null);
   const [visible, setVisible] = useState(false);
-  const [currentCode, setCurrentCode] = useState("");
-  const [currentLanguage, setCurrentLanguage] = useState("javascript");
+  const [currentSQL, setCurrentSQL] = useState("");
 
   const handleEditorDidMount = (editor: any, monaco: Monaco) => {
     editorRef.current = editor;
-    monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
+    monaco.editor.setModelLanguage(editor.getModel(), "sql");
+
+    // 添加右键菜单
+    editor.addAction({
+      id: 'format-sql',
+      label: '格式化 SQL',
+      keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KeyF],
+      contextMenuGroupId: 'navigation',
+      contextMenuOrder: 1.5,
+      run: () => {
+        try {
+          const model = editor.getModel();
+          const text = model.getValue();
+          const formatted = formatSQL(text);
+          model.setValue(formatted);
+        } catch (error) {
+          console.error('格式化失败:', error);
+        }
+        return null;
+      }
+    });
   };
-  console.log(currentCode, "currentCode");
+
   if (isSidebar) {
     return (
       <>
@@ -89,26 +109,23 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
               />
             </Collapse.Panel>
 
-            <Collapse.Panel header="代码编辑器" itemKey="2">
+            <Collapse.Panel header="SQL 配置" itemKey="2">
               <div style={{ padding: "8px 0" }}>
-                <Field name="custom.language">
+                <Field name="custom.datasourceId">
                   {({ field }) => (
-                    <Select
-                      value={field.value as string}
-                      style={{ width: "100%", marginBottom: 8 }}
-                      onChange={(value) => {
-                        field.onChange(value);
-                        if (typeof value === "string") {
-                          setCurrentLanguage(value.toLowerCase());
-                        }
-                      }}
-                      optionList={languages}
-                      placeholder="请选择编程语言"
-                    />
+                    <div style={{ marginBottom: 16 }}>
+                      <div style={{ marginBottom: 8 }}>数据源 ID</div>
+                      <Input
+                        value={field.value as number}
+                        onChange={(value) => field.onChange(Number(value) || 0)}
+                        placeholder="请输入数据源 ID"
+                        type="number"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
                   )}
                 </Field>
-                <CodeTips tips={codeTips} />
-                <Field name="custom.code">
+                <Field name="custom.sql">
                   {({ field }) => (
                     <>
                       <div
@@ -119,14 +136,14 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                           position: "relative",
                         }}
                         onClick={() => {
-                          setCurrentCode(field.value as string);
+                          setCurrentSQL(field.value as string);
                           setVisible(true);
                         }}
                       >
                         <Editor
                           height="100%"
-                          defaultLanguage="javascript"
-                          language={currentLanguage}
+                          defaultLanguage="sql"
+                          language="sql"
                           value={field.value as string}
                           onChange={(value) => field.onChange(value)}
                           options={{
@@ -138,7 +155,9 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                             automaticLayout: true,
                             formatOnPaste: true,
                             formatOnType: true,
-                            readOnly: true,
+                            tabSize: 2,
+                            insertSpaces: true,
+                            wordWrap: "on",
                           }}
                         />
                         <div
@@ -153,10 +172,11 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                             color: "var(--semi-color-text-2)",
                           }}
                         >
+                          
                         </div>
                       </div>
                       <Modal
-                        title="代码编辑器"
+                        title="SQL 编辑器"
                         visible={visible}
                         onCancel={() => setVisible(false)}
                         footer={null}
@@ -166,13 +186,12 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                       >
                         <div style={{ height: "calc(80vh - 120px)" }}>
                           <Editor
-                            // loading={false}
-                            height="100%"
-                            defaultLanguage="javascript"
-                            language={currentLanguage}
-                            value={currentCode}
+                            height="calc(100% - 40px)"
+                            defaultLanguage="sql"
+                            language="sql"
+                            value={currentSQL}
                             onChange={(value) => {
-                              setCurrentCode(value || "");
+                              setCurrentSQL(value || "");
                               field.onChange(value || "");
                             }}
                             onMount={handleEditorDidMount}
@@ -263,7 +282,7 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
       <FormHeader />
       <FormContent>
         <div style={{ display: "flex", gap: 10, fontSize: "12px", alignItems: "baseline" }}>
-          <Field name="custom.language">{({ field }: any) => <Tag>{field.value}</Tag>}</Field>
+          <Field name="custom.datasourceId">{({ field }: any) => <Tag>数据源: {field.value}</Tag>}</Field>
         </div>
         <FormInputs />
         <FormOutputs />

@@ -8,4 +8,5 @@ export enum WorkflowNodeType {
   Loop = 'loop',
   Comment = 'comment',
   Custom = 'custom',
+  Sql = 'sql',
 }

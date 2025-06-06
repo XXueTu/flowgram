@@ -7,6 +7,7 @@ import { EndNodeRegistry } from './end';
 import { HttpNodeRegistry } from './http';
 import { LLMNodeRegistry } from './llm';
 import { LoopNodeRegistry } from './loop';
+import { SQLNodeRegistry } from './sql_data';
 import { StartNodeRegistry } from './start';
 export { WorkflowNodeType } from './constants';
 
@@ -19,6 +20,7 @@ export const nodeRegistries: FlowNodeRegistry[] = [
   LoopNodeRegistry,
   CommentNodeRegistry,
   HttpNodeRegistry,
+  SQLNodeRegistry
 ];
 
 export const visibleNodeRegistries = nodeRegistries.filter(
