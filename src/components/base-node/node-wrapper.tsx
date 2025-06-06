@@ -1,12 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
-import { WorkflowPortRender } from '@flowgram.ai/free-layout-editor';
-import { useClientContext } from '@flowgram.ai/free-layout-editor';
+import { useClientContext, WorkflowPortRender } from '@flowgram.ai/free-layout-editor';
 
-import { useNodeRenderContext } from '../../hooks';
 import { SidebarContext } from '../../context';
-import { scrollToView } from './utils';
+import { useNodeRenderContext } from '../../hooks';
+import { NodeExecutionDetails } from './node-execution-details';
 import { NodeWrapperStyle } from './styles';
+import { scrollToView } from './utils';
 
 export interface NodeWrapperProps {
   isScrollToView?: boolean;
@@ -34,6 +34,7 @@ export const NodeWrapper: React.FC<NodeWrapperProps> = (props) => {
         className={selected ? 'selected' : ''}
         ref={nodeRef}
         draggable
+        data-node-id={nodeRender.node.id}
         onDragStart={(e) => {
           startDrag(e);
           setIsDragging(true);
@@ -55,11 +56,21 @@ export const NodeWrapper: React.FC<NodeWrapperProps> = (props) => {
         data-node-selected={String(selected)}
         style={{
           outline: form?.state.invalid ? '1px solid red' : 'none',
+          position: 'relative',
+          paddingBottom: '32px',
         }}
       >
         {children}
       </NodeWrapperStyle>
       {portsRender}
+      <NodeExecutionDetails 
+        nodeId={nodeRender.node.id}
+        status={'success'}
+        startTime={1717689420000}
+        endTime={1717689430000}
+        error={'执行错误执行错误，执行错误执行错误，执行错误执行错误'}
+        progress={90}
+      />
     </>
   );
 };
