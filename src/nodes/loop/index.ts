@@ -1,16 +1,16 @@
-import { nanoid } from 'nanoid';
-import {
-  WorkflowNodeEntity,
-  PositionSchema,
-  FlowNodeTransformData,
-} from '@flowgram.ai/free-layout-editor';
 import { provideBatchInputEffect } from '@flowgram.ai/form-materials';
+import {
+  FlowNodeTransformData,
+  PositionSchema,
+  WorkflowNodeEntity,
+} from '@flowgram.ai/free-layout-editor';
+import { nanoid } from 'nanoid';
 
-import { defaultFormMeta } from '../default-form-meta';
-import { FlowNodeRegistry } from '../../typings';
 import iconLoop from '../../assets/icon-loop.jpg';
-import { LoopFormRender } from './loop-form-render';
+import { FlowNodeRegistry } from '../../typings';
 import { WorkflowNodeType } from '../constants';
+import { defaultFormMeta } from '../default-form-meta';
+import { LoopFormRender } from './loop-form-render';
 
 let index = 0;
 export const LoopNodeRegistry: FlowNodeRegistry = {
@@ -65,6 +65,22 @@ export const LoopNodeRegistry: FlowNodeRegistry = {
       data: {
         title: `Loop_${++index}`,
       },
+      blocks: [
+        {
+          id: `start_${nanoid(5)}`,
+          type: 'start',
+          data: {
+            title: `Start_${++index}`,
+          },
+        },
+        {
+          id: `end_${nanoid(5)}`,
+          type: 'end',
+          data: {
+            title: `End_${++index}`,
+          },
+        }
+      ]
     };
   },
   formMeta: {

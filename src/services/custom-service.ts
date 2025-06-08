@@ -1,10 +1,13 @@
-import { injectable, inject } from '@flowgram.ai/free-layout-editor';
-import {
-  FreeLayoutPluginContext,
-  SelectionService,
-  Playground,
-  WorkflowDocument,
-} from '@flowgram.ai/free-layout-editor';
+import { FreeLayoutPluginContext, inject, injectable, Playground, SelectionService, WorkflowDocument } from '@flowgram.ai/free-layout-editor';
+import axios from 'axios';
+
+const API_BASE_URL = "http://10.8.0.61:8888/workflow";
+
+interface ApiResponse<T> {
+  code: number;
+  msg: string;
+  data: T;
+}
 
 /**
  * Docs: https://inversify.io/docs/introduction/getting-started/
@@ -40,3 +43,81 @@ export class CustomService {
     console.log(this.document.toJSON());
   }
 }
+
+export interface Case {
+  workspaceId: string;
+  caseId: string;
+  caseName: string;
+  caseParams: string;
+  createAt: string;
+  updateAt: string;
+  createBy: string;
+  updateBy: string;
+}
+
+export interface CaseCreateRequest {
+  workspaceId: string;
+  caseName: string;
+  caseParams: string;
+}
+
+export interface CaseCreateResponse {
+  caseId: string;
+}
+
+export interface CaseListRequest {
+  workspaceId: string;
+}
+
+export interface CaseListResponse {
+  caseList: Case[];
+}
+
+export interface CaseDetailRequest {
+  caseId: string;
+}
+
+export interface CaseDetailResponse {
+  case: Case;
+}
+
+export interface CaseDeleteRequest {
+  caseId: string;
+}
+
+export interface CaseDeleteResponse {
+  success: boolean;
+}
+
+export interface CaseEditRequest {
+  caseId: string;
+  caseName: string;
+  caseParams: string;
+}
+
+export interface CaseEditResponse {
+  success: boolean;
+}
+
+export const caseService = {
+  create: async (data: CaseCreateRequest) => {
+    const response = await axios.post<ApiResponse<CaseCreateResponse>>(`${API_BASE_URL}/case/publish`, data);
+    return response.data.data;
+  },
+  list: async (data: CaseListRequest) => {
+    const response = await axios.post<ApiResponse<CaseListResponse>>(`${API_BASE_URL}/case/list`, data);
+    return response.data.data;
+  },
+  detail: async (data: CaseDetailRequest) => {
+    const response = await axios.post<ApiResponse<CaseDetailResponse>>(`${API_BASE_URL}/case/detail`, data);
+    return response.data.data;
+  },
+  delete: async (data: CaseDeleteRequest) => {
+    const response = await axios.post<ApiResponse<CaseDeleteResponse>>(`${API_BASE_URL}/case/delete`, data);
+    return response.data.data;
+  },
+  edit: async (data: CaseEditRequest) => {
+    const response = await axios.post<ApiResponse<CaseEditResponse>>(`${API_BASE_URL}/case/edit`, data);
+    return response.data.data;
+  },
+};
