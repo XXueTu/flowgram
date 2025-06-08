@@ -1,6 +1,8 @@
 export enum WorkflowNodeType {
   Start = 'start',
   End = 'end',
+  ItemStart = 'item_start',
+  ItemEnd = 'item_end',
   LLM = 'llm',
   Code = 'code',
   Http = 'http',

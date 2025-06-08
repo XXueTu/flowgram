@@ -1,6 +1,7 @@
 import { provideBatchInputEffect } from '@flowgram.ai/form-materials';
 import {
   FlowNodeTransformData,
+  FreeLayoutPluginContext,
   PositionSchema,
   WorkflowNodeEntity,
 } from '@flowgram.ai/free-layout-editor';
@@ -31,8 +32,8 @@ export const LoopNodeRegistry: FlowNodeRegistry = {
      * 子画布默认大小设置
      */
     size: {
-      width: 560,
-      height: 400,
+      width: 500,
+      height: 300,
     },
     /**
      * The subcanvas padding setting
@@ -57,30 +58,44 @@ export const LoopNodeRegistry: FlowNodeRegistry = {
       return !transform.bounds.contains(mousePos.x, mousePos.y);
     },
     expandable: false, // disable expanded
+    defaultPorts: [{ type: 'input' },{ type: 'output' }],
   },
-  onAdd() {
+  onAdd(context: FreeLayoutPluginContext) {
+    const position = context?.playground?.config?.getPosFromMouseEvent?.({
+      clientX: 0,
+      clientY: 0,
+    }) || { x: 0, y: 0 };
     return {
       id: `loop_${nanoid(5)}`,
       type: 'loop',
+      position,
       data: {
         title: `Loop_${++index}`,
-      },
-      blocks: [
-        {
-          id: `start_${nanoid(5)}`,
-          type: 'start',
-          data: {
-            title: `Start_${++index}`,
+        inputs: {
+          properties: {
+            input1: {
+              type: "string",
+              title: "input1"
+            }
+          }
+        },
+        inputsValues: {
+          input1: {
+            type: "constant",
+            content: ""
+          }
+        },
+        outputs: {
+          type: 'object',
+          properties: {
+            output: {
+              type: 'object',
+              title: '输出参数',
+              description: '迭代组件的输出参数',
+            },
           },
         },
-        {
-          id: `end_${nanoid(5)}`,
-          type: 'end',
-          data: {
-            title: `End_${++index}`,
-          },
-        }
-      ]
+      }
     };
   },
   formMeta: {
