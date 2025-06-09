@@ -15,8 +15,9 @@
     "tsconfig.json"
   ],
   "dependencies": {
-    "@douyinfe/semi-icons": "^2.72.3",
+    "@douyinfe/semi-icons": "^2.80.0",
     "@douyinfe/semi-ui": "^2.80.0",
+    "@flowgram.ai/editor": "0.2.6",
     "@flowgram.ai/form-materials": "0.2.6",
     "@flowgram.ai/free-container-plugin": "0.2.6",
     "@flowgram.ai/free-group-plugin": "0.2.6",
@@ -32,7 +33,7 @@
     "nanoid": "^4.0.2",
     "react": "^18",
     "react-dom": "^18",
-    "styled-components": "^5"
+    "styled-components": "^6.1.18"
   },
   "devDependencies": {
     "@flowgram.ai/eslint-config": "0.2.6",

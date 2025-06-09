@@ -88,11 +88,7 @@ export const LoopNodeRegistry: FlowNodeRegistry = {
         outputs: {
           type: 'object',
           properties: {
-            output: {
-              type: 'object',
-              title: '输出参数',
-              description: '迭代组件的输出参数',
-            },
+            // 不再提供默认的outputs字段，完全由用户配置
           },
         },
       }
