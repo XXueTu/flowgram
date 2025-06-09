@@ -33,7 +33,8 @@
     "nanoid": "^4.0.2",
     "react": "^18",
     "react-dom": "^18",
-    "styled-components": "^6.1.18"
+    "styled-components": "^6.1.18",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@flowgram.ai/eslint-config": "0.2.6",

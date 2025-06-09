@@ -34,10 +34,98 @@
     }
 }
 
+
+/* 节点运行状态样式 */
+
 .node-running {
-    border: 1px dashed rgb(78, 64, 229) !important;
+    border: 2px solid #1890ff !important;
     border-radius: 8px;
+    box-shadow: 0 0 10px rgba(24, 144, 255, 0.5) !important;
+    animation: pulse-running 1.5s infinite;
 }
+
+.node-success {
+    border: 2px solid #52c41a !important;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(82, 196, 26, 0.3) !important;
+}
+
+.node-error {
+    border: 2px solid #ff4d4f !important;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(255, 77, 79, 0.3) !important;
+}
+
+.node-waiting {
+    border: 2px solid #faad14 !important;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(250, 173, 20, 0.3) !important;
+    animation: pulse-waiting 2s infinite;
+}
+
+.node-idle {
+    border: 1px solid #d9d9d9 !important;
+    border-radius: 8px;
+    box-shadow: none !important;
+}
+
+
+/* 线流动效果样式 */
+
+.line-flowing {
+    stroke: #1890ff !important;
+    stroke-width: 3px !important;
+    stroke-dasharray: 8, 4;
+    animation: flow 1s linear infinite;
+}
+
+.line-success {
+    stroke: #52c41a !important;
+    stroke-width: 2px !important;
+}
+
+.line-error {
+    stroke: #ff4d4f !important;
+    stroke-width: 2px !important;
+    stroke-dasharray: 4, 4;
+}
+
+
+/* 动画定义 */
+
+@keyframes pulse-running {
+    0% {
+        box-shadow: 0 0 10px rgba(24, 144, 255, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(24, 144, 255, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(24, 144, 255, 0.5);
+    }
+}
+
+@keyframes pulse-waiting {
+    0% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes flow {
+    0% {
+        stroke-dashoffset: 0;
+    }
+    100% {
+        stroke-dashoffset: 12;
+    }
+}
+
 .demo-editor {
     flex-grow: 1;
     position: relative;
@@ -60,7 +148,7 @@
     justify-content: space-between;
 }
 
-.demo-tools-group > * {
+.demo-tools-group>* {
     margin-right: 8px;
 }
 

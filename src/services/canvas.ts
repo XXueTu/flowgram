@@ -22,6 +22,28 @@ interface CanvasRunResponse {
   }>;
 }
 
+interface CanvasTraceComponentsRequest {
+  id: string;
+  serialId: string;
+}
+
+interface CanvasTraceComponentsResponse {
+  status: "running" | "pending" | string;
+  records: Array<{
+    input: object;
+    output: object;
+    nodeId: string;
+    nodeType: string;
+    nodeName: string;
+    step: number;
+    startTime: string;
+    duration: number;
+    error: string;
+    endTime: string;
+    status: string;
+  }>;
+}
+
 export class CanvasService {
   private static instance: CanvasService;
   private constructor() {}
@@ -57,6 +79,31 @@ export class CanvasService {
       return result.data;
     } catch (error) {
       console.error("获取画布详情失败:", error);
+      throw error;
+    }
+  }
+
+  // 查询组件运行结果
+  public async getTraceComponents(request: CanvasTraceComponentsRequest): Promise<CanvasTraceComponentsResponse> {
+    try {
+      console.log("开始查询组件运行结果:", request);
+      const response = await axios.post(`${API_BASE_URL}/trace/components/query`, request);
+      console.log("组件运行结果接口响应状态:", response.status);
+
+      if (response.status !== 200) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = response.data as ApiResponse<CanvasTraceComponentsResponse>;
+      console.log("组件运行结果接口返回数据:", result);
+
+      if (result.code !== 0) {
+        throw new Error(result.msg || "查询组件运行结果失败");
+      }
+
+      return result.data || { records: [] };
+    } catch (error) {
+      console.error("查询组件运行结果失败:", error);
       throw error;
     }
   }

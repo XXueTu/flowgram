@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { IconChevronDown, IconChevronUp, IconCopy } from "@douyinfe/semi-icons";
+import { useNodeExecutionStore, type NodeStatus } from "../../stores/node-execution-store";
 
 const ExecutionDetailsWrapper = styled.div`
   position: absolute;
@@ -154,23 +155,23 @@ const ToggleButton = styled.div`
   }
 `;
 
-export type NodeStatus = "idle" | "waiting" | "running" | "success" | "error";
+export type { NodeStatus };
 
 interface NodeExecutionDetailsProps {
   nodeId: string;
-  status?: NodeStatus;
-  startTime?: number;
-  endTime?: number;
-  error?: string;
-  progress?: number;
-  inputs?: Record<string, any>;
-  outputs?: Record<string, any>;
+  canvasId?: string;
+  serialId?: string;
+  // 移除原有的 props，改为从 store 获取
+  // status?: NodeStatus;
+  // startTime?: number;
+  // endTime?: number;
+  // error?: string;
+  // progress?: number;
+  // inputs?: Record<string, any>;
+  // outputs?: Record<string, any>;
 }
 
-const formatDuration = (startTime?: number, endTime?: number) => {
-  if (!startTime) return "";
-  const end = endTime || Date.now();
-  const duration = end - startTime;
+const formatDuration = (duration: number) => {
   if (duration < 1000) return `${duration.toFixed(0)}ms`;
   return `${(duration / 1000).toFixed(3)}s`;
 };
@@ -190,18 +191,65 @@ const getStatusText = (status: NodeStatus) => {
   }
 };
 
-const formatData = (data: Record<string, any> | undefined) => {
-  if (!data || Object.keys(data).length === 0) return "";
+const formatData = (data: any) => {
+  if (!data) return "";
 
-  return Object.entries(data)
-    .map(([key, value]) => {
-      let formattedValue = value;
-      if (typeof value === "object") {
-        formattedValue = JSON.stringify(value, null, 2);
+  // 如果 data 不是对象，直接处理
+  if (typeof data === "string") {
+    try {
+      // 尝试解析 JSON 字符串
+      if ((data.startsWith("{") && data.endsWith("}")) || (data.startsWith("[") && data.endsWith("]"))) {
+        const parsed = JSON.parse(data);
+        return JSON.stringify(parsed, null, 2);
       }
-      return `${key}: ${formattedValue}`;
-    })
-    .join("\n");
+      return data;
+    } catch (e) {
+      return data;
+    }
+  }
+
+  // 如果是数组，直接序列化
+  if (Array.isArray(data)) {
+    return JSON.stringify(data, null, 2);
+  }
+
+  // 如果是对象但不是 null
+  if (typeof data === "object" && data !== null) {
+    // 检查是否是空对象
+    const keys = Object.keys(data);
+    if (keys.length === 0) return "";
+
+    // 格式化对象的每个键值对
+    return keys
+      .map((key) => {
+        let value = data[key];
+        let formattedValue;
+
+        if (typeof value === "string") {
+          // 尝试解析 JSON 字符串
+          try {
+            if ((value.startsWith("{") && value.endsWith("}")) || (value.startsWith("[") && value.endsWith("]"))) {
+              const parsed = JSON.parse(value);
+              formattedValue = JSON.stringify(parsed, null, 2);
+            } else {
+              formattedValue = value;
+            }
+          } catch (e) {
+            formattedValue = value;
+          }
+        } else if (typeof value === "object" && value !== null) {
+          formattedValue = JSON.stringify(value, null, 2);
+        } else {
+          formattedValue = String(value);
+        }
+
+        return `${key}: ${formattedValue}`;
+      })
+      .join("\n");
+  }
+
+  // 其他类型直接转字符串
+  return String(data);
 };
 
 const handleCopy = async (text: string) => {
@@ -218,36 +266,36 @@ const handleCopy = async (text: string) => {
   }
 };
 
-export const NodeExecutionDetails = ({
-  nodeId,
-}: // status = "idle",
-// startTime,
-// endTime,
-// error,
-// progress,
-// inputs,
-// outputs,
-NodeExecutionDetailsProps) => {
-  const { status, startTime, endTime, error, inputs, outputs }: any = {
-    status: "success",
-    startTime: 1717689420000,
-    endTime: 1717689430000,
-    error: "执行错误执行错误，执行错误执行错误，执行错误执行错误",
-    inputs: {
-      a: "1",
-      b: "2",
-    },
-    outputs: {
-      c: "3",
-    },
-  };
+export const NodeExecutionDetails = ({ nodeId }: NodeExecutionDetailsProps) => {
+  const { nodeRecords, loading } = useNodeExecutionStore();
   const [collapsed, setCollapsed] = useState(true);
-  const duration = formatDuration(startTime, endTime);
+
+  // 获取当前节点的执行记录
+  const nodeRecord = nodeRecords[nodeId];
+
+  // 从 store 中获取数据，如果没有数据则使用默认值
+  const status = nodeRecord?.status || "idle";
+  const error = nodeRecord?.error;
+  const inputs = nodeRecord?.inputs;
+  const outputs = nodeRecord?.outputs;
+
+  const duration = formatDuration(nodeRecord?.duration || 0);
   const statusText = getStatusText(status);
   const inputText = formatData(inputs);
   const outputText = formatData(outputs);
-
   const hasData = inputText || outputText || error;
+
+  // 如果正在加载且没有数据，显示加载状态
+  if (loading && !nodeRecord) {
+    return (
+      <ExecutionDetailsWrapper>
+        <StatusHeader status="idle" collapsed={true}>
+          <StatusIndicator status="idle" />
+          <StatusText>加载中...</StatusText>
+        </StatusHeader>
+      </ExecutionDetailsWrapper>
+    );
+  }
 
   return (
     <ExecutionDetailsWrapper>
