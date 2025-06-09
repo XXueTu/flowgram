@@ -33,7 +33,7 @@ export const LoopNodeRegistry: FlowNodeRegistry = {
      */
     size: {
       width: 500,
-      height: 300,
+      height: 400,
     },
     /**
      * The subcanvas padding setting
@@ -65,25 +65,15 @@ export const LoopNodeRegistry: FlowNodeRegistry = {
       clientX: 0,
       clientY: 0,
     }) || { x: 0, y: 0 };
+    const nodeId = `loop_${nanoid(5)}`;
     return {
-      id: `loop_${nanoid(5)}`,
+      id: nodeId,
       type: 'loop',
       position,
       data: {
         title: `Loop_${++index}`,
-        inputs: {
-          properties: {
-            input1: {
-              type: "string",
-              title: "input1"
-            }
-          }
-        },
-        inputsValues: {
-          input1: {
-            type: "constant",
-            content: ""
-          }
+        custom: {
+          nodeId: nodeId,
         },
         outputs: {
           type: 'object',

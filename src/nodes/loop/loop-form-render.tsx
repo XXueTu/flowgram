@@ -1,10 +1,9 @@
 import { Collapse } from "@douyinfe/semi-ui";
-import { BatchVariableSelector, IFlowRefValue, IFlowValue, JsonSchemaUtils } from "@flowgram.ai/form-materials";
+import { BatchVariableSelector, IFlowRefValue, JsonSchemaUtils } from "@flowgram.ai/form-materials";
 import { SubCanvasRender } from '@flowgram.ai/free-container-plugin';
 import { ASTNode, Field, FieldRenderProps, FlowNodeJSON, FormRenderProps, getNodeForm, useClientContext, useScopeAvailable } from '@flowgram.ai/free-layout-editor';
-import { mapValues } from "lodash-es";
 import { useEffect, useMemo, useState } from 'react';
-import { Feedback, FormContent, FormHeader, FormItem, FormOutputs, PropertiesEdit } from '../../form-components';
+import { Feedback, FormContent, FormHeader, FormItem, FormOutputs } from '../../form-components';
 import { useIsSidebar, useNodeRenderContext } from '../../hooks';
 import { JsonSchema } from "../../typings";
 import { LoopOutputEdit } from './loop-output-edit';
@@ -14,6 +13,7 @@ interface LoopNodeJSON extends FlowNodeJSON {
     batchFor: IFlowRefValue;
     custom?: {
       batchForType?: string;
+      outputs?: Record<string, JsonSchema>;
     };
   };
 }
@@ -78,70 +78,51 @@ export const LoopFormRender = ({ form }: FormRenderProps<LoopNodeJSON>) => {
     <Field<IFlowRefValue> name={`batchFor`}>
       {({ field, fieldState }) => (
         <FormItem name={'batchFor'} type={'array'} required>
-          <BatchVariableSelector
-            style={{ width: '100%' }}
-            value={field.value?.content}
-            onChange={(val) => {
-              const variable = available.getByKeyPath(val as string[]);
-              let type = "undefined";
-              if (variable) {
-                const schemaType = JsonSchemaUtils.astToSchema(variable?.type?.items as ASTNode<any, any>, { drilldown: false })?.type;
-                if (schemaType) {
-                  type = schemaType;
+          <div style={{ position: 'relative', zIndex: 1000 }}>
+            <BatchVariableSelector
+              style={{ width: '100%' }}
+              value={field.value?.content}
+              onChange={(val) => {
+                const variable = available.getByKeyPath(val as string[]);
+                let type = "undefined";
+                if (variable) {
+                  const schemaType = JsonSchemaUtils.astToSchema(variable?.type?.items as ASTNode<any, any>, { drilldown: false })?.type;
+                  if (schemaType) {
+                    type = schemaType;
+                  }
                 }
-              }
-              form.setValueIn('data.custom.batchForType', type);
-              field.onChange({ type: 'ref', content: val });
-            }}
-            readonly={readonly}
-            hasError={Object.keys(fieldState?.errors || {}).length > 0}
-          />
+                form.setValueIn('custom.batchForType', type);
+                field.onChange({ type: 'ref', content: val });
+              }}
+              readonly={readonly}
+              hasError={Object.keys(fieldState?.errors || {}).length > 0}
+            />
+          </div>
           <Feedback errors={fieldState?.errors} />
         </FormItem>
       )}
     </Field>
   );
 
+  // 监听 outputs 变化并更新到 custom 中
+  useEffect(() => {
+    const outputs = form.getValueIn('outputs.properties');
+    if (outputs) {
+      form.setValueIn('custom.outputs', outputs);
+    }
+
+  }, [form.getValueIn('outputs.properties')]);
+
   if (isSidebar) {
     return (
       <>
         <FormHeader />
         <FormContent>
-          <Collapse defaultActiveKey={["1", "2", "3"]}>
+          <Collapse defaultActiveKey={["1", "2"]}>
             <Collapse.Panel header="迭代参数" itemKey="1">
               {batchFor}
             </Collapse.Panel>
-            <Collapse.Panel header="中间变量" itemKey="2">
-              <Field
-                name="custom.requestParams.properties"
-                render={({ field: { value: propertiesSchemaValue, onChange: propertiesSchemaChange } }: FieldRenderProps<Record<string, JsonSchema>>) => (
-                  <Field<Record<string, IFlowValue>> name="custom.requestParamsValues">
-                    {({ field: { value: propertiesValue, onChange: propertiesValueChange } }) => {
-                      const onChange = (newProperties: Record<string, JsonSchema>) => {
-                        const newPropertiesValue = mapValues(newProperties, (v) => v.default);
-                        const newPropetiesSchema = mapValues(newProperties, (v) => {
-                          delete v.default;
-                          return v;
-                        });
-                        propertiesValueChange(newPropertiesValue);
-                        propertiesSchemaChange(newPropetiesSchema);
-                      };
-                      const filteredSchemaValue = Object.entries(propertiesSchemaValue || {}).reduce((acc, [key, value]) => {
-                        acc[key] = value;
-                        return acc;
-                      }, {} as Record<string, JsonSchema>);
-
-                      const value = mapValues(filteredSchemaValue, (v, key) => ({
-                        ...v,
-                        default: propertiesValue?.[key],
-                      }));
-                      return <PropertiesEdit value={value} onChange={onChange} useFx={true} />;
-                    }}
-                  </Field>
-                )}
-              />
-            </Collapse.Panel>
-            <Collapse.Panel header="输出配置" itemKey="3">
+            <Collapse.Panel header="输出配置" itemKey="2">
               <div style={{ marginBottom: 16 }}>
                 <div style={{ marginBottom: 8, fontSize: '12px', color: '#666' }}>
                   配置循环输出参数，选择子画布中组件的输出，类型会自动包装成数组
@@ -153,10 +134,17 @@ export const LoopFormRender = ({ form }: FormRenderProps<LoopNodeJSON>) => {
                     <LoopOutputEdit
                       value={outputsSchema || {}}
                       subCanvasOutputs={subCanvasOutputs}
-                      onChange={outputsSchemaChange}
+                      onChange={(newValue) => {
+                        outputsSchemaChange(newValue);
+                        // 同时更新到 custom 中
+                        form.setValueIn('custom.outputs', newValue);
+                      }}
+                      
                     />
                   )}
                 />
+
+               
               </div>
             </Collapse.Panel>
           </Collapse>

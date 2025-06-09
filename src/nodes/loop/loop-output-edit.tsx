@@ -1,6 +1,6 @@
 import Icon, { IconCrossCircleStroked, IconPlus } from '@douyinfe/semi-icons';
 import { Button, Input, TreeSelect } from '@douyinfe/semi-ui';
-import { getSchemaIcon } from '@flowgram.ai/form-materials';
+import { getSchemaIcon, IFlowRefValue } from '@flowgram.ai/form-materials';
 import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useNodeRenderContext } from '../../hooks';
 import { JsonSchema } from '../../typings';
@@ -15,6 +15,7 @@ interface LoopOutputEditProps {
   value: Record<string, JsonSchema>;
   subCanvasOutputs: SubCanvasOutput[];
   onChange: (value: Record<string, JsonSchema>) => void;
+  onValuesChange?: (value: IFlowRefValue, propertyKey: string, newPropertyKey?: string) => void;
 }
 
 interface LoopOutputPropertyEditProps {
@@ -23,7 +24,9 @@ interface LoopOutputPropertyEditProps {
   subCanvasOutputs: SubCanvasOutput[];
   disabled?: boolean;
   onChange: (value: JsonSchema, propertyKey: string, newPropertyKey?: string) => void;
+  onValuesChange?: (value: IFlowRefValue, propertyKey: string, newPropertyKey?: string) => void;
   onDelete?: () => void;
+  isValid?: boolean;
 }
 
 // 子画布变量选择器组件
@@ -38,16 +41,12 @@ const SubCanvasVariableSelector: React.FC<{
   
   // 构建TreeSelect的treeData
   const treeData = useMemo(() => {
-    console.log('=== SubCanvasVariableSelector Debug ===');
-    console.log('subCanvasOutputs:', subCanvasOutputs);
-    
+
     if (subCanvasOutputs.length === 0) {
-      console.log('No subCanvasOutputs found, returning empty treeData');
       return [];
     }
 
     const nodes = subCanvasOutputs.map(({ nodeId, nodeTitle, outputs }) => {
-      console.log(`Processing node: ${nodeId} (${nodeTitle})`, outputs);
       
       if (Object.keys(outputs).length === 0) {
         return null;
@@ -79,10 +78,7 @@ const SubCanvasVariableSelector: React.FC<{
         children,
       };
     }).filter((node): node is NonNullable<typeof node> => node !== null);
-    
-    console.log('Final treeData:', nodes);
-    console.log('=== End Debug ===');
-    
+
     return nodes;
   }, [subCanvasOutputs]);
 
@@ -108,16 +104,20 @@ const SubCanvasVariableSelector: React.FC<{
       filterTreeNode
       leafOnly
       defaultExpandAll
+      getPopupContainer={() => document.body}
     />
   );
 };
 
 const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) => {
-  const { value, disabled, subCanvasOutputs } = props;
+  const { value, disabled, subCanvasOutputs, isValid } = props;
   const [inputKey, updateKey] = useState(props.propertyKey);
 
   // 获取数组子类型的显示文本（缩写格式）
   const getArrayTypeDisplay = useCallback((schema: JsonSchema): string => {
+    if (!isValid) {
+      return 'und';
+    }
     if (schema.type === 'array' && schema.items) {
       const itemType = schema.items.type || 'unknown';
       // 类型缩写映射
@@ -141,19 +141,22 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
       'array': 'arr'
     };
     return typeMap[schema.type || 'unknown'] || schema.type || 'unknown';
-  }, []);
+  }, [isValid]);
 
   // 解析当前选择的源
   const currentSelection = useMemo((): string | undefined => {
+    if (!isValid) {
+      return undefined;
+    }
     if (value.description) {
       const match = value.description.match(/^源自: (.+)$/);
       if (match) {
         const sourcePath = match[1];
-        return sourcePath; // 直接返回字符串路径
+        return sourcePath;
       }
     }
     return undefined;
-  }, [value.description]);
+  }, [value.description, isValid]);
 
   useLayoutEffect(() => {
     updateKey(props.propertyKey);
@@ -161,9 +164,11 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
 
   // 处理SubCanvasVariableSelector的值变化
   const handleSourceChange = useCallback((selectedValue?: string) => {
-    console.log('SubCanvasVariableSelector onChange called with:', selectedValue);
-    
-    if (!selectedValue) return;
+    if (!selectedValue) {
+      // 当选择被清除时，清空输入框的值
+      updateKey('');
+      return;
+    }
     
     const [nodeId, outputKey] = selectedValue.split('.');
     const nodeData = subCanvasOutputs.find(output => output.nodeId === nodeId);
@@ -177,6 +182,12 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
         items: {
           ...outputSchema,
           title: `${inputKey}项`
+        },
+        extra: {
+          nodeId,
+          inputKey,
+          outputKey,
+          selectedValue
         }
       };
       
@@ -205,7 +216,7 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
           {getArrayTypeDisplay(value)}
         </div>
         <Input
-          value={inputKey}
+          value={isValid ? inputKey : ''}
           disabled={disabled}
           size="small"
           placeholder="输出参数名"
@@ -245,7 +256,7 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
   );
 };
 
-export const LoopOutputEdit: React.FC<LoopOutputEditProps> = ({ value, subCanvasOutputs, onChange }) => {
+export const LoopOutputEdit: React.FC<LoopOutputEditProps> = ({ value, subCanvasOutputs, onChange, onValuesChange }) => {
   const { readonly } = useNodeRenderContext();
   const [newProperty, updateNewPropertyFromCache] = useState<{ key: string; value: JsonSchema }>({
     key: '',
@@ -335,6 +346,10 @@ export const LoopOutputEdit: React.FC<LoopOutputEditProps> = ({ value, subCanvas
       {/* 现有的输出配置 */}
       {Object.keys(value || {}).map((key) => {
         const property = (value[key] || {}) as JsonSchema;
+        const nodeId = property.extra?.nodeId;
+        const outputKey = property.extra?.selectedValue?.split('.')[1];
+        const isValid = nodeId && subCanvasOutputs.some(output => output.nodeId === nodeId);
+        
         return (
           <LoopOutputPropertyEdit
             key={key}
@@ -343,11 +358,13 @@ export const LoopOutputEdit: React.FC<LoopOutputEditProps> = ({ value, subCanvas
             subCanvasOutputs={subCanvasOutputs}
             disabled={readonly}
             onChange={updateProperty}
+            onValuesChange={onValuesChange}
             onDelete={() => {
               const newValue = { ...value };
               delete newValue[key];
               onChange(newValue);
             }}
+            isValid={isValid}
           />
         );
       })}
@@ -359,6 +376,7 @@ export const LoopOutputEdit: React.FC<LoopOutputEditProps> = ({ value, subCanvas
           value={newProperty.value}
           subCanvasOutputs={subCanvasOutputs}
           onChange={updateNewProperty}
+          onValuesChange={onValuesChange}
           onDelete={() => {
             const key = newProperty.key;
             setTimeout(() => {
@@ -368,6 +386,7 @@ export const LoopOutputEdit: React.FC<LoopOutputEditProps> = ({ value, subCanvas
               clearCache();
             }, 10);
           }}
+          isValid={true}
         />
       )}
 
