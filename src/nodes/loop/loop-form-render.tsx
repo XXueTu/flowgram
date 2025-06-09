@@ -144,7 +144,7 @@ export const LoopFormRender = ({ form }: FormRenderProps<LoopNodeJSON>) => {
             <Collapse.Panel header="输出配置" itemKey="3">
               <div style={{ marginBottom: 16 }}>
                 <div style={{ marginBottom: 8, fontSize: '12px', color: '#666' }}>
-                  配置循环输出参数，可以选择子画布中组件的输出，类型会自动包装成数组
+                  配置循环输出参数，选择子画布中组件的输出，类型会自动包装成数组
                 </div>
                 
                 <Field

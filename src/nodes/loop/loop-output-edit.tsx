@@ -1,6 +1,7 @@
-import { IconCrossCircleStroked, IconPlus } from '@douyinfe/semi-icons';
-import { Button, Input, Select } from '@douyinfe/semi-ui';
-import React, { useCallback, useState } from 'react';
+import Icon, { IconCrossCircleStroked, IconPlus } from '@douyinfe/semi-icons';
+import { Button, Input, TreeSelect } from '@douyinfe/semi-ui';
+import { getSchemaIcon } from '@flowgram.ai/form-materials';
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useNodeRenderContext } from '../../hooks';
 import { JsonSchema } from '../../typings';
 
@@ -16,259 +17,371 @@ interface LoopOutputEditProps {
   onChange: (value: Record<string, JsonSchema>) => void;
 }
 
-interface LoopOutputProperty {
-  key: string;
-  name: string;
-  sourceNodeId: string;
-  sourceOutputKey: string;
-  type: string;
+interface LoopOutputPropertyEditProps {
+  propertyKey: string;
+  value: JsonSchema;
+  subCanvasOutputs: SubCanvasOutput[];
+  disabled?: boolean;
+  onChange: (value: JsonSchema, propertyKey: string, newPropertyKey?: string) => void;
+  onDelete?: () => void;
 }
+
+// 子画布变量选择器组件
+const SubCanvasVariableSelector: React.FC<{
+  value?: string;
+  onChange: (value?: string) => void;
+  subCanvasOutputs: SubCanvasOutput[];
+  style?: React.CSSProperties;
+  disabled?: boolean;
+  placeholder?: string;
+}> = ({ value, onChange, subCanvasOutputs, style, disabled, placeholder }) => {
+  
+  // 构建TreeSelect的treeData
+  const treeData = useMemo(() => {
+    console.log('=== SubCanvasVariableSelector Debug ===');
+    console.log('subCanvasOutputs:', subCanvasOutputs);
+    
+    if (subCanvasOutputs.length === 0) {
+      console.log('No subCanvasOutputs found, returning empty treeData');
+      return [];
+    }
+
+    const nodes = subCanvasOutputs.map(({ nodeId, nodeTitle, outputs }) => {
+      console.log(`Processing node: ${nodeId} (${nodeTitle})`, outputs);
+      
+      if (Object.keys(outputs).length === 0) {
+        return null;
+      }
+
+      const children = Object.entries(outputs).map(([outputKey, outputSchema]) => ({
+        key: `${nodeId}.${outputKey}`,
+        value: `${nodeId}.${outputKey}`,
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Icon size="small" svg={getSchemaIcon(outputSchema)} />
+            <span>{outputKey}</span>
+            <span style={{ fontSize: '11px', color: '#999' }}>
+              ({outputSchema.type || 'unknown'})
+            </span>
+          </div>
+        ),
+      }));
+
+      return {
+        key: nodeId,
+        value: nodeId,
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Icon size="small" svg={getSchemaIcon({ type: 'object' })} />
+            <span>{nodeTitle}</span>
+          </div>
+        ),
+        children,
+      };
+    }).filter((node): node is NonNullable<typeof node> => node !== null);
+    
+    console.log('Final treeData:', nodes);
+    console.log('=== End Debug ===');
+    
+    return nodes;
+  }, [subCanvasOutputs]);
+
+  const handleChange = useCallback((node: any) => {
+    if (typeof node === 'string') {
+      onChange(node);
+    } else if (node && typeof node.value === 'string') {
+      onChange(node.value);
+    } else {
+      onChange(undefined);
+    }
+  }, [onChange]);
+
+  return (
+    <TreeSelect
+      value={value}
+      onChange={handleChange}
+      treeData={treeData}
+      style={style}
+      disabled={disabled}
+      placeholder={placeholder || '选择子组件输出'}
+      searchPosition="trigger"
+      filterTreeNode
+      leafOnly
+      defaultExpandAll
+    />
+  );
+};
+
+const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) => {
+  const { value, disabled, subCanvasOutputs } = props;
+  const [inputKey, updateKey] = useState(props.propertyKey);
+
+  // 获取数组子类型的显示文本（缩写格式）
+  const getArrayTypeDisplay = useCallback((schema: JsonSchema): string => {
+    if (schema.type === 'array' && schema.items) {
+      const itemType = schema.items.type || 'unknown';
+      // 类型缩写映射
+      const typeMap: Record<string, string> = {
+        'string': 'str',
+        'integer': 'int', 
+        'number': 'num',
+        'boolean': 'bool',
+        'object': 'obj',
+        'array': 'arr'
+      };
+      const shortType = typeMap[itemType] || itemType;
+      return `[${shortType}]`;
+    }
+    const typeMap: Record<string, string> = {
+      'string': 'str',
+      'integer': 'int', 
+      'number': 'num',
+      'boolean': 'bool',
+      'object': 'obj',
+      'array': 'arr'
+    };
+    return typeMap[schema.type || 'unknown'] || schema.type || 'unknown';
+  }, []);
+
+  // 解析当前选择的源
+  const currentSelection = useMemo((): string | undefined => {
+    if (value.description) {
+      const match = value.description.match(/^源自: (.+)$/);
+      if (match) {
+        const sourcePath = match[1];
+        return sourcePath; // 直接返回字符串路径
+      }
+    }
+    return undefined;
+  }, [value.description]);
+
+  useLayoutEffect(() => {
+    updateKey(props.propertyKey);
+  }, [props.propertyKey]);
+
+  // 处理SubCanvasVariableSelector的值变化
+  const handleSourceChange = useCallback((selectedValue?: string) => {
+    console.log('SubCanvasVariableSelector onChange called with:', selectedValue);
+    
+    if (!selectedValue) return;
+    
+    const [nodeId, outputKey] = selectedValue.split('.');
+    const nodeData = subCanvasOutputs.find(output => output.nodeId === nodeId);
+    
+    if (nodeData && nodeData.outputs[outputKey]) {
+      const outputSchema = nodeData.outputs[outputKey];
+      const newSchema: JsonSchema = {
+        type: 'array',
+        title: value.title || inputKey,
+        description: `源自: ${selectedValue}`,
+        items: {
+          ...outputSchema,
+          title: `${inputKey}项`
+        }
+      };
+      
+      props.onChange(newSchema, props.propertyKey);
+    }
+  }, [subCanvasOutputs, value.title, inputKey, props]);
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 6, fontSize: '12px' }}>
+      <div style={{ width: 150, marginRight: 8, position: 'relative' }}>
+        <div style={{ 
+          position: 'absolute', 
+          top: 2, 
+          left: 4, 
+          zIndex: 1, 
+          padding: '0 4px', 
+          height: 20,
+          background: '#f0f0f0',
+          borderRadius: 2,
+          fontSize: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          color: '#666',
+          minWidth: '32px'
+        }}>
+          {getArrayTypeDisplay(value)}
+        </div>
+        <Input
+          value={inputKey}
+          disabled={disabled}
+          size="small"
+          placeholder="输出参数名"
+          onChange={(v) => updateKey(v.trim())}
+          onBlur={() => {
+            if (inputKey !== '') {
+              props.onChange(value, props.propertyKey, inputKey);
+            } else {
+              updateKey(props.propertyKey);
+            }
+          }}
+          style={{ paddingLeft: 40, width: '100%' }}
+        />
+      </div>
+      
+      <div style={{ flex: 1, marginRight: 8, minWidth: 200 }}>
+        <SubCanvasVariableSelector
+          value={currentSelection}
+          onChange={handleSourceChange}
+          subCanvasOutputs={subCanvasOutputs}
+          style={{ width: '100%' }}
+          disabled={disabled}
+          placeholder="选择子组件输出"
+        />
+      </div>
+      
+      {props.onDelete && !disabled && (
+        <Button
+          style={{ flexShrink: 0 }}
+          size="small"
+          theme="borderless"
+          icon={<IconCrossCircleStroked />}
+          onClick={props.onDelete}
+        />
+      )}
+    </div>
+  );
+};
 
 export const LoopOutputEdit: React.FC<LoopOutputEditProps> = ({ value, subCanvasOutputs, onChange }) => {
   const { readonly } = useNodeRenderContext();
-  const [newProperty, setNewProperty] = useState<LoopOutputProperty>({
+  const [newProperty, updateNewPropertyFromCache] = useState<{ key: string; value: JsonSchema }>({
     key: '',
-    name: '',
-    sourceNodeId: '',
-    sourceOutputKey: '',
-    type: 'array'
+    value: { type: 'array', title: '', items: { type: 'string' } },
   });
-  const [newPropertyVisible, setNewPropertyVisible] = useState(false);
+  const [newPropertyVisible, setNewPropertyVisible] = useState<boolean>(false);
 
-  // 构建可选择的输出选项
-  const outputOptions = subCanvasOutputs.flatMap(({ nodeId, nodeTitle, outputs }) =>
-    Object.entries(outputs).map(([outputKey, outputSchema]) => ({
-      label: `${nodeTitle} - ${outputKey} (${outputSchema.type || 'unknown'})`,
-      value: `${nodeId}:${outputKey}`,
-      nodeId,
-      nodeTitle,
-      outputKey,
-      outputSchema
-    }))
-  );
-
-  // 解析当前配置的输出
-  const parseCurrentOutputs = useCallback((): LoopOutputProperty[] => {
-    return Object.entries(value).map(([key, schema]) => {
-      // 尝试从description中解析源信息
-      const match = schema.description?.match(/^源自: (.+) - (.+)$/);
-      if (match) {
-        return {
-          key,
-          name: key,
-          sourceNodeId: match[1].split(' ')[0],
-          sourceOutputKey: match[2],
-          type: schema.type || 'array'
-        };
-      }
-      return {
-        key,
-        name: key,
-        sourceNodeId: '',
-        sourceOutputKey: '',
-        type: schema.type || 'array'
-      };
+  const clearCache = () => {
+    updateNewPropertyFromCache({ 
+      key: '', 
+      value: { type: 'array', title: '', items: { type: 'string' } } 
     });
-  }, [value]);
+    setNewPropertyVisible(false);
+  };
 
-  const currentProperties = parseCurrentOutputs();
-
-  const updateProperty = useCallback((index: number, field: keyof LoopOutputProperty, newValue: string) => {
-    const properties = [...currentProperties];
-    properties[index] = { ...properties[index], [field]: newValue };
-
-    // 如果更改了源选择，自动更新类型
-    if (field === 'sourceNodeId' || field === 'sourceOutputKey') {
-      const sourceInfo = newValue.split(':');
-      if (sourceInfo.length === 2) {
-        const [nodeId, outputKey] = sourceInfo;
-        const sourceOutput = subCanvasOutputs
-          .find(output => output.nodeId === nodeId)
-          ?.outputs[outputKey];
-        
-        if (sourceOutput) {
-          properties[index].sourceNodeId = nodeId;
-          properties[index].sourceOutputKey = outputKey;
-          properties[index].type = 'array'; // 总是包装成数组
-        }
-      }
+  const updateProperty = (
+    propertyValue: JsonSchema,
+    propertyKey: string,
+    newPropertyKey?: string
+  ) => {
+    const newValue = { ...value };
+    if (newPropertyKey) {
+      delete newValue[propertyKey];
+      newValue[newPropertyKey] = propertyValue;
+    } else {
+      newValue[propertyKey] = propertyValue;
     }
+    onChange(newValue);
+  };
 
-    updateOutputs(properties);
-  }, [currentProperties, subCanvasOutputs]);
-
-  const updateOutputs = useCallback((properties: LoopOutputProperty[]) => {
-    const newOutputs: Record<string, JsonSchema> = {};
-
-    properties.forEach(prop => {
-      if (prop.name && prop.sourceNodeId && prop.sourceOutputKey) {
-        const sourceOutput = subCanvasOutputs
-          .find(output => output.nodeId === prop.sourceNodeId)
-          ?.outputs[prop.sourceOutputKey];
-
-        if (sourceOutput) {
-          const nodeTitle = subCanvasOutputs
-            .find(output => output.nodeId === prop.sourceNodeId)?.nodeTitle || prop.sourceNodeId;
-
-          newOutputs[prop.name] = {
-            type: 'array',
-            title: prop.name,
-            description: `源自: ${nodeTitle} - ${prop.sourceOutputKey}`,
-            items: {
-              ...sourceOutput,
-              title: `${prop.name}项`
-            }
-          };
-        }
+  const updateNewProperty = (
+    propertyValue: JsonSchema,
+    propertyKey: string,
+    newPropertyKey?: string
+  ) => {
+    if (newPropertyKey) {
+      if (!(newPropertyKey in value)) {
+        updateProperty(propertyValue, propertyKey, newPropertyKey);
       }
-    });
-
-    onChange(newOutputs);
-  }, [subCanvasOutputs, onChange]);
-
-  const addProperty = useCallback(() => {
-    if (newProperty.name && newProperty.sourceNodeId && newProperty.sourceOutputKey) {
-      const properties = [...currentProperties, { ...newProperty, key: Date.now().toString() }];
-      updateOutputs(properties);
-      setNewProperty({
-        key: '',
-        name: '',
-        sourceNodeId: '',
-        sourceOutputKey: '',
-        type: 'array'
+      clearCache();
+    } else {
+      updateNewPropertyFromCache({
+        key: newPropertyKey || propertyKey,
+        value: propertyValue,
       });
-      setNewPropertyVisible(false);
     }
-  }, [newProperty, currentProperties, updateOutputs]);
-
-  const removeProperty = useCallback((index: number) => {
-    const properties = currentProperties.filter((_, i) => i !== index);
-    updateOutputs(properties);
-  }, [currentProperties, updateOutputs]);
+  };
 
   return (
     <div>
+      {/* 显示可用子组件输出的提示 */}
       {subCanvasOutputs.length === 0 && (
-        <div style={{ marginBottom: 16, padding: 12, background: '#fff3cd', borderRadius: 4 }}>
-          <div style={{ fontSize: '12px', color: '#856404' }}>
-            当前子画布中没有检测到有输出的组件。请先在子画布中添加组件并配置其输出。
-          </div>
-        </div>
-      )}
-
-      {currentProperties.map((property, index) => (
-        <div key={property.key} style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          marginBottom: 8, 
-          padding: 8, 
-          border: '1px solid #e6e6e6', 
-          borderRadius: 4 
-        }}>
-          <Input
-            placeholder="输出参数名"
-            value={property.name}
-            disabled={readonly}
-            style={{ width: 120, marginRight: 8 }}
-            onChange={(value) => updateProperty(index, 'name', value)}
-          />
-          <Select
-            placeholder="选择源输出"
-            value={property.sourceNodeId && property.sourceOutputKey ? 
-              `${property.sourceNodeId}:${property.sourceOutputKey}` : ''}
-            disabled={readonly}
-            style={{ flex: 1, marginRight: 8 }}
-            optionList={outputOptions}
-            onChange={(value) => updateProperty(index, 'sourceNodeId', value as string)}
-          />
-          <span style={{ marginRight: 8, fontSize: '12px', color: '#666' }}>
-            array
-          </span>
-          {!readonly && (
-            <Button
-              size="small"
-              theme="borderless"
-              icon={<IconCrossCircleStroked />}
-              onClick={() => removeProperty(index)}
-            />
-          )}
-        </div>
-      ))}
-
-      {newPropertyVisible && (
         <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          marginBottom: 8, 
+          marginBottom: 12, 
           padding: 8, 
-          border: '1px solid #1890ff', 
+          background: '#fff3cd', 
           borderRadius: 4,
-          background: '#f6ffff'
+          fontSize: '12px',
+          color: '#856404'
         }}>
-          <Input
-            placeholder="输出参数名"
-            value={newProperty.name}
-            style={{ width: 120, marginRight: 8 }}
-            onChange={(value) => setNewProperty(prev => ({ ...prev, name: value }))}
-          />
-          <Select
-            placeholder="选择源输出"
-            value={newProperty.sourceNodeId && newProperty.sourceOutputKey ? 
-              `${newProperty.sourceNodeId}:${newProperty.sourceOutputKey}` : ''}
-            style={{ flex: 1, marginRight: 8 }}
-            optionList={outputOptions}
-            onChange={(value) => {
-              const [nodeId, outputKey] = (value as string).split(':');
-              setNewProperty(prev => ({ 
-                ...prev, 
-                sourceNodeId: nodeId, 
-                sourceOutputKey: outputKey 
-              }));
-            }}
-          />
-          <span style={{ marginRight: 8, fontSize: '12px', color: '#666' }}>
-            array
-          </span>
-          <Button
-            size="small"
-            type="primary"
-            onClick={addProperty}
-            disabled={!newProperty.name || !newProperty.sourceNodeId || !newProperty.sourceOutputKey}
-          >
-            确定
-          </Button>
-          <Button
-            size="small"
-            theme="borderless"
-            onClick={() => setNewPropertyVisible(false)}
-            style={{ marginLeft: 4 }}
-          >
-            取消
-          </Button>
+          当前子画布中没有检测到有输出的组件。请先在子画布中添加组件并配置其输出。
         </div>
       )}
 
-      {!readonly && !newPropertyVisible && (
-        <Button
-          theme="borderless"
-          icon={<IconPlus />}
-          onClick={() => setNewPropertyVisible(true)}
-          disabled={outputOptions.length === 0}
-        >
-          添加输出参数
-        </Button>
-      )}
-
-      {outputOptions.length > 0 && (
-        <div style={{ marginTop: 12, padding: 8, background: '#f8f9fa', borderRadius: 4 }}>
-          <div style={{ fontSize: '12px', color: '#666', marginBottom: 4 }}>
-            可选择的子组件输出:
+      {subCanvasOutputs.length > 0 && (
+        <div style={{ 
+          marginBottom: 12, 
+          padding: 8, 
+          background: '#e8f5e8', 
+          borderRadius: 4,
+          fontSize: '11px',
+          color: '#6c757d'
+        }}>
+          <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#495057' }}>
+            可用的子画布组件输出:
           </div>
           {subCanvasOutputs.map(({ nodeId, nodeTitle, outputs }) => (
-            <div key={nodeId} style={{ fontSize: '11px', color: '#999' }}>
-              • {nodeTitle}: {Object.keys(outputs).join(', ')}
+            <div key={nodeId} style={{ marginBottom: 2 }}>
+              • <span style={{ fontWeight: 'bold' }}>{nodeTitle}</span>: {Object.entries(outputs).map(([key, schema]) => 
+                `${key}(${schema.type || 'unknown'})`
+              ).join(', ')}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* 现有的输出配置 */}
+      {Object.keys(value || {}).map((key) => {
+        const property = (value[key] || {}) as JsonSchema;
+        return (
+          <LoopOutputPropertyEdit
+            key={key}
+            propertyKey={key}
+            value={property}
+            subCanvasOutputs={subCanvasOutputs}
+            disabled={readonly}
+            onChange={updateProperty}
+            onDelete={() => {
+              const newValue = { ...value };
+              delete newValue[key];
+              onChange(newValue);
+            }}
+          />
+        );
+      })}
+
+      {/* 新属性编辑器 */}
+      {newPropertyVisible && (
+        <LoopOutputPropertyEdit
+          propertyKey={newProperty.key}
+          value={newProperty.value}
+          subCanvasOutputs={subCanvasOutputs}
+          onChange={updateNewProperty}
+          onDelete={() => {
+            const key = newProperty.key;
+            setTimeout(() => {
+              const newValue = { ...value };
+              delete newValue[key];
+              onChange(newValue);
+              clearCache();
+            }, 10);
+          }}
+        />
+      )}
+
+      {/* 添加按钮 */}
+      {!readonly && (
+        <div>
+          <Button
+            theme="borderless"
+            icon={<IconPlus />}
+            onClick={() => setNewPropertyVisible(true)}
+            disabled={subCanvasOutputs.length === 0}
+          >
+            添加输出参数
+          </Button>
         </div>
       )}
     </div>
