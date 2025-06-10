@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { CanvasService } from "../services/canvas";
+import { RunningService } from "../services/running-service";
 
 export type NodeStatus = "idle" | "waiting" | "running" | "success" | "error";
 
@@ -25,7 +26,7 @@ interface NodeExecutionState {
   isRunning: boolean;
 
   // 获取节点执行详情
-  fetchNodeExecutionDetails: (nodeId: string, canvasId?: string, serialId?: string) => Promise<void>;
+  fetchNodeExecutionDetails: (nodeId: string, canvasId?: string) => Promise<void>;
 
   // 获取所有节点的执行详情（用于运行后刷新所有节点状态）
   fetchAllNodeExecutionDetails: (data: { id: string; serialId: string; params: Record<string, any> }) => Promise<void>;
@@ -81,14 +82,21 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
     set({ document });
   },
 
-  fetchNodeExecutionDetails: async (nodeId: string, canvasId = "default", serialId = "trace-485d787428f428a484fd5e2d9de880f9") => {
+  fetchNodeExecutionDetails: async (nodeId: string, canvasId = "default") => {
     try {
       set({ loading: true });
-      debugger;
       const canvasService = CanvasService.getInstance();
+      const runningService = new RunningService();
+      const serialId = runningService.getCurrentSerialId();
+
+      if (!serialId) {
+        console.warn('No active execution found');
+        return;
+      }
+
       const response = await canvasService.getTraceComponents({
         id: canvasId,
-        serialId: serialId,
+        serialId,
       });
 
       // 查找当前节点的记录
@@ -225,7 +233,7 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
     }
   },
 
-  runWorkflow: async (params = {}, canvasId = "default", serialId = "trace-485d787428f428a484fd5e2d9de880f9") => {
+  runWorkflow: async (params = {}, canvasId = "default", serialId?: string) => {
     const state = get();
     try {
       set({ isRunning: true });
@@ -249,11 +257,12 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
         id: canvasId,
         params,
       });
-      // debugger;
+
       // 获取执行结果（包含轮询逻辑）
       await get().fetchAllNodeExecutionDetails({
-        canvasId,
-        ...(runRes?.data || {}),
+        id: canvasId,
+        serialId: serialId || runRes.serialId,
+        params,
       });
     } catch (error) {
       console.error("运行工作流失败:", error);

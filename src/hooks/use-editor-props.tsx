@@ -15,7 +15,7 @@ import { SelectorBoxPopover } from '../components/selector-box-popover';
 import { WorkflowNodeType } from '../nodes';
 import { defaultFormMeta } from '../nodes/default-form-meta';
 import { createContextMenuPlugin, createSyncVariablePlugin } from '../plugins';
-import { CustomService, RunningService } from '../services';
+import { CaseService, RunningService } from '../services';
 import { CanvasService } from '../services/canvas';
 import { shortcuts } from '../shortcuts';
 import { FlowDocumentJSON, FlowNodeRegistry } from '../typings';
@@ -184,7 +184,7 @@ export function useEditorProps(
        * Bind custom service
        */
       onBind: ({ bind }) => {
-        bind(CustomService).toSelf().inSingletonScope();
+        bind(CaseService).toSelf().inSingletonScope();
         bind(RunningService).toSelf().inSingletonScope();
       },
       /**

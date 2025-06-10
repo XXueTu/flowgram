@@ -1,2 +1,3 @@
-export { CustomService } from './custom-service';
+export { CaseService } from './case';
 export { RunningService } from './running-service';
+

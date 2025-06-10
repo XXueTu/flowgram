@@ -1,7 +1,7 @@
 import { Button, Input, JsonViewer, Modal, Select, SideSheet } from '@douyinfe/semi-ui';
 import { useService, WorkflowDocument } from '@flowgram.ai/free-layout-editor';
 import React, { useEffect, useRef, useState } from 'react';
-import { Case, CaseDetailResponse, caseService } from '../../services/custom-service';
+import { Case, CaseDetailResponse, CaseService } from '../../services/case';
 
 interface RunConfigDrawerProps {
   visible: boolean;
@@ -51,11 +51,12 @@ export const RunConfigDrawer: React.FC<RunConfigDrawerProps> = ({ visible, onClo
   const [caseName, setCaseName] = useState('');
   const document = useService(WorkflowDocument);
   const jsonviewerRef = useRef<any>(null);
+  const caseService = CaseService.getInstance();
 
   // 加载测试用例列表
   const loadCases = async () => {
     try {
-      const res = await caseService.list({ workspaceId });
+      const res = await caseService.listCases({ workspaceId });
       setCases(res.caseList || []);
     } catch (err) {
       console.error('加载测试用例列表失败:', err);
@@ -77,9 +78,9 @@ export const RunConfigDrawer: React.FC<RunConfigDrawerProps> = ({ visible, onClo
   // 选择测试用例
   useEffect(() => {
     if (selectedCase) {
-      caseService.detail({ caseId: selectedCase }).then((res: CaseDetailResponse) => {
+      caseService.getCaseDetail({ caseId: selectedCase }).then((res: CaseDetailResponse) => {
         setParams(res.case.caseParams);
-      }).catch(err => {
+      }).catch((err: Error) => {
         console.error('加载测试用例详情失败:', err);
         setError('加载测试用例详情失败');
       });
@@ -115,7 +116,7 @@ export const RunConfigDrawer: React.FC<RunConfigDrawerProps> = ({ visible, onClo
   const handleSaveConfirm = async () => {
     try {
       const value = jsonviewerRef.current?.getValue();
-      await caseService.create({
+      await caseService.createCase({
         workspaceId,
         caseName,
         caseParams: value

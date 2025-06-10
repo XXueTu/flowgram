@@ -15,6 +15,7 @@
     "tsconfig.json"
   ],
   "dependencies": {
+    "@ant-design/icons": "^6.0.0",
     "@douyinfe/semi-icons": "^2.80.0",
     "@douyinfe/semi-ui": "^2.80.0",
     "@flowgram.ai/editor": "0.2.9",
@@ -27,12 +28,15 @@
     "@flowgram.ai/free-snap-plugin": "0.2.9",
     "@flowgram.ai/minimap-plugin": "0.2.9",
     "@monaco-editor/react": "^4.7.0",
+    "antd": "^5.26.0",
     "axios": "^1.9.0",
     "lodash-es": "^4.17.21",
+    "mobx": "^6.13.7",
     "monaco-editor": "^0.52.2",
     "nanoid": "^4.0.2",
     "react": "^18",
     "react-dom": "^18",
+    "react-router-dom": "^7.6.2",
     "styled-components": "^6.1.18",
     "zustand": "^5.0.5"
   },
