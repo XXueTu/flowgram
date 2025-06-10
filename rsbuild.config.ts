@@ -1,12 +1,13 @@
 import { pluginReact } from "@rsbuild/plugin-react";
 import { pluginLess } from "@rsbuild/plugin-less";
 import { defineConfig } from "@rsbuild/core";
+import { getRsbuildProxyConfig } from "./src/config/proxy";
 
 export default defineConfig({
   plugins: [pluginReact(), pluginLess()],
   source: {
     entry: {
-      index: "./src/app.tsx",
+      index: "./src/main.tsx",
     },
     /**
      * support inversify @injectable() and @inject decorators
@@ -16,7 +17,7 @@ export default defineConfig({
     },
   },
   html: {
-    title: "demo-free-layout",
+    title: "demo",
   },
   output: {
     copy: [
@@ -25,5 +26,8 @@ export default defineConfig({
         to: "vs",
       },
     ],
+  },
+  server: {
+    proxy: getRsbuildProxyConfig(),
   },
 });

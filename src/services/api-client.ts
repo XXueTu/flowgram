@@ -1,9 +1,10 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { ENV_CONFIG } from "../config/env";
 
 // API 配置
 export const API_CONFIG = {
-  BASE_URL: 'http://14.103.249.105:9999/workflow',
-  TIMEOUT: 30000,
+  BASE_URL: ENV_CONFIG.API_BASE_URL,
+  TIMEOUT: ENV_CONFIG.API_TIMEOUT,
 } as const;
 
 // 统一的 API 响应结构
@@ -15,13 +16,9 @@ export interface ApiResponse<T = any> {
 
 // 统一的错误类型
 export class ApiError extends Error {
-  constructor(
-    public code: number,
-    message: string,
-    public data?: any
-  ) {
+  constructor(public code: number, message: string, public data?: any) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
@@ -44,7 +41,7 @@ export class ApiClient {
     this.axiosInstance.interceptors.request.use(
       (config) => {
         // 从 localStorage 获取 token
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -59,17 +56,17 @@ export class ApiClient {
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse<ApiResponse>) => {
         const { data } = response;
-        console.log('response:', data);
-        
+        console.log("response:", data);
+
         // 检查响应格式
-        if (!data || typeof data !== 'object') {
-          throw new ApiError(500, '响应格式错误');
+        if (!data || typeof data !== "object") {
+          throw new ApiError(500, "响应格式错误");
         }
 
         // 检查业务状态码
         if (data.code !== 0) {
-          console.log('data.code:', data.code);
-          throw new ApiError(data.code, data.msg || '请求失败', data.data);
+          console.log("data.code:", data.code);
+          throw new ApiError(data.code, data.msg || "请求失败", data.data);
         }
 
         return response;
@@ -79,19 +76,15 @@ export class ApiClient {
           const { status, data } = error.response;
           if (status === 401) {
             // token 过期或无效，清除本地存储并跳转到登录页
-            localStorage.removeItem('token');
-            window.location.href = '/login';
+            localStorage.removeItem("token");
+            window.location.href = "/login";
           }
-          throw new ApiError(
-            data.code || status,
-            data?.msg || `请求失败 (${status})`,
-            data
-          );
+          throw new ApiError(data.code || status, data?.msg || `请求失败 (${status})`, data);
         }
         if (error.request) {
-          throw new ApiError(500, '网络请求失败，请检查网络连接');
+          throw new ApiError(500, "网络请求失败，请检查网络连接");
         }
-        throw new ApiError(500, error.message || '未知错误');
+        throw new ApiError(500, error.message || "未知错误");
       }
     );
   }
@@ -114,7 +107,7 @@ export class ApiClient {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(500, error instanceof Error ? error.message : '未知错误');
+      throw new ApiError(500, error instanceof Error ? error.message : "未知错误");
     }
   }
 
@@ -123,7 +116,7 @@ export class ApiClient {
    */
   public async get<T>(url: string, params?: any): Promise<T> {
     return this.request<T>({
-      method: 'GET',
+      method: "GET",
       url,
       params,
     });
@@ -134,7 +127,7 @@ export class ApiClient {
    */
   public async post<T>(url: string, data?: any): Promise<T> {
     return this.request<T>({
-      method: 'POST',
+      method: "POST",
       url,
       data,
     });
@@ -145,7 +138,7 @@ export class ApiClient {
    */
   public async put<T>(url: string, data?: any): Promise<T> {
     return this.request<T>({
-      method: 'PUT',
+      method: "PUT",
       url,
       data,
     });
@@ -156,9 +149,9 @@ export class ApiClient {
    */
   public async delete<T>(url: string, params?: any): Promise<T> {
     return this.request<T>({
-      method: 'DELETE',
+      method: "DELETE",
       url,
       params,
     });
   }
-} 
+}

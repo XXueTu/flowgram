@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useUserStore } from '../stores/user-store';
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useUserStore } from "../stores/user-store";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -10,15 +10,14 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn, getUserInfo } = useUserStore();
-
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token');
-      
+      const token = localStorage.getItem("token");
+
       if (!token) {
-        navigate('/login', { 
+        navigate("/login", {
           state: { from: location.pathname },
-          replace: true 
+          replace: true,
         });
         return;
       }
@@ -27,10 +26,10 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
         try {
           await getUserInfo();
         } catch (error) {
-          localStorage.removeItem('token');
-          navigate('/login', { 
+          localStorage.removeItem("token");
+          navigate("/login", {
             state: { from: location.pathname },
-            replace: true 
+            replace: true,
           });
         }
       }
@@ -42,8 +41,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   if (!isLoggedIn) {
     return null;
   }
-
   return <>{children}</>;
 };
 
-export default AuthGuard; 
+export default AuthGuard;

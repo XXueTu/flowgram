@@ -1,6 +1,6 @@
-import { injectable } from 'inversify';
-import { ApiClient } from './api-client';
-import { API_ROUTES } from './api-routes';
+import { injectable } from "inversify";
+import { ApiClient } from "./api-client";
+import { API_ROUTES } from "./api-routes";
 
 export interface User {
   id: number;
@@ -11,9 +11,8 @@ export interface User {
   status: number;
   createdAt: string;
   updatedAt: string;
-  roleId: number;
-  roleName: string;
   password: string;
+  permissions: string[]; // 用户权限列表
 }
 
 export interface UserLoginRequest {
@@ -33,7 +32,6 @@ export interface UserInfoRequest {}
 
 export interface UserInfoResponse {
   user: User;
-  roleName: string;
 }
 
 export interface UserRegisterRequest {
@@ -147,4 +145,4 @@ export class UserService {
   async updateUserInfo(params: UserUpdateInfoRequest): Promise<UserUpdateInfoResponse> {
     return this.apiClient.post<UserUpdateInfoResponse>(API_ROUTES.USER.UPDATE_INFO, params);
   }
-} 
+}

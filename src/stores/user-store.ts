@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { User, UserService } from '../services/user';
+import { create } from "zustand";
+import { User, UserService } from "../services/user";
 
 interface UserState {
   // 用户信息
@@ -16,25 +16,13 @@ interface UserState {
   // 登录
   login: (username: string, password: string) => Promise<void>;
   // 注册
-  register: (params: {
-    username: string;
-    password: string;
-    realName?: string;
-    phone?: string;
-    email?: string;
-  }) => Promise<void>;
+  register: (params: { username: string; password: string; realName?: string; phone?: string; email?: string }) => Promise<void>;
   // 登出
   logout: () => Promise<void>;
   // 获取用户信息
   getUserInfo: () => Promise<void>;
   // 更新用户信息
-  updateUserInfo: (params: {
-    userId: number;
-    username?: string;
-    phone?: string;
-    email?: string;
-    password?: string;
-  }) => Promise<void>;
+  updateUserInfo: (params: { userId: number; username?: string; phone?: string; email?: string; password?: string }) => Promise<void>;
   // 更新用户状态
   updateUserStatus: (userId: number, status: number) => Promise<void>;
   // 绑定角色
@@ -53,16 +41,16 @@ export const useUserStore = create<UserState>((set, get) => ({
       set({ loading: true, error: null });
       const userService = new UserService();
       const response = await userService.login({ username, password });
-      
+
       // 保存 token
-      localStorage.setItem('token', response.token);
-      
+      localStorage.setItem("token", response.token);
+
       // 获取用户信息
       await get().getUserInfo();
-      
+
       set({ token: response.token, isLoggedIn: true });
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '登录失败' });
+      set({ error: error instanceof Error ? error.message : "登录失败" });
       throw error;
     } finally {
       set({ loading: false });
@@ -74,16 +62,16 @@ export const useUserStore = create<UserState>((set, get) => ({
       set({ loading: true, error: null });
       const userService = new UserService();
       const response = await userService.register(params);
-      
+
       // 保存 token
-      localStorage.setItem('token', response.token);
-      
+      localStorage.setItem("token", response.token);
+
       // 获取用户信息
       await get().getUserInfo();
-      
+
       set({ token: response.token, isLoggedIn: true });
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '注册失败' });
+      set({ error: error instanceof Error ? error.message : "注册失败" });
       throw error;
     } finally {
       set({ loading: false });
@@ -95,13 +83,13 @@ export const useUserStore = create<UserState>((set, get) => ({
       set({ loading: true, error: null });
       const userService = new UserService();
       await userService.logout();
-      
+
       // 清除本地存储
-      localStorage.removeItem('token');
-      
+      localStorage.removeItem("token");
+
       set({ user: null, token: null, isLoggedIn: false });
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '登出失败' });
+      set({ error: error instanceof Error ? error.message : "登出失败" });
       throw error;
     } finally {
       set({ loading: false });
@@ -113,10 +101,9 @@ export const useUserStore = create<UserState>((set, get) => ({
       set({ loading: true, error: null });
       const userService = new UserService();
       const response = await userService.getUserInfo();
-      
-      set({ user: response.user });
+      set({ user: response.user, isLoggedIn: true });
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '获取用户信息失败' });
+      set({ error: error instanceof Error ? error.message : "获取用户信息失败" });
       throw error;
     } finally {
       set({ loading: false });
@@ -128,11 +115,11 @@ export const useUserStore = create<UserState>((set, get) => ({
       set({ loading: true, error: null });
       const userService = new UserService();
       await userService.updateUserInfo(params);
-      
+
       // 重新获取用户信息
       await get().getUserInfo();
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '更新用户信息失败' });
+      set({ error: error instanceof Error ? error.message : "更新用户信息失败" });
       throw error;
     } finally {
       set({ loading: false });
@@ -144,11 +131,11 @@ export const useUserStore = create<UserState>((set, get) => ({
       set({ loading: true, error: null });
       const userService = new UserService();
       await userService.updateUserStatus({ userId, status });
-      
+
       // 重新获取用户信息
       await get().getUserInfo();
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '更新用户状态失败' });
+      set({ error: error instanceof Error ? error.message : "更新用户状态失败" });
       throw error;
     } finally {
       set({ loading: false });
@@ -160,14 +147,14 @@ export const useUserStore = create<UserState>((set, get) => ({
       set({ loading: true, error: null });
       const userService = new UserService();
       await userService.bindRole({ userId, roleId });
-      
+
       // 重新获取用户信息
       await get().getUserInfo();
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '绑定角色失败' });
+      set({ error: error instanceof Error ? error.message : "绑定角色失败" });
       throw error;
     } finally {
       set({ loading: false });
     }
   },
-})); 
+}));
