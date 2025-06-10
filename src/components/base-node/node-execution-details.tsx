@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import { IconChevronDown, IconChevronUp, IconCopy } from "@douyinfe/semi-icons";
+import { useState } from "react";
+import styled from "styled-components";
 import { useNodeExecutionStore, type NodeStatus } from "../../stores/node-execution-store";
 
 const ExecutionDetailsWrapper = styled.div`
@@ -25,13 +25,20 @@ const StatusHeader = styled.div<{ status: NodeStatus; collapsed: boolean }>`
   background: ${({ status }) => {
     switch (status) {
       case "success":
+      case "completed":
         return "#f6ffed";
       case "error":
+      case "failed":
         return "#fff2f0";
       case "running":
         return "#e6f7ff";
       case "waiting":
+      case "pending":
         return "#fffbe6";
+      case "paused":
+        return "#fff7e6";
+      case "canceled":
+        return "#f5f5f5";
       default:
         return "#fafafa";
     }
@@ -41,13 +48,20 @@ const StatusHeader = styled.div<{ status: NodeStatus; collapsed: boolean }>`
   color: ${({ status }) => {
     switch (status) {
       case "success":
+      case "completed":
         return "#52c41a";
       case "error":
+      case "failed":
         return "#ff4d4f";
       case "running":
         return "#1890ff";
       case "waiting":
+      case "pending":
         return "#faad14";
+      case "paused":
+        return "#faad14";
+      case "canceled":
+        return "#8c8c8c";
       default:
         return "#666";
     }
@@ -64,11 +78,18 @@ const StatusIndicator = styled.div<{ status: NodeStatus }>`
       case "running":
         return "#1890ff";
       case "success":
+      case "completed":
         return "#52c41a";
       case "error":
+      case "failed":
         return "#ff4d4f";
       case "waiting":
+      case "pending":
         return "#faad14";
+      case "paused":
+        return "#faad14";
+      case "canceled":
+        return "#8c8c8c";
       default:
         return "#d9d9d9";
     }
@@ -178,14 +199,24 @@ const formatDuration = (duration: number) => {
 
 const getStatusText = (status: NodeStatus) => {
   switch (status) {
+    case "pending":
+      return "等待中";
     case "running":
       return "运行中";
+    case "paused":
+      return "已暂停";
+    case "completed":
+      return "已完成";
+    case "failed":
+      return "运行失败";
+    case "canceled":
+      return "已取消";
+    case "waiting":
+      return "等待中";
     case "success":
       return "运行成功";
     case "error":
       return "运行失败";
-    case "waiting":
-      return "等待中";
     default:
       return "未开始";
   }

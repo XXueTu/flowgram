@@ -197,7 +197,7 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 6, fontSize: '12px' }}>
-      <div style={{ width: 150, marginRight: 8, position: 'relative' }}>
+      <div style={{ width: 150, marginRight: 8, position: 'relative', flexShrink: 0 }}>
         <div style={{ 
           position: 'absolute', 
           top: 2, 
@@ -216,7 +216,7 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
           {getArrayTypeDisplay(value)}
         </div>
         <Input
-          value={isValid ? inputKey : ''}
+          value={inputKey}
           disabled={disabled}
           size="small"
           placeholder="输出参数名"
@@ -231,18 +231,21 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
           style={{ paddingLeft: 40, width: '100%' }}
         />
       </div>
-      
-      <div style={{ flex: 1, marginRight: 8, minWidth: 200 }}>
+      <div style={{ flex: 1, minWidth: 0, marginRight: 8, overflow: 'hidden' }}>
         <SubCanvasVariableSelector
           value={currentSelection}
           onChange={handleSourceChange}
           subCanvasOutputs={subCanvasOutputs}
-          style={{ width: '100%' }}
+          style={{
+            width: '100%',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}
           disabled={disabled}
           placeholder="选择子组件输出"
         />
       </div>
-      
       {props.onDelete && !disabled && (
         <Button
           style={{ flexShrink: 0 }}
@@ -263,6 +266,14 @@ export const LoopOutputEdit: React.FC<LoopOutputEditProps> = ({ value, subCanvas
     value: { type: 'array', title: '', items: { type: 'string' } },
   });
   const [newPropertyVisible, setNewPropertyVisible] = useState<boolean>(false);
+
+  // 调试日志
+  console.log('LoopOutputEdit 渲染:', {
+    value,
+    valueKeys: Object.keys(value || {}),
+    newPropertyVisible,
+    newPropertyKey: newProperty.key
+  });
 
   const clearCache = () => {
     updateNewPropertyFromCache({ 

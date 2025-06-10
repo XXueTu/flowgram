@@ -2,9 +2,11 @@ import { create } from "zustand";
 import { CanvasService } from "../services/canvas";
 import { RunningService } from "../services/running-service";
 
-export type NodeStatus = "idle" | "waiting" | "running" | "success" | "error";
+// 定义节点状态类型
+export type NodeStatus = "idle" | "pending" | "running" | "paused" | "completed" | "failed" | "canceled" | "waiting" | "success" | "error";
 
-interface NodeExecutionRecord {
+// 节点执行记录接口
+export interface NodeExecutionRecord {
   nodeId: string;
   status: NodeStatus;
   startTime?: number;
@@ -13,10 +15,11 @@ interface NodeExecutionRecord {
   inputs?: Record<string, any>;
   outputs?: Record<string, any>;
   duration?: number;
+  subIndex?: number; // 新增：迭代索引，-1表示主画布组件，>=0表示loop内子组件的迭代索引
 }
 
 interface NodeExecutionState {
-  // 存储所有节点的执行记录
+  // 存储所有节点的执行记录，key格式为 nodeId 或 nodeId-subIndex
   nodeRecords: Record<string, NodeExecutionRecord>;
 
   // 加载状态
@@ -53,23 +56,38 @@ interface NodeExecutionState {
   document?: any;
 }
 
+// API状态到内部状态的映射
 const mapStatusFromApi = (apiStatus: string): NodeStatus => {
   switch (apiStatus.toLowerCase()) {
-    case "success":
+    case "pending":
+      return "pending";
+    case "running":
+      return "running";
+    case "paused":
+      return "paused";
     case "completed":
+      return "completed";
+    case "failed":
+      return "failed";
+    case "canceled":
+      return "canceled";
+    case "waiting":
+      return "waiting";
+    case "success":
       return "success";
     case "error":
-    case "failed":
       return "error";
-    case "running":
-    case "processing":
-      return "running";
-    case "waiting":
-    case "pending":
-      return "waiting";
     default:
       return "idle";
   }
+};
+
+// 生成存储key的辅助函数
+const generateRecordKey = (nodeId: string, subIndex?: number): string => {
+  if (subIndex === undefined || subIndex === -1) {
+    return nodeId;
+  }
+  return `${nodeId}-${subIndex}`;
 };
 
 export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
@@ -99,35 +117,45 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
         serialId,
       });
 
-      // 查找当前节点的记录
-      const nodeRecord = response.records?.find((record) => record.nodeId === nodeId);
+      // 查找当前节点的所有记录（包括迭代记录）
+      const nodeRecords = response.records?.filter((record) => record.nodeId === nodeId) || [];
 
-      if (nodeRecord) {
-        const executionRecord: NodeExecutionRecord = {
-          nodeId,
-          status: mapStatusFromApi(nodeRecord.status),
-          startTime: nodeRecord.startTime ? new Date(nodeRecord.startTime).getTime() : undefined,
-          endTime: nodeRecord.endTime ? new Date(nodeRecord.endTime).getTime() : undefined,
-          error: nodeRecord.error || undefined,
-          inputs: nodeRecord.input || {},
-          outputs: nodeRecord.output || {},
-          duration: nodeRecord.duration,
-        };
+      if (nodeRecords.length > 0) {
+        const newRecords: Record<string, NodeExecutionRecord> = {};
+
+        nodeRecords.forEach((record) => {
+          const executionRecord: NodeExecutionRecord = {
+            nodeId,
+            status: mapStatusFromApi(record.status),
+            startTime: record.startTime ? new Date(record.startTime).getTime() : undefined,
+            endTime: record.endTime ? new Date(record.endTime).getTime() : undefined,
+            error: record.error || undefined,
+            inputs: record.input || {},
+            outputs: record.output || {},
+            duration: record.duration,
+            subIndex: record.subIndex,
+          };
+
+          const recordKey = generateRecordKey(nodeId, record.subIndex);
+          newRecords[recordKey] = executionRecord;
+        });
 
         set((state) => ({
           nodeRecords: {
             ...state.nodeRecords,
-            [nodeId]: executionRecord,
+            ...newRecords,
           },
         }));
       } else {
         // 如果没找到记录，设置为默认状态
+        const recordKey = generateRecordKey(nodeId);
         set((state) => ({
           nodeRecords: {
             ...state.nodeRecords,
-            [nodeId]: {
+            [recordKey]: {
               nodeId,
               status: "idle",
+              subIndex: -1,
             },
           },
         }));
@@ -136,13 +164,15 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
       console.error("获取节点执行详情失败:", error);
 
       // 设置错误状态
+      const recordKey = generateRecordKey(nodeId);
       set((state) => ({
         nodeRecords: {
           ...state.nodeRecords,
-          [nodeId]: {
+          [recordKey]: {
             nodeId,
             status: "error",
             error: error instanceof Error ? error.message : "获取执行详情失败",
+            subIndex: -1,
           },
         },
       }));
@@ -165,11 +195,11 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
           serialId: data.serialId,
         });
 
-        // 处理所有节点的记录
+        // 处理所有节点的记录（包括迭代记录）
         if (response.records && response.records.length > 0) {
           const newNodeRecords: Record<string, NodeExecutionRecord> = {};
-
-          response.records.forEach((record) => {
+          
+          response.records.forEach((record, index) => {
             const executionRecord: NodeExecutionRecord = {
               nodeId: record.nodeId,
               status: mapStatusFromApi(record.status),
@@ -179,9 +209,11 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
               inputs: record.input || {},
               outputs: record.output || {},
               duration: record.duration,
+              subIndex: record.subIndex,
             };
 
-            newNodeRecords[record.nodeId] = executionRecord;
+            const recordKey = generateRecordKey(record.nodeId, record.subIndex);
+            newNodeRecords[recordKey] = executionRecord;
           });
 
           set((state) => ({
@@ -200,13 +232,10 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
         const shouldContinuePolling = (response.status === "pending" || response.status === "running") && pollCount < MAX_POLL_COUNT;
 
         if (shouldContinuePolling) {
-          console.log(`工作流仍在执行中，状态: ${response.status}，轮询次数: ${pollCount}/${MAX_POLL_COUNT}，将在2秒后重新查询`);
           setTimeout(pollForResult, 2000); // 2秒后重新轮询
         } else {
           if (pollCount >= MAX_POLL_COUNT) {
             console.warn("已达到最大轮询次数，停止轮询");
-          } else {
-            console.log("工作流执行完成，状态:", response.status);
           }
           set({ loading: false });
         }
@@ -218,7 +247,6 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
           set({ loading: false });
         } else {
           // 否则继续重试（网络错误等临时问题）
-          console.log("发生错误，将在2秒后重试...");
           setTimeout(pollForResult, 2000);
         }
       }
@@ -228,7 +256,6 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
       set({ loading: true });
       await pollForResult();
     } catch (error) {
-      console.error("获取所有节点执行详情失败:", error);
       set({ loading: false });
     }
   },
@@ -265,7 +292,6 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
         params,
       });
     } catch (error) {
-      console.error("运行工作流失败:", error);
       throw error;
     } finally {
       set({ isRunning: false });
@@ -337,7 +363,12 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
   clearNodeRecord: (nodeId: string) => {
     set((state) => {
       const newRecords = { ...state.nodeRecords };
-      delete newRecords[nodeId];
+      // 删除主记录和所有迭代记录
+      Object.keys(newRecords).forEach(key => {
+        if (key === nodeId || key.startsWith(`${nodeId}-`)) {
+          delete newRecords[key];
+        }
+      });
       return { nodeRecords: newRecords };
     });
   },

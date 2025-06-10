@@ -31,6 +31,7 @@ interface CanvasTraceComponentsResponse {
     error: string;
     endTime: string;
     status: string;
+    subIndex: number;
   }>;
 }
 
@@ -58,12 +59,10 @@ export class CanvasService {
    */
   public async getDetail(request: CanvasDetailRequest): Promise<CanvasDetailResponse> {
     try {
-      console.log("开始请求画布详情:", request);
       const result = await this.apiClient.post<CanvasDetailResponse>(
         API_ROUTES.CANVAS.DETAIL,
         request
       );
-      console.log("接口返回数据:", result);
 
       if (!result || !result.graph) {
         throw new Error("画布数据格式不正确");
@@ -81,7 +80,6 @@ export class CanvasService {
    */
   public async getTraceComponents(request: CanvasTraceComponentsRequest): Promise<CanvasTraceComponentsResponse> {
     try {
-      console.log("开始查询组件运行结果:", request);
       const result = await this.apiClient.post<CanvasTraceComponentsResponse>(
         API_ROUTES.CANVAS.TRACE_COMPONENTS,
         {
@@ -89,7 +87,6 @@ export class CanvasService {
           serialId: request.serialId
         }
       );
-      console.log("组件运行结果接口返回数据:", result);
       return result || { records: [] };
     } catch (error) {
       console.error("查询组件运行结果失败:", error);
@@ -102,12 +99,10 @@ export class CanvasService {
    */
   public async saveDraft(request: CanvasDraftRequest): Promise<CanvasDraftResponse> {
     try {
-      console.log("开始保存画布:", request);
       const result = await this.apiClient.post<CanvasDraftResponse>(
         API_ROUTES.CANVAS.DRAFT,
         request
       );
-      console.log("保存接口返回数据:", result);
       return {
         success: true,
         message: "保存成功",
@@ -129,5 +124,10 @@ export class CanvasService {
       API_ROUTES.CANVAS.RUN,
       params
     );
+  }
+
+  async getExecutionResults(request: { id: string; serialId: string; params: Record<string, any> }): Promise<any> {
+    const result = await this.apiClient.post<any>(`/canvas/execution-results`, request);
+    return result;
   }
 }

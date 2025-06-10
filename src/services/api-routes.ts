@@ -14,7 +14,7 @@ export const API_ROUTES = {
 
   // Case 相关接口
   CASE: {
-    PUBLISH: "/case/publish",
+    PUBLISH: "/workflow/case/publish",
     LIST: "/workflow/case/list",
     DETAIL: "/workflow/case/detail",
     DELETE: "/workflow/case/delete",

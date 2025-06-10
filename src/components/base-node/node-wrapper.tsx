@@ -5,7 +5,6 @@ import { useClientContext, WorkflowPortRender } from "@flowgram.ai/free-layout-e
 import { SidebarContext } from "../../context";
 import { useNodeRenderContext } from "../../hooks";
 import { EnhancedNodeExecutionDetails } from "./enhanced-node-execution-details";
-import { NodeStatusBar } from "./status-bar";
 import { NodeWrapperStyle } from "./styles";
 import { scrollToView } from "./utils";
 
@@ -70,11 +69,8 @@ export const NodeWrapper: React.FC<NodeWrapperProps> = (props) => {
         {children}
       </NodeWrapperStyle>
       {portsRender}
-      {/* 根据配置选择使用哪个执行详情组件 */}
-    
-        <NodeStatusBar nodeId={nodeRender.node.id} />
-        <EnhancedNodeExecutionDetails nodeId={nodeRender.node.id} />
-      
+      {/* 只使用 EnhancedNodeExecutionDetails，移除重复的 NodeStatusBar */}
+      <EnhancedNodeExecutionDetails nodeId={nodeRender.node.id} />
     </>
   );
 };

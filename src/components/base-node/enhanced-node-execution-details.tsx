@@ -1,6 +1,6 @@
 import { IconChevronDown, IconSmallTriangleDown, IconSpin } from '@douyinfe/semi-icons';
 import { Tag } from '@douyinfe/semi-ui';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNodeExecutionStore, type NodeStatus } from "../../stores/node-execution-store";
 
@@ -242,7 +242,7 @@ const StatusIcon = ({ status }: { status: NodeStatus }) => {
       />
     );
   }
-  if (status === "success") {
+  if (status === "success" || status === "completed") {
     return (
       <svg
         width="20"
@@ -268,14 +268,72 @@ const StatusIcon = ({ status }: { status: NodeStatus }) => {
       </svg>
     );
   }
-  // error或其他状态显示warning图标
+  if (status === "paused") {
+    return (
+      <svg
+        width="20"
+        height="20"
+        fill="none"
+        viewBox="0 0 20 20"
+      >
+        <circle cx="10" cy="10" r="8" fill="#faad14" />
+        <rect x="7" y="6" width="2" height="8" fill="white" rx="1" />
+        <rect x="11" y="6" width="2" height="8" fill="white" rx="1" />
+      </svg>
+    );
+  }
+  if (status === "canceled") {
+    return (
+      <svg
+        width="20"
+        height="20"
+        fill="none"
+        viewBox="0 0 20 20"
+      >
+        <circle cx="10" cy="10" r="8" fill="#8c8c8c" />
+        <path
+          d="M6.5 6.5l7 7M13.5 6.5l-7 7"
+          stroke="white"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+  if (status === "pending" || status === "waiting") {
+    return (
+      <svg
+        width="20"
+        height="20"
+        fill="none"
+        viewBox="0 0 20 20"
+      >
+        <circle cx="10" cy="10" r="8" fill="#d9d9d9" />
+        <circle cx="10" cy="10" r="2" fill="white" />
+      </svg>
+    );
+  }
+  if (status === "idle") {
+    return (
+      <svg
+        width="20"
+        height="20"
+        fill="none"
+        viewBox="0 0 20 20"
+      >
+        <circle cx="10" cy="10" r="8" fill="#f0f0f0" stroke="#d9d9d9" strokeWidth="1" />
+        <circle cx="10" cy="10" r="1" fill="#bfbfbf" />
+      </svg>
+    );
+  }
+  // error或failed状态显示错误图标
   return (
     <svg
       width="1em"
       height="1em"
       viewBox="0 0 24 24"
       fill="currentColor"
-      style={{ color: status === "error" ? "rgba(229, 50, 65, 1)" : "#6a737d" }}
+      style={{ color: status === "error" || status === "failed" ? "rgba(229, 50, 65, 1)" : "#6a737d" }}
     >
       <path
         fillRule="evenodd"
@@ -286,154 +344,206 @@ const StatusIcon = ({ status }: { status: NodeStatus }) => {
   );
 };
 
-// 数据结构查看器组件
-interface TreeNodeProps {
-  label: string;
-  value: any;
-  level: number;
-  isLast?: boolean;
-}
-
-const TreeNode: React.FC<TreeNodeProps> = ({ label, value, level, isLast = false }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    // Toast 可以根据需要添加
-  };
-
-  const isExpandable = (val: any) =>
-    val !== null &&
-    typeof val === 'object' &&
-    ((Array.isArray(val) && val.length > 0) ||
-      (!Array.isArray(val) && Object.keys(val).length > 0));
-
-  const renderPrimitiveValue = (val: any) => {
-    if (val === null) return <span className="primitive-value null">null</span>;
-    if (val === undefined) return <span className="primitive-value undefined">undefined</span>;
-
-    switch (typeof val) {
-      case 'string':
-        return (
-          <span className="string">
-            <span className="primitive-value-quote">{'"'}</span>
-            <span className="primitive-value" onDoubleClick={() => handleCopy(val)}>
-              {val}
-            </span>
-            <span className="primitive-value-quote">{'"'}</span>
-          </span>
-        );
-      case 'number':
-        return (
-          <span className="primitive-value number" onDoubleClick={() => handleCopy(String(val))}>
-            {val}
-          </span>
-        );
-      case 'boolean':
-        return (
-          <span
-            className="primitive-value boolean"
-            onDoubleClick={() => handleCopy(val.toString())}
-          >
-            {val.toString()}
-          </span>
-        );
-      default:
-        return (
-          <span className="primitive-value" onDoubleClick={() => handleCopy(String(val))}>
-            {String(val)}
-          </span>
-        );
-    }
-  };
-
-  const renderChildren = () => {
-    if (Array.isArray(value)) {
-      return value.map((item, index) => (
-        <TreeNode
-          key={index}
-          label={`${index + 1}.`}
-          value={item}
-          level={level + 1}
-          isLast={index === value.length - 1}
-        />
-      ));
-    } else {
-      const entries = Object.entries(value);
-      return entries.map(([key, val], index) => (
-        <TreeNode
-          key={key}
-          label={`${key}:`}
-          value={val}
-          level={level + 1}
-          isLast={index === entries.length - 1}
-        />
-      ));
-    }
-  };
-
-  return (
-    <div className="tree-node">
-      <div className="tree-node-header">
-        {isExpandable(value) ? (
-          <button
-            className={`expand-button ${isExpanded ? 'expanded' : 'collapsed'}`}
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
-            ▶
-          </button>
-        ) : (
-          <span className="expand-placeholder"></span>
-        )}
-        <span
-          className="node-label"
-          onClick={() =>
-            handleCopy(
-              JSON.stringify({
-                [label]: value,
-              })
-            )
-          }
-        >
-          {label}
-        </span>
-        {!isExpandable(value) && <span className="node-value">{renderPrimitiveValue(value)}</span>}
-      </div>
-      {isExpandable(value) && isExpanded && (
-        <div className="tree-node-children">{renderChildren()}</div>
-      )}
-    </div>
-  );
-};
-
 // 数据组查看器组件
 interface DataViewerProps {
   data: any;
 }
 
 const DataViewer: React.FC<DataViewerProps> = ({ data }) => {
-  if (data === null || data === undefined || typeof data !== 'object') {
-    return (
-      <DataStructureViewer>
-        <TreeNode label="value" value={data} level={0} />
-      </DataStructureViewer>
-    );
-  }
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    // Toast 可以根据需要添加
+  };
 
-  const entries = Object.entries(data);
+  const handleDownload = (content: string, filename: string = 'data.json') => {
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // 格式化数据为 JSON 字符串
+  const formatData = (data: any): string => {
+    if (data === null) return 'null';
+    if (data === undefined) return 'undefined';
+    
+    // 如果是字符串，先尝试解析是否为有效的 JSON
+    if (typeof data === 'string') {
+      try {
+        // 尝试解析 JSON 字符串
+        const parsed = JSON.parse(data);
+        // 如果解析成功，重新格式化显示
+        return JSON.stringify(parsed, null, 2);
+      } catch (error) {
+        // 如果不是有效的 JSON，直接返回原字符串
+        return data;
+      }
+    }
+    
+    try {
+      return JSON.stringify(data, null, 2);
+    } catch (error) {
+      return String(data);
+    }
+  };
+
+  const formattedData = formatData(data);
+  const dataLines = formattedData.split('\n');
+  const isLargeData = dataLines.length > 50 || formattedData.length > 5000;
+  
+  // 截断显示的数据
+  const truncatedData = isLargeData && !isExpanded 
+    ? dataLines.slice(0, 20).join('\n') + '\n...\n' + dataLines.slice(-5).join('\n')
+    : formattedData;
+
+  // 搜索高亮功能
+  const highlightSearchTerm = (text: string, term: string) => {
+    if (!term.trim()) return text;
+    
+    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '★$1★'); // 用特殊符号标记，稍后替换为高亮
+  };
+
+  // 计算匹配个数
+  const getMatchCount = (text: string, term: string): number => {
+    if (!term.trim()) return 0;
+    
+    const regex = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const matches = text.match(regex);
+    return matches ? matches.length : 0;
+  };
+
+  const displayData = searchTerm ? highlightSearchTerm(truncatedData, searchTerm) : truncatedData;
+  const matchCount = searchTerm ? getMatchCount(formattedData, searchTerm) : 0;
 
   return (
-    <DataStructureViewer>
-      {entries.map(([key, value], index) => (
-        <TreeNode
-          key={key}
-          label={key}
-          value={value}
-          level={0}
-          isLast={index === entries.length - 1}
-        />
-      ))}
-    </DataStructureViewer>
+    <div style={{ margin: '12px' }}>
+      {/* 工具栏 */}
+      <div style={{ 
+        display: 'flex', 
+        gap: '8px', 
+        alignItems: 'center', 
+        marginBottom: '8px',
+        flexWrap: 'wrap',
+        fontSize: '12px'
+      }}>
+        {/* 搜索框 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <input
+            type="text"
+            placeholder="搜索内容..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              padding: '4px 8px',
+              border: '1px solid #d9d9d9',
+              borderRadius: '4px',
+              fontSize: '11px',
+              minWidth: '150px'
+            }}
+          />
+          {searchTerm && (
+            <span style={{
+              fontSize: '10px',
+              color: matchCount > 0 ? '#52c41a' : '#ff4d4f',
+              fontWeight: '500',
+              minWidth: '60px'
+            }}>
+              {matchCount > 0 ? `${matchCount} 项` : '无匹配'}
+            </span>
+          )}
+        </div>
+      
+        {isLargeData && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            style={{
+              padding: '4px 8px',
+              border: '1px solid #d9d9d9',
+              borderRadius: '4px',
+              backgroundColor: isExpanded ? '#e6f7ff' : 'white',
+              cursor: 'pointer',
+              fontSize: '11px'
+            }}
+          >
+            {isExpanded ? '📄 收起' : '📑 展开全部'}
+          </button>
+        )}
+        
+        {/* 数据统计 */}
+        <span style={{ 
+          color: '#666', 
+          fontSize: '10px',
+          marginLeft: 'auto'
+        }}>
+          {dataLines.length} 行 | {Math.round(formattedData.length / 1024 * 100) / 100} KB
+        </span>
+      </div>
+
+      {/* JSON 内容显示 */}
+      <pre 
+        style={{
+          margin: 0,
+          fontFamily: 'Monaco, Menlo, Ubuntu Mono, monospace',
+          fontSize: '12px',
+          lineHeight: '1.4',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word',
+          padding: '12px',
+          backgroundColor: '#fafafa',
+          border: '1px solid #e1e4e8',
+          borderRadius: '6px',
+          userSelect: 'all',
+          overflow: 'auto',
+          maxHeight: isExpanded ? '600px' : '300px',
+          position: 'relative'
+        }}
+        title="双击选择全部内容"
+      >
+        {displayData.split('★').map((part, index) => {
+          // 简单的搜索高亮显示
+          if (index % 2 === 1 && searchTerm) {
+            return (
+              <span 
+                key={index} 
+                style={{ 
+                  backgroundColor: '#fff3cd', 
+                  color: '#856404',
+                  fontWeight: 'bold'
+                }}
+              >
+                {part}
+              </span>
+            );
+          }
+          return part;
+        })}
+      </pre>
+      
+      {/* 截断提示 */}
+      {isLargeData && !isExpanded && (
+        <div style={{
+          textAlign: 'center',
+          padding: '8px',
+          color: '#666',
+          fontSize: '11px',
+          backgroundColor: '#f8f9fa',
+          border: '1px solid #e1e4e8',
+          borderTop: 'none',
+          borderRadius: '0 0 6px 6px'
+        }}>
+          内容已截断显示 (前 20 行 + 后 5 行)，点击"展开全部"查看完整内容
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -500,55 +610,171 @@ const msToSeconds = (ms: number): string => (ms / 1000).toFixed(2) + 's';
 
 const getStatusText = (status: NodeStatus) => {
   switch (status) {
+    case "pending":
+      return "Pending";
     case "running":
       return "Running";
+    case "paused":
+      return "Paused";
+    case "completed":
+      return "Completed";
+    case "failed":
+      return "Failed";
+    case "canceled":
+      return "Canceled";
+    case "waiting":
+      return "Waiting";
     case "success":
       return "Succeed";
     case "error":
-      return "Failed";
-    case "waiting":
-      return "Pending";
+      return "Error";
     default:
-      return "Pending";
+      return "Idle";
   }
 };
 
 const getTagColor = (status: NodeStatus) => {
   switch (status) {
     case "success":
+    case "completed":
       return 'node-status-succeed';
     case "error":
+    case "failed":
       return 'node-status-failed';
     case "running":
       return 'node-status-processing';
+    case "paused":
+      return 'node-status-paused';
+    case "canceled":
+      return 'node-status-canceled';
+    case "pending":
+    case "waiting":
+      return 'node-status-pending';
+    case "idle":
+      return 'node-status-idle';
     default:
       return '';
   }
 };
 
 export const EnhancedNodeExecutionDetails: React.FC<EnhancedNodeExecutionDetailsProps> = ({ nodeId }) => {
-  const { nodeRecords, loading } = useNodeExecutionStore();
+  const { nodeRecords, loading, fetchNodeExecutionDetails } = useNodeExecutionStore();
   const [showDetail, setShowDetail] = useState(false);
 
-  // 获取当前节点的执行记录
-  const nodeRecord = nodeRecords[nodeId];
+  // 组件挂载时获取执行详情
+  useEffect(() => {
+    // 如果还没有该节点的记录，尝试获取
+    const hasRecord = Object.keys(nodeRecords).some(key => key === nodeId || key.startsWith(`${nodeId}-`));
+    
+    if (!hasRecord && !loading) {
+      fetchNodeExecutionDetails(nodeId);
+    }
+  }, [nodeId, nodeRecords, loading, fetchNodeExecutionDetails]);
 
-  // 从 store 中获取数据
-  const status = nodeRecord?.status || "idle";
-  const error = nodeRecord?.error;
-  const inputs = nodeRecord?.inputs;
-  const outputs = nodeRecord?.outputs;
-  const duration = nodeRecord?.duration || 0;
+  // 获取当前节点的所有执行记录（包括迭代记录）
+  const allNodeRecords = Object.values(nodeRecords).filter(record => record.nodeId === nodeId);
+  
+  // 分离主组件记录和迭代记录
+  const mainRecord = allNodeRecords.find(record => record.subIndex === -1 || record.subIndex === undefined);
+  const iterationRecords = allNodeRecords
+    .filter(record => record.subIndex !== undefined && record.subIndex >= 0)
+    .map(record => ({ subIndex: record.subIndex!, record }));
 
-  const hasContent = inputs || outputs || error;
+  // 计算综合状态和总时间
+  const calculateOverallStatus = (): { status: NodeStatus; totalDuration: number } => {
+    // 如果有主记录且没有迭代记录，直接使用主记录
+    if (mainRecord && iterationRecords.length === 0) {
+      return {
+        status: mainRecord.status,
+        totalDuration: mainRecord.duration || 0
+      };
+    }
 
-  // 如果正在加载且没有数据，不显示
-  if (loading && !nodeRecord) {
-    return null;
-  }
+    // 如果有迭代记录，根据迭代记录计算总状态和时间
+    if (iterationRecords.length > 0) {
+      let totalDuration = 0;
+      let hasRunning = false;
+      let hasFailed = false;
+      let hasError = false;
+      let hasPaused = false;
+      let hasCanceled = false;
+      let hasPending = false;
+      let completedCount = 0;
 
-  // 如果没有运行记录，不显示
-  if (!nodeRecord) {
+      iterationRecords.forEach(({ record }) => {
+        totalDuration += record.duration || 0;
+        
+        switch (record.status) {
+          case 'running':
+            hasRunning = true;
+            break;
+          case 'failed':
+            hasFailed = true;
+            break;
+          case 'error':
+            hasError = true;
+            break;
+          case 'paused':
+            hasPaused = true;
+            break;
+          case 'canceled':
+            hasCanceled = true;
+            break;
+          case 'pending':
+          case 'waiting':
+            hasPending = true;
+            break;
+          case 'completed':
+          case 'success':
+            completedCount++;
+            break;
+        }
+      });
+
+      // 确定总体状态 - 按优先级排序
+      let overallStatus: NodeStatus = 'idle';
+      if (hasRunning) {
+        overallStatus = 'running';
+      } else if (hasError) {
+        overallStatus = 'error';
+      } else if (hasFailed) {
+        overallStatus = 'failed';
+      } else if (hasPaused) {
+        overallStatus = 'paused';
+      } else if (hasCanceled) {
+        overallStatus = 'canceled';
+      } else if (hasPending) {
+        overallStatus = 'pending';
+      } else if (completedCount === iterationRecords.length && iterationRecords.length > 0) {
+        overallStatus = 'completed';
+      }
+
+      return {
+        status: overallStatus,
+        totalDuration
+      };
+    }
+
+    // 默认情况
+    return {
+      status: mainRecord?.status || "idle",
+      totalDuration: mainRecord?.duration || 0
+    };
+  };
+
+  const { status, totalDuration } = calculateOverallStatus();
+  
+  // 从主记录获取其他数据
+  const error = mainRecord?.error;
+  const inputs = mainRecord?.inputs;
+  const outputs = mainRecord?.outputs;
+
+  const hasMainContent = inputs || outputs || error;
+  const hasIterationContent = iterationRecords.length > 0;
+  const hasAnyContent = hasMainContent || hasIterationContent;
+
+  // 如果没有任何运行记录，不显示
+  if (!mainRecord && iterationRecords.length === 0) {
     return null;
   }
 
@@ -570,8 +796,13 @@ export const EnhancedNodeExecutionDetails: React.FC<EnhancedNodeExecutionDetails
           <StatusIcon status={status} />
           <p style={{ margin: 0 }}>{getStatusText(status)}</p>
           <Tag size="small" className={getTagColor(status)}>
-            {msToSeconds(duration)}
+            {msToSeconds(totalDuration)}
           </Tag>
+          {hasIterationContent && (
+            <Tag size="small" style={{ marginLeft: '4px', backgroundColor: '#e6f7ff', color: '#1890ff' }}>
+              {iterationRecords.length} 次迭代
+            </Tag>
+          )}
         </div>
         <div className="status-btns">
           <IconChevronDown className={showDetail ? 'is-show-detail' : ''} />
@@ -586,9 +817,26 @@ export const EnhancedNodeExecutionDetails: React.FC<EnhancedNodeExecutionDetails
             padding: '0px 2px 10px 2px',
           }}
         >
-          {error && <ErrorMessage>{error}</ErrorMessage>}
-          <NodeStatusGroup title="Inputs" data={inputs} />
-          <NodeStatusGroup title="Outputs" data={outputs} />
+          {/* 主组件执行结果 */}
+          {hasMainContent && (
+            <>
+              {error && <ErrorMessage>{error}</ErrorMessage>}
+              <NodeStatusGroup title="Inputs" data={inputs} />
+              <NodeStatusGroup title="Outputs" data={outputs} />
+            </>
+          )}
+          
+          {/* 迭代组件执行结果 */}
+          {hasIterationContent && (
+            <IterationGroup nodeId={nodeId} iterations={iterationRecords} />
+          )}
+          
+          {/* 如果没有任何内容 */}
+          {!hasAnyContent && (
+            <div style={{ padding: '8px 12px', color: '#999', fontSize: '12px' }}>
+              暂无执行结果
+            </div>
+          )}
         </div>
       )}
     </ExecutionDetailsWrapper>
@@ -611,6 +859,26 @@ const globalStyles = `
   background-color: rgba(255, 163, 171, 0.3);
   color: rgba(229, 50, 65, 1);
 }
+
+.node-status-paused {
+  background-color: rgba(255, 221, 87, 0.3);
+  color: rgba(250, 173, 20, 1);
+}
+
+.node-status-canceled {
+  background-color: rgba(190, 190, 190, 0.3);
+  color: rgba(140, 140, 140, 1);
+}
+
+.node-status-pending {
+  background-color: rgba(217, 217, 217, 0.3);
+  color: rgba(102, 102, 102, 1);
+}
+
+.node-status-idle {
+  background-color: rgba(240, 240, 240, 0.3);
+  color: rgba(150, 150, 150, 1);
+}
 `;
 
 // 注入全局样式
@@ -618,4 +886,377 @@ if (typeof document !== 'undefined') {
   const styleElement = document.createElement('style');
   styleElement.textContent = globalStyles;
   document.head.appendChild(styleElement);
-} 
+}
+
+// 迭代组件数据分组和排序组件
+interface IterationGroupProps {
+  nodeId: string;
+  iterations: Array<{ subIndex: number; record: any }>;
+}
+
+// 状态统计接口
+interface StatusStats {
+  total: number;
+  completed: number;
+  failed: number;
+  running: number;
+  pending: number;
+  paused: number;
+  canceled: number;
+}
+
+// 计算状态统计
+const calculateStats = (iterations: Array<{ subIndex: number; record: any }>): StatusStats => {
+  const stats = {
+    total: iterations.length,
+    completed: 0,
+    failed: 0,
+    running: 0,
+    pending: 0,
+    paused: 0,
+    canceled: 0,
+  };
+
+  iterations.forEach(({ record }) => {
+    switch (record.status) {
+      case 'completed':
+      case 'success':
+        stats.completed++;
+        break;
+      case 'failed':
+      case 'error':
+        stats.failed++;
+        break;
+      case 'running':
+        stats.running++;
+        break;
+      case 'pending':
+      case 'waiting':
+        stats.pending++;
+        break;
+      case 'paused':
+        stats.paused++;
+        break;
+      case 'canceled':
+        stats.canceled++;
+        break;
+    }
+  });
+
+  return stats;
+};
+
+const IterationGroup: React.FC<IterationGroupProps> = ({ nodeId, iterations }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchFilter, setSearchFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  
+  const pageSize = 20; // 每页显示20个
+
+  // 按subIndex排序
+  const sortedIterations = iterations.sort((a, b) => a.subIndex - b.subIndex);
+  
+  // 计算统计信息
+  const stats = calculateStats(sortedIterations);
+
+  // 应用筛选
+  const filteredIterations = sortedIterations.filter(({ subIndex, record }) => {
+    // 搜索筛选
+    if (searchFilter && !String(subIndex + 1).includes(searchFilter)) {
+      return false;
+    }
+    
+    // 状态筛选
+    if (statusFilter !== 'all') {
+      if (statusFilter === 'completed' && !['completed', 'success'].includes(record.status)) {
+        return false;
+      }
+      if (statusFilter === 'failed' && !['failed', 'error'].includes(record.status)) {
+        return false;
+      }
+      if (statusFilter !== 'completed' && statusFilter !== 'failed' && record.status !== statusFilter) {
+        return false;
+      }
+    }
+    
+    return true;
+  });
+
+  // 分页数据
+  const totalPages = Math.ceil(filteredIterations.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedIterations = filteredIterations.slice(startIndex, startIndex + pageSize);
+
+  // 重置页码当筛选改变时
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchFilter, statusFilter]);
+
+  const StatsSummary = () => (
+    <div style={{ 
+      display: 'flex', 
+      gap: '6px', 
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      marginBottom: '8px',
+      fontSize: '11px'
+    }}>
+      <div style={{ 
+        padding: '2px 6px', 
+        backgroundColor: '#f0f0f0', 
+        borderRadius: '4px',
+        lineHeight: '16px'
+      }}>
+        总计: {stats.total}
+      </div>
+      {stats.completed > 0 && (
+        <div style={{ 
+          padding: '2px 6px', 
+          backgroundColor: '#f6ffed', 
+          color: '#52c41a', 
+          borderRadius: '4px',
+          lineHeight: '16px'
+        }}>
+          成功: {stats.completed}
+        </div>
+      )}
+      {stats.failed > 0 && (
+        <div style={{ 
+          padding: '2px 6px', 
+          backgroundColor: '#fff2f0', 
+          color: '#ff4d4f', 
+          borderRadius: '4px',
+          lineHeight: '16px'
+        }}>
+          失败: {stats.failed}
+        </div>
+      )}
+      {stats.running > 0 && (
+        <div style={{ 
+          padding: '2px 6px', 
+          backgroundColor: '#e6f7ff', 
+          color: '#1890ff', 
+          borderRadius: '4px',
+          lineHeight: '16px'
+        }}>
+          运行中: {stats.running}
+        </div>
+      )}
+      {stats.pending > 0 && (
+        <div style={{ 
+          padding: '2px 6px', 
+          backgroundColor: '#fffbe6', 
+          color: '#faad14', 
+          borderRadius: '4px',
+          lineHeight: '16px'
+        }}>
+          等待: {stats.pending}
+        </div>
+      )}
+      {stats.paused > 0 && (
+        <div style={{ 
+          padding: '2px 6px', 
+          backgroundColor: '#fff7e6', 
+          color: '#faad14', 
+          borderRadius: '4px',
+          lineHeight: '16px'
+        }}>
+          暂停: {stats.paused}
+        </div>
+      )}
+      {stats.canceled > 0 && (
+        <div style={{ 
+          padding: '2px 6px', 
+          backgroundColor: '#f5f5f5', 
+          color: '#8c8c8c', 
+          borderRadius: '4px',
+          lineHeight: '16px'
+        }}>
+          取消: {stats.canceled}
+        </div>
+      )}
+    </div>
+  );
+
+  const FilterControls = () => (
+    <div style={{ 
+      display: 'flex', 
+      gap: '8px', 
+      alignItems: 'center',
+      marginBottom: '8px',
+      fontSize: '12px',
+      flexWrap: 'wrap'
+    }}>
+      <input
+        type="text"
+        placeholder="搜索迭代序号..."
+        value={searchFilter}
+        onChange={(e) => setSearchFilter(e.target.value)}
+        style={{
+          padding: '2px 6px',
+          border: '1px solid #d9d9d9',
+          borderRadius: '4px',
+          fontSize: '11px',
+          width: '120px'
+        }}
+      />
+      <select
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.target.value)}
+        style={{
+          padding: '2px 6px',
+          border: '1px solid #d9d9d9',
+          borderRadius: '4px',
+          fontSize: '11px'
+        }}
+      >
+        <option value="all">全部状态</option>
+        <option value="completed">已完成</option>
+        <option value="failed">失败</option>
+        <option value="running">运行中</option>
+        <option value="pending">等待中</option>
+        <option value="paused">暂停</option>
+        <option value="canceled">已取消</option>
+      </select>
+    </div>
+  );
+
+  const TableView = () => (
+    <div style={{ border: '1px solid #f0f0f0', borderRadius: '4px' }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '60px 80px 100px 80px 1fr',
+        gap: '8px',
+        padding: '6px 8px',
+        backgroundColor: '#fafafa',
+        borderBottom: '1px solid #f0f0f0',
+        fontSize: '11px',
+        fontWeight: 'bold'
+      }}>
+        <div>序号</div>
+        <div>状态</div>
+        <div>耗时</div>
+        <div>操作</div>
+        <div>详情</div>
+      </div>
+      {paginatedIterations.map(({ subIndex, record }) => (
+        <IterationTableRow key={`${nodeId}-${subIndex}`} subIndex={subIndex} record={record} />
+      ))}
+    </div>
+  );
+
+  const Pagination = () => {
+    if (totalPages <= 1) return null;
+    
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        gap: '4px',
+        marginTop: '8px',
+        fontSize: '11px'
+      }}>
+        <button
+          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+          style={{
+            padding: '2px 6px',
+            border: '1px solid #d9d9d9',
+            borderRadius: '4px',
+            backgroundColor: currentPage === 1 ? '#f5f5f5' : 'white',
+            cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+          }}
+        >
+          上一页
+        </button>
+        <span style={{ padding: '0 8px' }}>
+          {currentPage} / {totalPages} 页 (共 {filteredIterations.length} 条)
+        </span>
+        <button
+          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+          style={{
+            padding: '2px 6px',
+            border: '1px solid #d9d9d9',
+            borderRadius: '4px',
+            backgroundColor: currentPage === totalPages ? '#f5f5f5' : 'white',
+            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+          }}
+        >
+          下一页
+        </button>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ margin: '8px 0' }}>
+      <StatsSummary />
+      <FilterControls />
+      <TableView />
+      <Pagination />
+    </div>
+  );
+};
+
+// 表格行组件
+const IterationTableRow: React.FC<{ subIndex: number; record: any }> = ({ subIndex, record }) => {
+  const [showDetails, setShowDetails] = useState(false);
+
+  return (
+    <>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '60px 80px 100px 80px 1fr',
+        gap: '8px',
+        padding: '6px 8px',
+        borderBottom: '1px solid #f5f5f5',
+        fontSize: '11px',
+        alignItems: 'center'
+      }}>
+        <div>#{subIndex + 1}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <StatusIcon status={record.status} />
+          <span>{getStatusText(record.status)}</span>
+        </div>
+        <div>
+          {record.duration > 0 && (
+            <Tag size="small" className={getTagColor(record.status)}>
+              {msToSeconds(record.duration)}
+            </Tag>
+          )}
+        </div>
+        <div>
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            style={{
+              padding: '2px 6px',
+              border: '1px solid #d9d9d9',
+              borderRadius: '4px',
+              fontSize: '10px',
+              backgroundColor: 'white',
+              cursor: 'pointer'
+            }}
+          >
+            {showDetails ? '隐藏' : '详情'}
+          </button>
+        </div>
+        <div style={{ fontSize: '10px', color: '#999' }}>
+          {record.error && <span style={{ color: '#ff4d4f' }}>错误: {record.error.slice(0, 50)}...</span>}
+        </div>
+      </div>
+      {showDetails && (
+        <div style={{ 
+          padding: '8px 16px', 
+          backgroundColor: '#fafafa',
+          borderBottom: '1px solid #f0f0f0'
+        }}>
+          {record.error && <ErrorMessage>{record.error}</ErrorMessage>}
+          <NodeStatusGroup title="Inputs" data={record.inputs} />
+          <NodeStatusGroup title="Outputs" data={record.outputs} />
+        </div>
+      )}
+    </>
+  );
+}; 
