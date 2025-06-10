@@ -10,6 +10,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn, getUserInfo } = useUserStore();
+  
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("token");

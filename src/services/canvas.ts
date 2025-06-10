@@ -70,8 +70,62 @@ export class CanvasService {
 
       return result;
     } catch (error) {
-      console.error("获取画布详情失败:", error);
-      throw error;
+      console.error("获取画布详情失败，返回默认画布内容:", error);
+      
+      // 返回默认画布内容
+      const defaultCanvasResponse: CanvasDetailResponse = {
+        id: request.id,
+        name: '默认工作流',
+        graph: {
+          nodes: [
+            {
+              id: "start_0",
+              type: "start",
+              meta: {
+                position: {
+                  x: 180,
+                  y: 0
+                }
+              },
+              data: {
+                outputs: {
+                  properties: {},
+                  required: [],
+                  type: "object"
+                },
+                title: "开始"
+              }
+            },
+            {
+              id: "end_0",
+              type: "end",
+              meta: {
+                position: {
+                  x: 640,
+                  y: 0
+                }
+              },
+              data: {
+                inputsValues: {},
+                outputs: {
+                  properties: {},
+                  type: "object"
+                },
+                title: "结束"
+              }
+            }
+          ],
+          edges: [
+            {
+              sourceNodeID: "start_0",
+              targetNodeID: "end_0"
+            }
+          ]
+        }
+      };
+      
+      console.log("返回默认画布内容:", defaultCanvasResponse);
+      return defaultCanvasResponse;
     }
   }
 

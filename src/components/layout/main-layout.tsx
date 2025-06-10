@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { ProLayout, PageContainer } from "@ant-design/pro-components";
-import { Button, Dropdown, Avatar, Space } from "antd";
-import { LogoutOutlined, UserOutlined, SettingOutlined } from "@ant-design/icons";
+import { LogoutOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
+import { PageContainer, ProLayout } from "@ant-design/pro-components";
+import { Avatar, Button, Dropdown, Space } from "antd";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useUserStore } from "../../stores/user-store";
+import { getBreadcrumb, useUserMenu } from "../../config/menu";
 import { routeConfigs } from "../../config/routes";
-import { useUserMenu, getBreadcrumb } from "../../config/menu";
+import { usePermission } from "../../hooks/use-permission";
+import { useUserStore } from "../../stores/user-store";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useUserStore();
-  const [collapsed, setCollapsed] = useState(false);
+  const permission = usePermission();
 
   // 根据当前用户权限生成菜单
   const menuData = useUserMenu(routeConfigs);
@@ -61,17 +62,22 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <div style={{ height: "auto", minHeight: "100vh" }}>
       <ProLayout
         title="Flowgram"
-        layout="mix"
-        splitMenus={false}
-        collapsed={collapsed}
-        onCollapse={setCollapsed}
+        layout="top"
+        navTheme="light"
         location={{
           pathname: location.pathname,
         }}
         route={{
+          path: "/",
           routes: menuData,
         }}
-        menuItemRender={(item, dom) => <div onClick={() => handleMenuClick(item.path || "")}>{dom}</div>}
+        // 使用menuDataRender确保菜单正确渲染
+        menuDataRender={() => {
+          return menuData;
+        }}
+        menuItemRender={(item, dom) => {
+          return <div onClick={() => handleMenuClick(item.path || "")}>{dom}</div>;
+        }}
         breadcrumbRender={(routes) => {
           const items = breadcrumb.map((item) => ({
             title: item.name,
@@ -98,21 +104,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 }}
               >
                 <Avatar size="small" icon={<UserOutlined />} />
-                <span style={{ marginLeft: 8 }}>{user?.realName || user?.username}</span>
+                <span style={{ marginLeft: 8 }}>{user?.realName || user?.username || "未登录"}</span>
               </Button>
             </Dropdown>
           </Space>
         )}
-        menuProps={{
-          style: {
-            border: "none",
-          },
-        }}
-        headerContentRender={() => null}
-        // footerRender={() => <div style={{ textAlign: "center", padding: "12px 0" }}>Flowgram ©2024 Created by Flowgram Team</div>}
+        headerContentRender={false}
+        footerRender={false}
         style={{
           height: "auto",
-          minHeight: "calc(100vh - 0px)",
+          minHeight: "100vh",
+        }}
+        contentStyle={{
+          margin: 0,
+          padding: 0,
         }}
       >
         <PageContainer
@@ -124,8 +129,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           }}
           style={{
             height: "auto",
-            minHeight: "calc(100vh - 60px)",
+            minHeight: "calc(100vh - 120px)",
+            marginTop: 0,
           }}
+          pageHeaderRender={false}
         >
           {children}
         </PageContainer>

@@ -33,6 +33,27 @@ export const API_ROUTES = {
     UPDATE_STATUS: "/workflow/user/update/status",
     UPDATE_INFO: "/workflow/user/update/info",
   },
+
+  // WorkSpace 相关接口（编排）
+  WORKSPACE: {
+    NEW: "/workflow/workspace/new",
+    REMOVE: "/workflow/workspace/remove",
+    EDIT: "/workflow/workspace/edit",
+    LIST: "/workflow/workspace/list",
+    EDIT_TAG: "/workflow/workspace/edit/tag",
+    COPY: "/workflow/workspace/copy",
+    ENV_LIST: "/workflow/workspace/env/list",
+    ENV_EDIT: "/workflow/workspace/env/edit",
+    EXPORT: "/workflow/workspace/export",
+    IMPORT: "/workflow/workspace/import",
+  },
+
+  // Tag 相关接口
+  TAG: {
+    LIST: "/workflow/tag/list",
+    EDIT: "/workflow/tag/edit",
+    REMOVE: "/workflow/tag/remove",
+  },
 } as const;
 
 // API 路由类型

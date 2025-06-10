@@ -1,17 +1,15 @@
+import {
+  ApiOutlined,
+  AppstoreOutlined,
+  CloudOutlined,
+  DashboardOutlined,
+  ScheduleOutlined,
+  SettingOutlined,
+  TeamOutlined
+} from "@ant-design/icons";
 import React from "react";
 import { Navigate } from "react-router-dom";
-import {
-  UserOutlined,
-  DashboardOutlined,
-  SettingOutlined,
-  DatabaseOutlined,
-  FileTextOutlined,
-  TeamOutlined,
-  SafetyOutlined,
-  BarChartOutlined,
-} from "@ant-design/icons";
-import AuthGuard from "../components/auth-guard";
-import { createLazyComponent, createLazyGuardedComponent } from "../utils/lazy-import";
+import { createLazyComponent } from "../utils/lazy-import";
 
 // 权限码定义
 export enum PermissionCode {
@@ -30,6 +28,21 @@ export enum PermissionCode {
   WORKFLOW_DELETE = "workflow:delete",
   WORKFLOW_EXECUTE = "workflow:execute",
   WORKFLOW_VIEW = "workflow:view",
+
+  // 资源管理权限
+  RESOURCE_VIEW = "resource:view",
+  RESOURCE_EDIT = "resource:edit",
+  RESOURCE_DELETE = "resource:delete",
+
+  // 任务管理权限
+  TASK_VIEW = "task:view",
+  TASK_EDIT = "task:edit",
+  TASK_DELETE = "task:delete",
+
+  // 插件管理权限
+  PLUGIN_VIEW = "plugin:view",
+  PLUGIN_EDIT = "plugin:edit",
+  PLUGIN_DELETE = "plugin:delete",
 
   // 报表权限
   REPORT_VIEW = "report:view",
@@ -64,9 +77,11 @@ const RegisterPage = createLazyComponent(() => import("../pages/register"));
 // 不需要在这里定义，直接在路由配置中使用 () => import("...") 即可
 
 // 基础页面组件（这里用占位符，实际项目中需要替换为真实组件）
-const WorkflowPage = () => <div>工作流页面</div>;
-const UserManagePage = () => <div>用户管理页面</div>;
-const SystemConfigPage = () => <div>系统配置页面</div>;
+const DashboardPage = () => <div>Dashboard 仪表盘页面</div>;
+const WorkflowPage = () => <div>编排页面</div>;
+const ResourcePage = () => <div>资源管理页面</div>;
+const TaskPage = () => <div>任务管理页面</div>;
+const PluginPage = () => <div>插件管理页面</div>;
 
 // 错误页面组件
 const NotFoundPage = () => <div>404 - 页面未找到</div>;
@@ -99,43 +114,46 @@ export const routeConfigs: RouteConfig[] = [
   // 受保护的路由
   {
     path: "/",
-    element: <Navigate to="/home" replace />,
+    element: <Navigate to="/dashboard" replace />,
     isPublic: true,
     hideInMenu: true,
   },
   {
     path: "/home",
-    element: () => import("../pages/home"),
-    name: "首页",
+    element: <Navigate to="/dashboard" replace />,
+    isPublic: true,
+    hideInMenu: true,
+  },
+
+  // 顶部菜单项
+  {
+    path: "/dashboard",
+    element: () => import("../pages/dashboard"),
+    name: "Dashboard",
     icon: <DashboardOutlined />,
     menuOrder: 1,
   },
   {
-    path: "/profile",
-    element: () => import("../components/user-profile"),
-    permissions: [PermissionCode.USER_VIEW],
-    name: "个人中心",
-    icon: <UserOutlined />,
-    menuOrder: 2,
-  },
-  {
-    path: "/editor/:canvasId/:workflowId",
-    element: () => import("../editor"),
-    hideInMenu: true, // 编辑器页面隐藏在菜单中
+    path: "/test",
+    element: () => Promise.resolve({ default: () => <div style={{ padding: '24px' }}>测试页面 - 这是一个不需要权限的测试页面</div> }),
+    name: "测试页面",
+    icon: <DashboardOutlined />,
+    menuOrder: 1.5,
+    // 不设置 permissions，表示所有登录用户都能访问
   },
   {
     path: "/workflow",
-    element: () => Promise.resolve({ default: WorkflowPage }),
+    element: () => import("../pages/workflow-list"),
     permissions: [PermissionCode.WORKFLOW_VIEW],
-    name: "工作流",
-    icon: <FileTextOutlined />,
-    menuOrder: 3,
+    name: "编排",
+    icon: <ApiOutlined />,
+    menuOrder: 2,
     children: [
       {
         path: "/workflow/list",
-        element: () => Promise.resolve({ default: () => <div>工作流列表</div> }),
+        element: () => import("../pages/workflow-list"),
         permissions: [PermissionCode.WORKFLOW_VIEW],
-        name: "工作流列表",
+        name: "工作空间列表",
         menuOrder: 1,
       },
       {
@@ -145,51 +163,140 @@ export const routeConfigs: RouteConfig[] = [
         name: "工作流编辑器",
         menuOrder: 2,
       },
+      {
+        path: "/workflow/template",
+        element: () => Promise.resolve({ default: () => <div>工作流模板</div> }),
+        permissions: [PermissionCode.WORKFLOW_VIEW],
+        name: "工作流模板",
+        menuOrder: 3,
+      },
     ],
   },
   {
-    path: "/data-asset",
-    element: () => Promise.resolve({ default: () => <div>数据资产</div> }),
-    permissions: [PermissionCode.WORKFLOW_VIEW],
-    name: "数据资产",
-    icon: <DatabaseOutlined />,
-    menuOrder: 4,
+    path: "/resource",
+    element: () => Promise.resolve({ default: ResourcePage }),
+    permissions: [PermissionCode.RESOURCE_VIEW],
+    name: "资源",
+    icon: <CloudOutlined />,
+    menuOrder: 3,
     children: [
       {
-        path: "/data-asset/list",
-        element: () => Promise.resolve({ default: () => <div>资产列表</div> }),
-        permissions: [PermissionCode.WORKFLOW_VIEW],
-        name: "资产列表",
+        path: "/resource/data-source",
+        element: () => Promise.resolve({ default: () => <div>数据源管理</div> }),
+        permissions: [PermissionCode.RESOURCE_VIEW],
+        name: "数据源",
         menuOrder: 1,
       },
       {
-        path: "/data-asset/create",
-        element: () => Promise.resolve({ default: () => <div>创建资产</div> }),
-        permissions: [PermissionCode.WORKFLOW_CREATE],
-        name: "创建资产",
+        path: "/resource/compute",
+        element: () => Promise.resolve({ default: () => <div>计算资源</div> }),
+        permissions: [PermissionCode.RESOURCE_VIEW],
+        name: "计算资源",
         menuOrder: 2,
+      },
+      {
+        path: "/resource/storage",
+        element: () => Promise.resolve({ default: () => <div>存储资源</div> }),
+        permissions: [PermissionCode.RESOURCE_VIEW],
+        name: "存储资源",
+        menuOrder: 3,
       },
     ],
   },
   {
-    path: "/admin",
-    element: () => Promise.resolve({ default: () => <div>系统管理</div> }),
-    permissions: [PermissionCode.ADMIN_ALL, PermissionCode.USER_EDIT, PermissionCode.SYSTEM_CONFIG],
-    name: "系统管理",
-    icon: <SettingOutlined />,
+    path: "/task",
+    element: () => Promise.resolve({ default: TaskPage }),
+    permissions: [PermissionCode.TASK_VIEW],
+    name: "任务",
+    icon: <ScheduleOutlined />,
+    menuOrder: 4,
+    children: [
+      {
+        path: "/task/running",
+        element: () => Promise.resolve({ default: () => <div>运行中任务</div> }),
+        permissions: [PermissionCode.TASK_VIEW],
+        name: "运行中",
+        menuOrder: 1,
+      },
+      {
+        path: "/task/history",
+        element: () => Promise.resolve({ default: () => <div>历史任务</div> }),
+        permissions: [PermissionCode.TASK_VIEW],
+        name: "历史任务",
+        menuOrder: 2,
+      },
+      {
+        path: "/task/schedule",
+        element: () => Promise.resolve({ default: () => <div>定时任务</div> }),
+        permissions: [PermissionCode.TASK_VIEW],
+        name: "定时任务",
+        menuOrder: 3,
+      },
+    ],
+  },
+  {
+    path: "/plugin",
+    element: () => Promise.resolve({ default: PluginPage }),
+    permissions: [PermissionCode.PLUGIN_VIEW],
+    name: "插件",
+    icon: <AppstoreOutlined />,
     menuOrder: 5,
     children: [
       {
-        path: "/user-manage",
-        element: () => Promise.resolve({ default: UserManagePage }),
+        path: "/plugin/installed",
+        element: () => Promise.resolve({ default: () => <div>已安装插件</div> }),
+        permissions: [PermissionCode.PLUGIN_VIEW],
+        name: "已安装",
+        menuOrder: 1,
+      },
+      {
+        path: "/plugin/market",
+        element: () => Promise.resolve({ default: () => <div>插件市场</div> }),
+        permissions: [PermissionCode.PLUGIN_VIEW],
+        name: "插件市场",
+        menuOrder: 2,
+      },
+      {
+        path: "/plugin/develop",
+        element: () => Promise.resolve({ default: () => <div>插件开发</div> }),
+        permissions: [PermissionCode.PLUGIN_EDIT],
+        name: "插件开发",
+        menuOrder: 3,
+      },
+    ],
+  },
+
+  // 特殊路由
+  {
+    path: "/profile",
+    element: () => import("../components/user-profile"),
+    permissions: [PermissionCode.USER_VIEW],
+    hideInMenu: true, // 隐藏在菜单中，通过用户下拉菜单访问
+  },
+  {
+    path: "/editor/:canvasId/:workflowId",
+    element: () => import("../editor"),
+    hideInMenu: true, // 编辑器页面隐藏在菜单中
+  },
+
+  // 系统管理（隐藏菜单，可通过URL直接访问或其他方式进入）
+  {
+    path: "/admin",
+    element: () => Promise.resolve({ default: () => <div>系统管理</div> }),
+    permissions: [PermissionCode.ADMIN_ALL],
+    hideInMenu: true,
+    children: [
+      {
+        path: "/admin/user",
+        element: () => Promise.resolve({ default: () => <div>用户管理</div> }),
         permissions: [PermissionCode.USER_VIEW, PermissionCode.USER_EDIT],
         name: "用户管理",
         icon: <TeamOutlined />,
         menuOrder: 1,
       },
       {
-        path: "/system-config",
-        element: () => Promise.resolve({ default: SystemConfigPage }),
+        path: "/admin/system",
+        element: () => Promise.resolve({ default: () => <div>系统配置</div> }),
         permissions: [PermissionCode.SYSTEM_CONFIG, PermissionCode.ADMIN_ALL],
         name: "系统配置",
         icon: <SettingOutlined />,
@@ -218,6 +325,15 @@ export const PERMISSION_DESCRIPTIONS: Record<PermissionCode, string> = {
   [PermissionCode.WORKFLOW_DELETE]: "删除工作流",
   [PermissionCode.WORKFLOW_EXECUTE]: "执行工作流",
   [PermissionCode.WORKFLOW_VIEW]: "查看工作流",
+  [PermissionCode.RESOURCE_VIEW]: "查看资源信息",
+  [PermissionCode.RESOURCE_EDIT]: "编辑资源信息",
+  [PermissionCode.RESOURCE_DELETE]: "删除资源",
+  [PermissionCode.TASK_VIEW]: "查看任务信息",
+  [PermissionCode.TASK_EDIT]: "编辑任务信息",
+  [PermissionCode.TASK_DELETE]: "删除任务",
+  [PermissionCode.PLUGIN_VIEW]: "查看插件信息",
+  [PermissionCode.PLUGIN_EDIT]: "编辑插件信息",
+  [PermissionCode.PLUGIN_DELETE]: "删除插件",
   [PermissionCode.REPORT_VIEW]: "查看报表",
   [PermissionCode.ADMIN_ALL]: "管理员所有权限",
 };

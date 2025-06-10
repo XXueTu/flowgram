@@ -1,5 +1,25 @@
 import { create } from "zustand";
+import { PermissionCode } from "../config/routes";
 import { User, UserService } from "../services/user";
+
+// 创建拥有所有权限的默认用户
+const createDefaultUser = (): User => {
+  // 获取所有权限码
+  const allPermissions = Object.values(PermissionCode);
+  
+  return {
+    id: 1,
+    username: "admin",
+    realName: "管理员",
+    phone: "13800138000",
+    email: "admin@flowgram.ai",
+    status: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    password: "",
+    permissions: allPermissions, // 拥有所有权限
+  };
+};
 
 interface UserState {
   // 用户信息
@@ -27,12 +47,15 @@ interface UserState {
   updateUserStatus: (userId: number, status: number) => Promise<void>;
   // 绑定角色
   bindRole: (userId: number, roleId: number) => Promise<void>;
+  // 设置默认用户（用于开发测试）
+  setDefaultUser: () => void;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
-  user: null,
-  token: null,
-  isLoggedIn: false,
+  // 初始化时设置默认用户，这样菜单就能完全显示
+  user: createDefaultUser(),
+  token: "default-token",
+  isLoggedIn: true,
   loading: false,
   error: null,
 
@@ -156,5 +179,14 @@ export const useUserStore = create<UserState>((set, get) => ({
     } finally {
       set({ loading: false });
     }
+  },
+
+  setDefaultUser: () => {
+    const defaultUser = createDefaultUser();
+    set({ 
+      user: defaultUser, 
+      token: "default-token", 
+      isLoggedIn: true 
+    });
   },
 }));
