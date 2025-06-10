@@ -1,7 +1,8 @@
 import axios from "axios";
 import { CanvasDetailRequest, CanvasDetailResponse, CanvasDraftRequest, CanvasDraftResponse } from "../typings/canvas";
 
-const API_BASE_URL = "http://10.8.0.61:8888/workflow";
+// const API_BASE_URL = "http://10.8.0.61:8888/workflow";
+const API_BASE_URL = "http://14.103.249.105:9999/workflow";
 
 interface ApiResponse<T> {
   code: number;

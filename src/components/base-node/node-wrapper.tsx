@@ -4,13 +4,16 @@ import { useClientContext, WorkflowPortRender } from "@flowgram.ai/free-layout-e
 
 import { SidebarContext } from "../../context";
 import { useNodeRenderContext } from "../../hooks";
-import { NodeExecutionDetails } from "./node-execution-details";
+import { EnhancedNodeExecutionDetails } from "./enhanced-node-execution-details";
+import { NodeStatusBar } from "./status-bar";
 import { NodeWrapperStyle } from "./styles";
 import { scrollToView } from "./utils";
 
 export interface NodeWrapperProps {
   isScrollToView?: boolean;
   children: React.ReactNode;
+  useEnhancedExecutionDetails?: boolean;
+  useOfficialStyle?: boolean; // 新增：使用官方testrun样式
 }
 
 /**
@@ -18,7 +21,12 @@ export interface NodeWrapperProps {
  * 用于节点的拖拽/点击事件和点位渲染
  */
 export const NodeWrapper: React.FC<NodeWrapperProps> = (props) => {
-  const { children, isScrollToView = false } = props;
+  const { 
+    children, 
+    isScrollToView = false, 
+    useEnhancedExecutionDetails = true,
+    useOfficialStyle = false 
+  } = props;
   const nodeRender = useNodeRenderContext();
   const { selected, startDrag, ports, selectNode, nodeRef, onFocus, onBlur } = nodeRender;
   const [isDragging, setIsDragging] = useState(false);
@@ -62,7 +70,11 @@ export const NodeWrapper: React.FC<NodeWrapperProps> = (props) => {
         {children}
       </NodeWrapperStyle>
       {portsRender}
-      <NodeExecutionDetails nodeId={nodeRender.node.id} />
+      {/* 根据配置选择使用哪个执行详情组件 */}
+    
+        <NodeStatusBar nodeId={nodeRender.node.id} />
+        <EnhancedNodeExecutionDetails nodeId={nodeRender.node.id} />
+      
     </>
   );
 };

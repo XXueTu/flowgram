@@ -14,7 +14,7 @@ import { BaseNode, CommentRender, GroupNodeRender, LineAddButton, NodePanel } fr
 import { SelectorBoxPopover } from '../components/selector-box-popover';
 import { WorkflowNodeType } from '../nodes';
 import { defaultFormMeta } from '../nodes/default-form-meta';
-import { createSyncVariablePlugin } from '../plugins';
+import { createContextMenuPlugin, createSyncVariablePlugin } from '../plugins';
 import { CustomService, RunningService } from '../services';
 import { CanvasService } from '../services/canvas';
 import { shortcuts } from '../shortcuts';
@@ -245,6 +245,7 @@ export function useEditorProps(
          * 变量插件
          */
         createSyncVariablePlugin({}),
+        createContextMenuPlugin({}),
         /**
          * Snap plugin
          * 自动对齐及辅助线插件

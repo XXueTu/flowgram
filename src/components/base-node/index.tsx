@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 
-import { FlowNodeEntity, useNodeRender } from '@flowgram.ai/free-layout-editor';
 import { ConfigProvider } from '@douyinfe/semi-ui';
+import { FlowNodeEntity, useNodeRender } from '@flowgram.ai/free-layout-editor';
 
 import { NodeRenderContext } from '../../context';
-import { ErrorIcon } from './styles';
 import { NodeWrapper } from './node-wrapper';
+import { ErrorIcon } from './styles';
 
 export const BaseNode = ({ node }: { node: FlowNodeEntity }) => {
   /**
@@ -36,3 +36,13 @@ export const BaseNode = ({ node }: { node: FlowNodeEntity }) => {
     </ConfigProvider>
   );
 };
+
+// 导出组件和类型
+export { EnhancedNodeExecutionDetails } from "./enhanced-node-execution-details";
+export { NodeExecutionDetails } from "./node-execution-details";
+export type { NodeStatus } from "./node-execution-details";
+export { NodeWrapper } from "./node-wrapper";
+export type { NodeWrapperProps } from "./node-wrapper";
+export { NodeStatusBar } from "./status-bar";
+export { scrollToView } from "./utils";
+
