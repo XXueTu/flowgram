@@ -133,14 +133,7 @@ export const routeConfigs: RouteConfig[] = [
     icon: <DashboardOutlined />,
     menuOrder: 1,
   },
-  {
-    path: "/test",
-    element: () => Promise.resolve({ default: () => <div style={{ padding: '24px' }}>测试页面 - 这是一个不需要权限的测试页面</div> }),
-    name: "测试页面",
-    icon: <DashboardOutlined />,
-    menuOrder: 1.5,
-    // 不设置 permissions，表示所有登录用户都能访问
-  },
+
   {
     path: "/workflow",
     element: () => import("../pages/workflow-list"),

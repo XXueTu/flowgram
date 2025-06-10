@@ -38,13 +38,13 @@ interface NodeExecutionState {
   runWorkflow: (params?: Record<string, any>, canvasId?: string, serialId?: string) => Promise<void>;
 
   // 更新节点视觉状态
-  updateNodeVisualStatus: (nodeId: string, status: NodeStatus) => void;
+  updateNodeVisualStatus: (canvasId: string, nodeId: string, status: NodeStatus) => void;
 
   // 更新线视觉状态
-  updateLineVisualStatus: () => void;
+  updateLineVisualStatus: (canvasId: string) => void;
 
   // 清除节点记录
-  clearNodeRecord: (nodeId: string) => void;
+  clearNodeRecord: (canvasId: string, nodeId: string) => void;
 
   // 清除所有记录
   clearAllRecords: () => void;
@@ -54,6 +54,9 @@ interface NodeExecutionState {
 
   // 文档引用
   document?: any;
+
+  // 获取特定节点的执行记录
+  getNodeRecord: (canvasId: string, nodeId: string, subIndex?: number) => NodeExecutionRecord | undefined;
 }
 
 // API状态到内部状态的映射
@@ -83,11 +86,12 @@ const mapStatusFromApi = (apiStatus: string): NodeStatus => {
 };
 
 // 生成存储key的辅助函数
-const generateRecordKey = (nodeId: string, subIndex?: number): string => {
+const generateRecordKey = (canvasId: string, nodeId: string, subIndex?: number): string => {
+  const baseKey = `${canvasId}:${nodeId}`;
   if (subIndex === undefined || subIndex === -1) {
-    return nodeId;
+    return baseKey;
   }
-  return `${nodeId}-${subIndex}`;
+  return `${baseKey}-${subIndex}`;
 };
 
 export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
@@ -136,7 +140,7 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
             subIndex: record.subIndex,
           };
 
-          const recordKey = generateRecordKey(nodeId, record.subIndex);
+          const recordKey = generateRecordKey(canvasId, nodeId, record.subIndex);
           newRecords[recordKey] = executionRecord;
         });
 
@@ -148,7 +152,7 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
         }));
       } else {
         // 如果没找到记录，设置为默认状态
-        const recordKey = generateRecordKey(nodeId);
+        const recordKey = generateRecordKey(canvasId, nodeId);
         set((state) => ({
           nodeRecords: {
             ...state.nodeRecords,
@@ -164,7 +168,7 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
       console.error("获取节点执行详情失败:", error);
 
       // 设置错误状态
-      const recordKey = generateRecordKey(nodeId);
+      const recordKey = generateRecordKey(canvasId, nodeId);
       set((state) => ({
         nodeRecords: {
           ...state.nodeRecords,
@@ -212,7 +216,7 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
               subIndex: record.subIndex,
             };
 
-            const recordKey = generateRecordKey(record.nodeId, record.subIndex);
+            const recordKey = generateRecordKey(data.id, record.nodeId, record.subIndex);
             newNodeRecords[recordKey] = executionRecord;
           });
 
@@ -224,8 +228,8 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
           }));
 
           // 更新节点和线的视觉状态
-          get().updateNodeVisualStatus("", "idle"); // 更新所有节点
-          get().updateLineVisualStatus();
+          get().updateNodeVisualStatus(data.id, "", "idle"); // 更新所有节点
+          get().updateLineVisualStatus(data.id);
         }
 
         // 检查是否需要继续轮询
@@ -298,7 +302,7 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
     }
   },
 
-  updateNodeVisualStatus: (nodeId: string, status: NodeStatus) => {
+  updateNodeVisualStatus: (canvasId: string, nodeId: string, status: NodeStatus) => {
     const state = get();
     if (!state.document) return;
 
@@ -310,12 +314,14 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
         node.renderData.node.classList.add(`node-${status}`);
       }
     } else {
-      // 更新所有节点
-      Object.values(state.nodeRecords).forEach((record) => {
-        const node = state.document.getNode(record.nodeId);
-        if (node) {
-          node.renderData.node.classList.remove("node-idle", "node-waiting", "node-running", "node-success", "node-error");
-          node.renderData.node.classList.add(`node-${record.status}`);
+      // 更新所有节点（仅限当前画布）
+      Object.entries(state.nodeRecords).forEach(([key, record]) => {
+        if (key.startsWith(`${canvasId}:`)) {
+          const node = state.document.getNode(record.nodeId);
+          if (node) {
+            node.renderData.node.classList.remove("node-idle", "node-waiting", "node-running", "node-success", "node-error");
+            node.renderData.node.classList.add(`node-${record.status}`);
+          }
         }
       });
     }
@@ -323,36 +329,38 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
     state.document.linesManager.forceUpdate();
   },
 
-  updateLineVisualStatus: () => {
+  updateLineVisualStatus: (canvasId: string) => {
     const state = get();
     if (!state.document) return;
 
-    // 获取所有节点的输出线并更新状态
-    Object.values(state.nodeRecords).forEach((record) => {
-      const node = state.document.getNode(record.nodeId);
-      if (node) {
-        try {
-          const outputLines = node.getData({ key: "WorkflowNodeLinesData" })?.outputLines || [];
+    // 获取当前画布的所有节点的输出线并更新状态
+    Object.entries(state.nodeRecords).forEach(([key, record]) => {
+      if (key.startsWith(`${canvasId}:`)) {
+        const node = state.document.getNode(record.nodeId);
+        if (node) {
+          try {
+            const outputLines = node.getData({ key: "WorkflowNodeLinesData" })?.outputLines || [];
 
-          outputLines.forEach((line: any) => {
-            try {
-              // 移除之前的状态
-              line.renderData?.element?.classList?.remove("line-flowing", "line-success", "line-error");
+            outputLines.forEach((line: any) => {
+              try {
+                // 移除之前的状态
+                line.renderData?.element?.classList?.remove("line-flowing", "line-success", "line-error");
 
-              // 根据当前节点状态决定线的状态
-              if (record.status === "success") {
-                line.renderData?.element?.classList?.add("line-success");
-              } else if (record.status === "error") {
-                line.renderData?.element?.classList?.add("line-error");
-              } else if (record.status === "running") {
-                line.renderData?.element?.classList?.add("line-flowing");
+                // 根据当前节点状态决定线的状态
+                if (record.status === "success") {
+                  line.renderData?.element?.classList?.add("line-success");
+                } else if (record.status === "error") {
+                  line.renderData?.element?.classList?.add("line-error");
+                } else if (record.status === "running") {
+                  line.renderData?.element?.classList?.add("line-flowing");
+                }
+              } catch (e) {
+                // 忽略错误，继续执行
               }
-            } catch (e) {
-              // 忽略错误，继续执行
-            }
-          });
-        } catch (e) {
-          // 忽略错误，继续执行
+            });
+          } catch (e) {
+            // 忽略错误，继续执行
+          }
         }
       }
     });
@@ -360,12 +368,13 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
     state.document.linesManager.forceUpdate();
   },
 
-  clearNodeRecord: (nodeId: string) => {
+  clearNodeRecord: (canvasId: string, nodeId: string) => {
     set((state) => {
       const newRecords = { ...state.nodeRecords };
-      // 删除主记录和所有迭代记录
+      // 删除主记录和所有迭代记录，使用新的key格式
+      const baseKey = `${canvasId}:${nodeId}`;
       Object.keys(newRecords).forEach(key => {
-        if (key === nodeId || key.startsWith(`${nodeId}-`)) {
+        if (key === baseKey || key.startsWith(`${baseKey}-`)) {
           delete newRecords[key];
         }
       });
@@ -375,6 +384,12 @@ export const useNodeExecutionStore = create<NodeExecutionState>((set, get) => ({
 
   clearAllRecords: () => {
     set({ nodeRecords: {} });
+  },
+
+  // 获取特定节点的执行记录
+  getNodeRecord: (canvasId: string, nodeId: string, subIndex?: number) => {
+    const recordKey = generateRecordKey(canvasId, nodeId, subIndex);
+    return get().nodeRecords[recordKey];
   },
 }));
 

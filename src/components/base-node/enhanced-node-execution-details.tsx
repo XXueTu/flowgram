@@ -604,6 +604,7 @@ const NodeStatusGroup: React.FC<StatusGroupProps> = ({
 // 主组件接口
 interface EnhancedNodeExecutionDetailsProps {
   nodeId: string;
+  canvasId?: string;
 }
 
 const msToSeconds = (ms: number): string => (ms / 1000).toFixed(2) + 's';
@@ -657,22 +658,28 @@ const getTagColor = (status: NodeStatus) => {
   }
 };
 
-export const EnhancedNodeExecutionDetails: React.FC<EnhancedNodeExecutionDetailsProps> = ({ nodeId }) => {
+export const EnhancedNodeExecutionDetails: React.FC<EnhancedNodeExecutionDetailsProps> = ({ nodeId, canvasId }) => {
   const { nodeRecords, loading, fetchNodeExecutionDetails } = useNodeExecutionStore();
   const [showDetail, setShowDetail] = useState(false);
 
   // 组件挂载时获取执行详情
   useEffect(() => {
     // 如果还没有该节点的记录，尝试获取
-    const hasRecord = Object.keys(nodeRecords).some(key => key === nodeId || key.startsWith(`${nodeId}-`));
+    const actualCanvasId = canvasId || "default";
+    const keyPrefix = `${actualCanvasId}:${nodeId}`;
+    const hasRecord = Object.keys(nodeRecords).some(key => key === keyPrefix || key.startsWith(`${keyPrefix}-`));
     
     if (!hasRecord && !loading) {
-      fetchNodeExecutionDetails(nodeId);
+      fetchNodeExecutionDetails(nodeId, canvasId);
     }
-  }, [nodeId, nodeRecords, loading, fetchNodeExecutionDetails]);
+  }, [nodeId, nodeRecords, loading, fetchNodeExecutionDetails, canvasId]);
 
   // 获取当前节点的所有执行记录（包括迭代记录）
-  const allNodeRecords = Object.values(nodeRecords).filter(record => record.nodeId === nodeId);
+  const actualCanvasId = canvasId || "default";
+  const keyPrefix = `${actualCanvasId}:${nodeId}`;
+  const allNodeRecords = Object.entries(nodeRecords)
+    .filter(([key, record]) => key === keyPrefix || key.startsWith(`${keyPrefix}-`))
+    .map(([key, record]) => record);
   
   // 分离主组件记录和迭代记录
   const mainRecord = allNodeRecords.find(record => record.subIndex === -1 || record.subIndex === undefined);

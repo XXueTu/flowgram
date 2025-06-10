@@ -9,7 +9,7 @@ interface AuthGuardProps {
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoggedIn, getUserInfo } = useUserStore();
+  const { isLoggedIn, user, getUserInfo } = useUserStore();
   
   useEffect(() => {
     const checkAuth = async () => {
@@ -23,10 +23,15 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
         return;
       }
 
+      if (isLoggedIn && user) {
+        return;
+      }
+
       if (!isLoggedIn) {
         try {
           await getUserInfo();
         } catch (error) {
+          console.error("获取用户信息失败:", error);
           localStorage.removeItem("token");
           navigate("/login", {
             state: { from: location.pathname },
@@ -37,7 +42,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     };
 
     checkAuth();
-  }, [isLoggedIn, getUserInfo, navigate, location]);
+  }, [isLoggedIn, user, getUserInfo, navigate, location]);
 
   if (!isLoggedIn) {
     return null;

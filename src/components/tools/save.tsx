@@ -4,7 +4,7 @@ import { Badge, Button, Toast } from "@douyinfe/semi-ui";
 import { FlowNodeEntity, getNodeForm, useClientContext } from "@flowgram.ai/free-layout-editor";
 import { CanvasService } from "../../services/canvas";
 
-export function Save(props: { disabled: boolean }) {
+export function Save(props: { disabled: boolean; canvasId?: string }) {
   const [errorCount, setErrorCount] = useState(0);
   const [saving, setSaving] = useState(false);
   const clientContext = useClientContext();
@@ -28,7 +28,7 @@ export function Save(props: { disabled: boolean }) {
       // 调用保存接口
       const canvasService = CanvasService.getInstance();
       const response = await canvasService.saveDraft({
-        id: "default",
+        id: props.canvasId || "default",
         graph: clientContext.document.toJSON(),
       });
 
@@ -52,7 +52,7 @@ export function Save(props: { disabled: boolean }) {
     } finally {
       setSaving(false);
     }
-  }, [clientContext]);
+  }, [clientContext, props.canvasId]);
 
   /**
    * Listen single node validate

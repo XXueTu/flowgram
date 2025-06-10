@@ -17,6 +17,7 @@ Thumbs.db
 .env.*
 
 # Build
+/dist.zip
 /dist
 /build
 /.cache

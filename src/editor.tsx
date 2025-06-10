@@ -5,27 +5,30 @@ import "@flowgram.ai/free-layout-editor/index.css";
 import { useParams } from "react-router-dom";
 import { SidebarProvider, SidebarRenderer } from "./components/sidebar";
 import { DemoTools } from "./components/tools";
+import { CanvasContext } from "./context";
 import { useEditorProps } from "./hooks";
 import { nodeRegistries } from "./nodes";
 import { CanvasService } from "./services/canvas";
 import "./styles/index.css";
 
-const EditorContent = ({ data }: { data: any }) => {
+const EditorContent = ({ data, canvasId }: { data: any; canvasId?: string }) => {
   const ref = useRef<FreeLayoutPluginContext | null>(null);
-  const editorProps = useEditorProps(data, nodeRegistries);
+  const editorProps = useEditorProps(data, nodeRegistries, canvasId);
 
   return (
-    <div className="doc-free-feature-overview">
-      <FreeLayoutEditorProvider ref={ref} {...editorProps}>
-        <SidebarProvider>
-          <div className="demo-container">
-            <EditorRenderer className="demo-editor" />
-          </div>
-          <DemoTools />
-          <SidebarRenderer />
-        </SidebarProvider>
-      </FreeLayoutEditorProvider>
-    </div>
+    <CanvasContext.Provider value={{ canvasId: canvasId || 'default' }}>
+      <div className="doc-free-feature-overview">
+        <FreeLayoutEditorProvider ref={ref} {...editorProps}>
+          <SidebarProvider>
+            <div className="demo-container">
+              <EditorRenderer className="demo-editor" />
+            </div>
+            <DemoTools canvasId={canvasId} />
+            <SidebarRenderer />
+          </SidebarProvider>
+        </FreeLayoutEditorProvider>
+      </div>
+    </CanvasContext.Provider>
   );
 };
 
@@ -118,7 +121,7 @@ const Editor = () => {
 
   return (
     <div style={{ height: "100%", width: "100%" }}>
-      <EditorContent data={data} />
+      <EditorContent data={data} canvasId={canvasId} />
     </div>
   );
 };

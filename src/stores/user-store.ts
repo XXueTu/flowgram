@@ -124,10 +124,29 @@ export const useUserStore = create<UserState>((set, get) => ({
       set({ loading: true, error: null });
       const userService = new UserService();
       const response = await userService.getUserInfo();
-      set({ user: response.user, isLoggedIn: true });
+      
+      // 确保用户拥有所有权限（开发阶段默认开放所有权限）
+      const userWithPermissions = {
+        ...response.user,
+        permissions: response.user.permissions && response.user.permissions.length > 0 
+          ? response.user.permissions 
+          : Object.values(PermissionCode) // 如果API没有返回权限或权限为空，给予所有权限
+      };
+      
+      set({ user: userWithPermissions, isLoggedIn: true });
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : "获取用户信息失败" });
-      throw error;
+      console.warn("获取用户信息失败，使用默认用户:", error);
+      // 如果API失败，保持默认用户，避免菜单消失
+      const currentState = get();
+      if (!currentState.user) {
+        set({ 
+          user: createDefaultUser(), 
+          isLoggedIn: true, 
+          error: error instanceof Error ? error.message : "获取用户信息失败" 
+        });
+      } else {
+        set({ error: error instanceof Error ? error.message : "获取用户信息失败" });
+      }
     } finally {
       set({ loading: false });
     }

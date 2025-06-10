@@ -45,9 +45,17 @@ const {
   nodeRecords, // 所有节点记录
   loading, // 加载状态
   fetchNodeExecutionDetails, // 获取执行详情
-  clearNodeRecord, // 清除单个节点记录
+  getNodeRecord, // 获取特定节点记录
+  clearNodeRecord, // 清除单个节点记录 (canvasId, nodeId)
   clearAllRecords, // 清除所有记录
 } = useNodeExecutionStore();
+
+// 使用示例
+// 获取特定节点的执行记录
+const record = getNodeRecord("canvas-id", "node-id");
+
+// 清除特定节点的记录
+clearNodeRecord("canvas-id", "node-id");
 ```
 
 ### 状态类型

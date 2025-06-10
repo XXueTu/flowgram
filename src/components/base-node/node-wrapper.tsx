@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 
 import { useClientContext, WorkflowPortRender } from "@flowgram.ai/free-layout-editor";
 
-import { SidebarContext } from "../../context";
+import { CanvasContext, SidebarContext } from "../../context";
 import { useNodeRenderContext } from "../../hooks";
 import { EnhancedNodeExecutionDetails } from "./enhanced-node-execution-details";
 import { NodeWrapperStyle } from "./styles";
@@ -30,6 +30,7 @@ export const NodeWrapper: React.FC<NodeWrapperProps> = (props) => {
   const { selected, startDrag, ports, selectNode, nodeRef, onFocus, onBlur } = nodeRender;
   const [isDragging, setIsDragging] = useState(false);
   const sidebar = useContext(SidebarContext);
+  const { canvasId } = useContext(CanvasContext);
   const form = nodeRender.form;
   const ctx = useClientContext();
 
@@ -70,7 +71,7 @@ export const NodeWrapper: React.FC<NodeWrapperProps> = (props) => {
       </NodeWrapperStyle>
       {portsRender}
       {/* 只使用 EnhancedNodeExecutionDetails，移除重复的 NodeStatusBar */}
-      <EnhancedNodeExecutionDetails nodeId={nodeRender.node.id} />
+      <EnhancedNodeExecutionDetails nodeId={nodeRender.node.id} canvasId={canvasId} />
     </>
   );
 };

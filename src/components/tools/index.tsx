@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { IconRedo, IconUndo } from '@douyinfe/semi-icons';
 import { Divider, IconButton, Tooltip } from '@douyinfe/semi-ui';
@@ -18,7 +18,7 @@ import { ToolContainer, ToolSection } from './styles';
 import { SwitchLine } from './switch-line';
 import { ZoomSelect } from './zoom-select';
 
-export const DemoTools = () => {
+export const DemoTools: FC<{ canvasId?: string }> = ({ canvasId }) => {
   const { history, playground } = useClientContext();
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
@@ -70,8 +70,8 @@ export const DemoTools = () => {
         <Divider layout="vertical" style={{ height: '16px' }} margin={3} />
         <AddNode disabled={playground.config.readonly} />
         <Divider layout="vertical" style={{ height: '16px' }} margin={3} />
-        <Save disabled={playground.config.readonly} />
-        <Run />
+        <Save disabled={playground.config.readonly} canvasId={canvasId} />
+        <Run canvasId={canvasId} />
       </ToolSection>
     </ToolContainer>
   );

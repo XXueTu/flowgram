@@ -23,7 +23,8 @@ import { onDragLineEnd } from '../utils';
 
 export function useEditorProps(
   initialData: FlowDocumentJSON,
-  nodeRegistries: FlowNodeRegistry[]
+  nodeRegistries: FlowNodeRegistry[],
+  canvasId?: string
 ): FreeLayoutProps {
   return useMemo<FreeLayoutProps>(
     () => ({
@@ -156,7 +157,7 @@ export function useEditorProps(
         try {
           const canvasService = CanvasService.getInstance();
           const response = await canvasService.saveDraft({
-            id: ctx.document.id || 'default',
+            id: canvasId || ctx.document.id || 'default',
             graph: ctx.document.toJSON(),
           });
 
@@ -274,6 +275,6 @@ export function useEditorProps(
         }),
       ],
     }),
-    []
+    [canvasId]
   );
 }
