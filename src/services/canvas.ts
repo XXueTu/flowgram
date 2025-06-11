@@ -35,6 +35,50 @@ interface CanvasTraceComponentsResponse {
   }>;
 }
 
+// 运行历史相关接口定义
+export interface GetCanvasRunHistoryRequest {
+  workSpaceId: string;
+}
+
+export interface RunHistoryRecord {
+  id: string;
+  startTime: string;
+  duration: number;
+  status: string;
+  componentCount: number;
+}
+
+export interface GetCanvasRunHistoryResponse {
+  records: RunHistoryRecord[];
+}
+
+export interface GetCanvasRunDetailRequest {
+  recordId: string;
+}
+
+export interface ComponentExecutionDetail {
+  id: string;
+  index: number;
+  name: string;
+  logic: string;
+  startTime: number; // 时间戳
+  duration: number;
+  status: string;
+  error: string;
+  input: any;
+  output: any;
+  components?: ComponentExecutionDetail[] | null;
+}
+
+export interface GetCanvasRunDetailResponse {
+  id: string;
+  startTime: string;
+  duration: number;
+  status: string;
+  error: string;
+  components: ComponentExecutionDetail[];
+}
+
 /**
  * 画布服务类
  * 负责处理画布相关的所有操作，包括获取详情、保存草稿、运行等
@@ -183,5 +227,35 @@ export class CanvasService {
   async getExecutionResults(request: { id: string; serialId: string; params: Record<string, any> }): Promise<any> {
     const result = await this.apiClient.post<any>(`/canvas/execution-results`, request);
     return result;
+  }
+
+  /**
+   * 获取画布运行历史
+   */
+  public async getRunHistory(workSpaceId: string): Promise<GetCanvasRunHistoryResponse> {
+    try {
+      const result = await this.apiClient.get<GetCanvasRunHistoryResponse>(
+        `${API_ROUTES.CANVAS.RUN_HISTORY}/${workSpaceId}`
+      );
+      return result;
+    } catch (error) {
+      console.error("获取运行历史失败:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * 获取画布运行详情
+   */
+  public async getRunDetail(recordId: string): Promise<GetCanvasRunDetailResponse> {
+    try {
+      const result = await this.apiClient.get<GetCanvasRunDetailResponse>(
+        `${API_ROUTES.CANVAS.RUN_DETAIL}/${recordId}`
+      );
+      return result;
+    } catch (error) {
+      console.error("获取运行详情失败:", error);
+      throw error;
+    }
   }
 }

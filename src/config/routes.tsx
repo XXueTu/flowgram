@@ -268,7 +268,7 @@ export const routeConfigs: RouteConfig[] = [
   },
   {
     path: "/editor/:canvasId/:workflowId",
-    element: () => import("../editor"),
+    element: () => import("../pages/editor"),
     hideInMenu: true, // 编辑器页面隐藏在菜单中
   },
 

@@ -14,6 +14,17 @@ export const ToolContainer = styled.div`
   z-index: 99;
 `;
 
+export const TopRightContainer = styled.div`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: right;
+  pointer-events: none;
+  gap: 8px;
+  z-index: 99;
+`;
+
 export const ToolSection = styled.div`
   display: flex;
   align-items: center;

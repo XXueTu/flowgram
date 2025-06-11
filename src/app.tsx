@@ -11,7 +11,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     // 初始化用户状态，恢复登录状态
-    initializeUser();
+    initializeUser().catch((error) => {
+      console.error("用户初始化失败:", error);
+    });
   }, [initializeUser]);
 
   return (

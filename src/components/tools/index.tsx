@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
-import { IconRedo, IconUndo } from '@douyinfe/semi-icons';
-import { Divider, IconButton, Tooltip } from '@douyinfe/semi-ui';
+import { IconHistogram, IconRedo, IconUndo, IconUpload } from '@douyinfe/semi-icons';
+import { Button, Divider, IconButton, Tooltip } from '@douyinfe/semi-ui';
 import { useClientContext, useRefresh } from '@flowgram.ai/free-layout-editor';
 
 import { AddNode } from '../add-node';
@@ -11,10 +11,12 @@ import { FitView } from './fit-view';
 import { Interactive } from './interactive';
 import { Minimap } from './minimap';
 import { MinimapSwitch } from './minimap-switch';
+import { PublishDrawer } from './publish-drawer';
 import { Readonly } from './readonly';
 import { Run } from './run';
+import { RunHistoryDrawer } from './run-history-drawer';
 import { Save } from './save';
-import { ToolContainer, ToolSection } from './styles';
+import { ToolContainer, ToolSection, TopRightContainer } from './styles';
 import { SwitchLine } from './switch-line';
 import { ZoomSelect } from './zoom-select';
 
@@ -74,5 +76,61 @@ export const DemoTools: FC<{ canvasId?: string }> = ({ canvasId }) => {
         <Run canvasId={canvasId} />
       </ToolSection>
     </ToolContainer>
+  );
+};
+
+export const TopRightTools: FC<{ canvasId?: string }> = ({ canvasId }) => {
+  const { playground } = useClientContext();
+  const [showRunHistory, setShowRunHistory] = useState(false);
+  const [showPublish, setShowPublish] = useState(false);
+
+  const handleShowRunHistory = () => {
+    setShowRunHistory(true);
+  };
+
+  const handleShowPublish = () => {
+    setShowPublish(true);
+  };
+
+  return (
+    <>
+      <TopRightContainer className="demo-top-right-tools">
+        <ToolSection>
+          <Tooltip content="查看运行记录">
+            <Button
+              disabled={playground.config.readonly}
+              onClick={handleShowRunHistory}
+              icon={<IconHistogram />}
+              style={{ backgroundColor: "rgba(171,181,255,0.3)", borderRadius: "8px" }}
+            >
+              运行记录
+            </Button>
+          </Tooltip>
+          <Tooltip content="发布画布">
+            <Button
+              type="primary"
+              disabled={playground.config.readonly}
+              onClick={handleShowPublish}
+              icon={<IconUpload />}
+              style={{ borderRadius: "8px" }}
+            >
+              发布
+            </Button>
+          </Tooltip>
+        </ToolSection>
+      </TopRightContainer>
+
+      <RunHistoryDrawer
+        visible={showRunHistory}
+        onClose={() => setShowRunHistory(false)}
+        canvasId={canvasId}
+      />
+
+      <PublishDrawer
+        visible={showPublish}
+        onClose={() => setShowPublish(false)}
+        canvasId={canvasId}
+      />
+    </>
   );
 };

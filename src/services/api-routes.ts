@@ -10,6 +10,8 @@ export const API_ROUTES = {
     RUN: "/workflow/canvas/run",
     TRACE_COMPONENTS: "/workflow/trace/components/query",
     GET_TRACE: "/workflow/canvas/trace",
+    RUN_HISTORY: "/workflow/canvas/run/history",
+    RUN_DETAIL: "/workflow/canvas/run/detail",
   },
 
   // Case 相关接口

@@ -3,13 +3,13 @@ import { useEffect, useRef, useState } from "react";
 
 import "@flowgram.ai/free-layout-editor/index.css";
 import { useParams } from "react-router-dom";
-import { SidebarProvider, SidebarRenderer } from "./components/sidebar";
-import { DemoTools } from "./components/tools";
-import { CanvasContext } from "./context";
-import { useEditorProps } from "./hooks";
-import { nodeRegistries } from "./nodes";
-import { CanvasService } from "./services/canvas";
-import "./styles/index.css";
+import { SidebarProvider, SidebarRenderer } from "../components/sidebar";
+import { DemoTools, TopRightTools } from "../components/tools";
+import { CanvasContext } from "../context";
+import { useEditorProps } from "../hooks";
+import { nodeRegistries } from "../nodes";
+import { CanvasService } from "../services/canvas";
+import "../styles/index.css";
 
 const EditorContent = ({ data, canvasId }: { data: any; canvasId?: string }) => {
   const ref = useRef<FreeLayoutPluginContext | null>(null);
@@ -24,6 +24,7 @@ const EditorContent = ({ data, canvasId }: { data: any; canvasId?: string }) => 
               <EditorRenderer className="demo-editor" />
             </div>
             <DemoTools canvasId={canvasId} />
+            <TopRightTools canvasId={canvasId} />
             <SidebarRenderer />
           </SidebarProvider>
         </FreeLayoutEditorProvider>
