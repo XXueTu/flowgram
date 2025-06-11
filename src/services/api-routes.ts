@@ -14,6 +14,11 @@ export const API_ROUTES = {
     RUN_DETAIL: "/workflow/canvas/run/detail",
   },
 
+  // API 发布相关接口
+  API: {
+    PUBLISH: "/workflow/api/publish",
+  },
+
   // Case 相关接口
   CASE: {
     PUBLISH: "/workflow/case/publish",

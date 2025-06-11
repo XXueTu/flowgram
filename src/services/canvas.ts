@@ -79,6 +79,18 @@ export interface GetCanvasRunDetailResponse {
   components: ComponentExecutionDetail[];
 }
 
+// API发布相关接口定义
+export interface ApiPublishRequest {
+  id: string;      // 空间ID
+  apiName: string; // 名称
+  apiDesc: string; // 描述
+  tag: string[];   // 标签
+}
+
+export interface ApiPublishResponse {
+  apiId: string;
+}
+
 /**
  * 画布服务类
  * 负责处理画布相关的所有操作，包括获取详情、保存草稿、运行等
@@ -255,6 +267,22 @@ export class CanvasService {
       return result;
     } catch (error) {
       console.error("获取运行详情失败:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * 发布API
+   */
+  public async publishApi(request: ApiPublishRequest): Promise<ApiPublishResponse> {
+    try {
+      const result = await this.apiClient.post<ApiPublishResponse>(
+        API_ROUTES.API.PUBLISH,
+        request
+      );
+      return result;
+    } catch (error) {
+      console.error("发布API失败:", error);
       throw error;
     }
   }
