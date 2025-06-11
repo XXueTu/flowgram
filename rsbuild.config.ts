@@ -1,6 +1,6 @@
-import { pluginReact } from "@rsbuild/plugin-react";
-import { pluginLess } from "@rsbuild/plugin-less";
 import { defineConfig } from "@rsbuild/core";
+import { pluginLess } from "@rsbuild/plugin-less";
+import { pluginReact } from "@rsbuild/plugin-react";
 import { getRsbuildProxyConfig } from "./src/config/proxy";
 
 export default defineConfig({
@@ -29,5 +29,6 @@ export default defineConfig({
   },
   server: {
     proxy: getRsbuildProxyConfig(),
+    historyApiFallback: true,
   },
 });

@@ -1,11 +1,19 @@
 import { ConfigProvider } from "antd";
 import zhCN from "antd/locale/zh_CN";
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import RouteRenderer from "./components/route-renderer";
 import { routeConfigs } from "./config/routes";
+import { useUserStore } from "./stores/user-store";
 
 const App: React.FC = () => {
+  const { initializeUser } = useUserStore();
+
+  useEffect(() => {
+    // 初始化用户状态，恢复登录状态
+    initializeUser();
+  }, [initializeUser]);
+
   return (
     <ConfigProvider locale={zhCN}>
       <Router>

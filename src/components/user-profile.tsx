@@ -1,7 +1,7 @@
 import { MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Card, Descriptions, Form, Input, message, Modal, Tag } from "antd";
+import { Button, Card, Descriptions, Form, Input, message, Modal } from "antd";
+import MD5 from "crypto-js/md5";
 import React from "react";
-import { PERMISSION_DESCRIPTIONS } from "../config/routes";
 import { useUserStore } from "../stores/user-store";
 
 const UserProfile: React.FC = () => {
@@ -12,7 +12,11 @@ const UserProfile: React.FC = () => {
   const handleUpdate = async (values: { phone?: string; email?: string; password?: string }) => {
     try {
       if (!user) return;
-      await updateUserInfo({
+      if (values.password) {
+        const encryptedPassword = MD5(values.password).toString();
+        values.password = encryptedPassword;
+      }
+      await updateUserInfo({    
         userId: user.id,
         ...values,
       });
@@ -49,7 +53,7 @@ const UserProfile: React.FC = () => {
             <MailOutlined /> {user.email || "未设置"}
           </Descriptions.Item>
           <Descriptions.Item label="状态">{user.status === 1 ? "正常" : "禁用"}</Descriptions.Item>
-          <Descriptions.Item label="权限">
+          {/* <Descriptions.Item label="权限">
             <div>
               {user.permissions && user.permissions.length > 0 ? (
                 user.permissions.map((permission) => (
@@ -61,7 +65,7 @@ const UserProfile: React.FC = () => {
                 <Tag color="default">暂无权限</Tag>
               )}
             </div>
-          </Descriptions.Item>
+          </Descriptions.Item> */}
         </Descriptions>
       </Card>
 

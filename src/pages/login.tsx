@@ -15,17 +15,25 @@ const LoginPage: React.FC = () => {
 
   const onFinish = async (values: { username: string; password: string }) => {
     try {
-      // 对密码进行 MD5 加密
       const encryptedPassword = MD5(values.password).toString();
-      await login(values.username, encryptedPassword);
-      message.success("登录成功");
-
-      // 获取重定向前的页面路径
-      const from = (location.state as any)?.from || "/";
+      values.password = encryptedPassword;
+      await login(values.username, values.password);
+      message.success('登录成功');
+      
+      // 登录成功后跳转到之前想要访问的页面，或者默认跳转到首页
+      const from = (location.state as any)?.from || '/dashboard';
       navigate(from, { replace: true });
     } catch (error) {
-      message.error(error instanceof Error ? error.message : "登录失败");
+      message.error(error instanceof Error ? error.message : '登录失败');
     }
+  };
+
+  // 开发环境快捷登录
+  const onQuickLogin = () => {
+    localStorage.setItem("token", "default-token");
+    message.success('已使用默认用户身份登录');
+    const from = (location.state as any)?.from || '/dashboard';
+    navigate(from, { replace: true });
   };
 
   const containerStyle: React.CSSProperties = {

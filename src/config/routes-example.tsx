@@ -1,4 +1,3 @@
-import React from "react";
 import { Navigate } from "react-router-dom";
 import AuthGuard from "../components/auth-guard";
 import { createLazyComponent, createLazyGuardedComponent } from "../utils/lazy-import";

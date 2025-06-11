@@ -4,17 +4,18 @@ import {
   EditOutlined,
   ExportOutlined,
   ImportOutlined,
+  MoreOutlined,
   PlusOutlined,
   SearchOutlined
 } from '@ant-design/icons';
 import {
   Button,
   Card,
+  Dropdown,
   Form,
   Input,
   message,
   Modal,
-  Popconfirm,
   Select,
   Space,
   Table,
@@ -342,14 +343,14 @@ const WorkSpaceListPage: React.FC = () => {
       title: '工作空间名称',
       dataIndex: 'workSpaceName',
       key: 'workSpaceName',
-      width: 200,
+      width: 150,
       ellipsis: true,
     },
     {
       title: '描述',
       dataIndex: 'workSpaceDesc',
       key: 'workSpaceDesc',
-      width: 300,
+      width: 150,
       ellipsis: true,
     },
     {
@@ -366,7 +367,7 @@ const WorkSpaceListPage: React.FC = () => {
       title: '标签',
       dataIndex: 'workSpaceTag',
       key: 'workSpaceTag',
-      width: 200,
+      width: 100,
       render: (tags: string[]) => (
         <>
           {tags?.map((tag, index) => (
@@ -378,24 +379,6 @@ const WorkSpaceListPage: React.FC = () => {
       ),
     },
     {
-      title: '编辑器参数',
-      key: 'editorParams',
-      width: 250,
-      render: (_, record) => (
-        <div style={{ fontSize: '12px', color: '#666' }}>
-          <div>Canvas: {record.canvasId || record.id}</div>
-          <div>Workflow: {record.workflowId || record.id}</div>
-        </div>
-      ),
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
-      width: 180,
-      render: (time) => time ? new Date(time).toLocaleString() : '-',
-    },
-    {
       title: '更新时间',
       dataIndex: 'updateTime',
       key: 'updateTime',
@@ -405,58 +388,72 @@ const WorkSpaceListPage: React.FC = () => {
     {
       title: '操作',
       key: 'action',
-      width: 350,
+      width: 150,
       fixed: 'right',
-      render: (_, record) => (
-        <Space size="small">
-          <Button
-            type="primary"
-            size="small"
-            onClick={() => handleOpenEditor(record)}
-          >
-            编排
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            icon={<EditOutlined />}
-            onClick={() => showEditModal(record)}
-          >
-            编辑
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            icon={<CopyOutlined />}
-            onClick={() => handleCopy(record)}
-          >
-            复制
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            icon={<ExportOutlined />}
-            onClick={() => handleExport(record)}
-          >
-            导出
-          </Button>
-          <Popconfirm
-            title="确定要删除这个工作空间吗？"
-            onConfirm={() => handleDelete(record.id!)}
-            okText="确定"
-            cancelText="取消"
-          >
+      render: (_, record) => {
+        const menuItems = [
+          {
+            key: 'edit',
+            label: '编辑',
+            icon: <EditOutlined />,
+            onClick: () => showEditModal(record),
+          },
+          {
+            key: 'copy',
+            label: '复制',
+            icon: <CopyOutlined />,
+            onClick: () => handleCopy(record),
+          },
+          {
+            key: 'export',
+            label: '导出',
+            icon: <ExportOutlined />,
+            onClick: () => handleExport(record),
+          },
+          {
+            type: 'divider' as const,
+          },
+          {
+            key: 'delete',
+            label: '删除',
+            icon: <DeleteOutlined />,
+            danger: true,
+            onClick: () => {
+              Modal.confirm({
+                title: '确认删除',
+                content: `确定要删除工作空间"${record.workSpaceName}"吗？此操作无法撤销。`,
+                okText: '确定删除',
+                cancelText: '取消',
+                okType: 'danger',
+                onOk: () => handleDelete(record.id!),
+              });
+            },
+          },
+        ];
+
+        return (
+          <Space size="small">
             <Button
-              type="link"
+              type="primary"
               size="small"
-              danger
-              icon={<DeleteOutlined />}
+              onClick={() => handleOpenEditor(record)}
             >
-              删除
+              编排
             </Button>
-          </Popconfirm>
-        </Space>
-      ),
+            <Dropdown
+              menu={{
+                items: menuItems,
+              }}
+              trigger={['click']}
+            >
+              <Button
+                size="small"
+                icon={<MoreOutlined />}
+              />
+            </Dropdown>
+          </Space>
+        );
+      },
     },
   ];
 
@@ -559,7 +556,6 @@ const WorkSpaceListPage: React.FC = () => {
               }));
             },
           }}
-          scroll={{ x: 1550 }}
         />
       </Card>
 
