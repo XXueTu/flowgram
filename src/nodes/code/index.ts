@@ -39,14 +39,14 @@ export const CodeNodeRegistry: FlowNodeRegistry = {
         },
         inputs: {
           properties: {
-            input1: {
+            input: {
               type: "string",
-              title: "输入1"
+              title: "输入"
             }
           }
         },
         inputsValues: {
-          input1: {
+          input: {
             type: "constant",
             content: ""
           }

@@ -43,14 +43,14 @@ export const SQLNodeRegistry: FlowNodeRegistry = {
         },
         inputs: {
           properties: {
-            input1: {
+            input: {
               type: "string",
-              title: "input1"
+              title: "input"
             }
           }
         },
         inputsValues: {
-          input1: {
+          input: {
             type: "constant",
             content: ""
           }

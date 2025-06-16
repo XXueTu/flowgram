@@ -5,7 +5,7 @@ import { formMeta } from './form-meta';
 
 const defaultSystemPrompt = `你是一个专业的AI助手，请根据用户的需求提供帮助。`;
 
-const defaultUserPrompt = `{{input1}}`
+const defaultUserPrompt = `{{input}}`
 
 const defaultOutput = {
   type: "object",
@@ -56,14 +56,14 @@ export const LLMNodeRegistry: FlowNodeRegistry = {
         },
         inputs: {
           properties: {
-            input1: {
+            input: {
               type: "string",
-              title: "input1"
+              title: "input"
             }
           }
         },
         inputsValues: {
-          input1: {
+          input: {
             type: "constant",
             content: ""
           }

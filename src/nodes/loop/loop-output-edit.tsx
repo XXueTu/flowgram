@@ -167,6 +167,15 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
     if (!selectedValue) {
       // 当选择被清除时，清空输入框的值
       updateKey('');
+      const newSchema: JsonSchema = {
+        type: 'array',
+        title: inputKey,
+        items: { type: 'string' },
+        extra: {
+          inputKey: inputKey
+        }
+      };
+      props.onChange(newSchema, props.propertyKey);
       return;
     }
     
@@ -177,7 +186,7 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
       const outputSchema = nodeData.outputs[outputKey];
       const newSchema: JsonSchema = {
         type: 'array',
-        title: value.title || inputKey,
+        title: inputKey,
         description: `源自: ${selectedValue}`,
         items: {
           ...outputSchema,
@@ -193,7 +202,7 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
       
       props.onChange(newSchema, props.propertyKey);
     }
-  }, [subCanvasOutputs, value.title, inputKey, props]);
+  }, [subCanvasOutputs, inputKey, props]);
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 6, fontSize: '12px' }}>
@@ -220,7 +229,20 @@ const LoopOutputPropertyEdit: React.FC<LoopOutputPropertyEditProps> = (props) =>
           disabled={disabled}
           size="small"
           placeholder="输出参数名"
-          onChange={(v) => updateKey(v.trim())}
+          onChange={(v) => {
+            const trimmedValue = v.trim();
+            updateKey(trimmedValue);
+            // 立即更新 schema
+            const newSchema = {
+              ...value,
+              title: trimmedValue,
+              extra: {
+                ...value.extra,
+                inputKey: trimmedValue
+              }
+            };
+            props.onChange(newSchema, props.propertyKey);
+          }}
           onBlur={() => {
             if (inputKey !== '') {
               props.onChange(value, props.propertyKey, inputKey);
@@ -305,13 +327,29 @@ export const LoopOutputEdit: React.FC<LoopOutputEditProps> = ({ value, subCanvas
   ) => {
     if (newPropertyKey) {
       if (!(newPropertyKey in value)) {
-        updateProperty(propertyValue, propertyKey, newPropertyKey);
+        // 确保新属性包含正确的 key
+        const updatedPropertyValue = {
+          ...propertyValue,
+          title: newPropertyKey,
+          extra: {
+            ...propertyValue.extra,
+            inputKey: newPropertyKey
+          }
+        };
+        updateProperty(updatedPropertyValue, propertyKey, newPropertyKey);
       }
       clearCache();
     } else {
       updateNewPropertyFromCache({
         key: newPropertyKey || propertyKey,
-        value: propertyValue,
+        value: {
+          ...propertyValue,
+          title: newPropertyKey || propertyKey,
+          extra: {
+            ...propertyValue.extra,
+            inputKey: newPropertyKey || propertyKey
+          }
+        },
       });
     }
   };

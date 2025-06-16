@@ -118,9 +118,6 @@ export const useUserStore = create<UserState>((set, get) => {
         // 保存 token
         localStorage.setItem("token", response.token);
 
-        // 获取用户信息
-        await get().getUserInfo();
-
         set({ token: response.token, isLoggedIn: true, initialized: true });
       } catch (error) {
         set({ error: error instanceof Error ? error.message : "注册失败" });
