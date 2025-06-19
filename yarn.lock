@@ -1421,32 +1421,32 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.57.1.tgz"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@flowgram.ai/background-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/background-plugin/-/background-plugin-0.2.9.tgz"
-  integrity sha512-F/H2QkixzYMlpYNRnariIgvJ6cd91rtqfvjffmXeOje2psduULjTs+aKYFlioNJKtpYncMueF3fc/8KaixY6CQ==
+"@flowgram.ai/background-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/background-plugin/-/background-plugin-0.2.14.tgz"
+  integrity sha512-1/Ik3cu2o3vBEXNGO6N5nQiv0X+UZDdnt7ngRu0M4fOZcTRsWVvL4CBlHgiFh3/4MZX1yEmdlB5aHQ5FsBYkiw==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/command@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/command/-/command-0.2.9.tgz"
-  integrity sha512-eBDscuvyO5Nk85Qv/5UHboA4kKzvy5KPaV7PYGdBi400e9AyRpVsJorCeNOs7wN7iAirfLHczMHg3HFW3a7GVw==
+"@flowgram.ai/command@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/command/-/command-0.2.14.tgz"
+  integrity sha512-4I0z+Y0teQWKTfkAPSw0ygIqfn0k7sPvLn13Nde9Md32l+idP37ElFNoULoFIZrqXOxUZVxOBO1amSkVpkFBHw==
   dependencies:
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/core@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/core/-/core-0.2.9.tgz"
-  integrity sha512-hyeC6fgjk9d/5QWnFahNCUBdlM5TeoN2oJ2eLGkgXUs2WfPjG4fJutj8pfqHRBT4mM4W/VL269DXcOrBc0ST4A==
+"@flowgram.ai/core@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/core/-/core-0.2.14.tgz"
+  integrity sha512-RdbQQPQhPNlXPSFS9mMWpv2Z+6Es0ldVzGlVU2CHcRadMSHMjTTm/iPQm4qkr5VJYUeYtBaAirIbhOVZ42Wwcw==
   dependencies:
-    "@flowgram.ai/command" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/command" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     "@phosphor/messaging" "^1.3.0"
     "@tweenjs/tween.js" "^18"
     clsx "^1.1.1"
@@ -1455,49 +1455,49 @@
     nanoid "^4.0.2"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/document@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/document/-/document-0.2.9.tgz"
-  integrity sha512-N/h+ssidIaCHLcA5R1roHQ95kMXdpgq+a3SoZhr74XtLRh7tDa+B+FPhmvERMcI+6GFe2slNNz/jX6yU4BQcnQ==
+"@flowgram.ai/document@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/document/-/document-0.2.14.tgz"
+  integrity sha512-TZavJwbSZdnoYKd93cuG0oguqcpaaHu5heMEgOXDdx/lCrL+nBoO0S0CoHCIxxpDKesHZiSECs+Zr25jJLBw9g==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     nanoid "^4.0.2"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/editor@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/editor/-/editor-0.2.9.tgz"
-  integrity sha512-5g58GT5H91qny3nJHH+7oy4CgH7WDF6/UrumKZM0S6THWeMvXDpGX22Y8eUR/Jm1MeoJfEw2N5BUy+3km+maRA==
+"@flowgram.ai/editor@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/editor/-/editor-0.2.14.tgz"
+  integrity sha512-zUHK0gBP2xAP4fOashBIqVk/ysTluMYCsohj0T7MbionMDZNTSj9qmc/lI88lUuOWu+LtYzi+KR5oBKhwfjBfQ==
   dependencies:
-    "@flowgram.ai/background-plugin" "0.2.9"
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/form" "0.2.9"
-    "@flowgram.ai/form-core" "0.2.9"
-    "@flowgram.ai/group-plugin" "0.2.9"
-    "@flowgram.ai/history" "0.2.9"
-    "@flowgram.ai/history-node-plugin" "0.2.9"
-    "@flowgram.ai/i18n-plugin" "0.2.9"
-    "@flowgram.ai/materials-plugin" "0.2.9"
-    "@flowgram.ai/node" "0.2.9"
-    "@flowgram.ai/node-core-plugin" "0.2.9"
-    "@flowgram.ai/node-variable-plugin" "0.2.9"
-    "@flowgram.ai/playground-react" "0.2.9"
-    "@flowgram.ai/redux-devtool-plugin" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/shortcuts-plugin" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
-    "@flowgram.ai/variable-plugin" "0.2.9"
+    "@flowgram.ai/background-plugin" "0.2.14"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/form" "0.2.14"
+    "@flowgram.ai/form-core" "0.2.14"
+    "@flowgram.ai/group-plugin" "0.2.14"
+    "@flowgram.ai/history" "0.2.14"
+    "@flowgram.ai/history-node-plugin" "0.2.14"
+    "@flowgram.ai/i18n-plugin" "0.2.14"
+    "@flowgram.ai/materials-plugin" "0.2.14"
+    "@flowgram.ai/node" "0.2.14"
+    "@flowgram.ai/node-core-plugin" "0.2.14"
+    "@flowgram.ai/node-variable-plugin" "0.2.14"
+    "@flowgram.ai/playground-react" "0.2.14"
+    "@flowgram.ai/redux-devtool-plugin" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/shortcuts-plugin" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
+    "@flowgram.ai/variable-plugin" "0.2.14"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/eslint-config@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/eslint-config/-/eslint-config-0.2.9.tgz"
-  integrity sha512-dLFT8Gc76utOnylZfbrnDVO63boGJ1nkhds760sagJb+0V5eK8RDQZdiTmsazDGgLZwCJkps6oy34cFfdk5tlg==
+"@flowgram.ai/eslint-config@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/eslint-config/-/eslint-config-0.2.14.tgz"
+  integrity sha512-j9E4tUNxFKBuQl2zIwgk/E6QowAo/213lKyZkY1ngAKXAq2Vm93nn3N9HWuAKowsHX0WyRuRm7xVgReit3LHrQ==
   dependencies:
     "@babel/core" ">=7.11.0"
     "@babel/eslint-parser" "~7.19.1"
@@ -1521,27 +1521,27 @@
     prettier-plugin-packagejson "^2.3.0"
     ts-node "^10.9.1"
 
-"@flowgram.ai/form-core@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/form-core/-/form-core-0.2.9.tgz"
-  integrity sha512-rUaep0dXuCn58N5Rh/S3lKvVuXq7LYi0WAgP2ht86+wK5Dbse0Fo38qSbLdE4h0bPHdzOrYC3W0ZBAj4Sa/6hg==
+"@flowgram.ai/form-core@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/form-core/-/form-core-0.2.14.tgz"
+  integrity sha512-epImLR4xnx0t4yNd5cEBqnKWtKkk2ELd9Fo32g7mkBlOdIUsY6N27zfhjmjbBTf6ubgL7cG0zkrDrwddQoDpmA==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/form-materials@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/form-materials/-/form-materials-0.2.9.tgz"
-  integrity sha512-Ns44uqDc35iRn03qn9XjcedaxvIT46kq9MZv/yOy/0Je+evCnrCjR0ryF+cVbAY8AEzJYGxWMcDOkCj4tR3DLg==
+"@flowgram.ai/form-materials@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/form-materials/-/form-materials-0.2.14.tgz"
+  integrity sha512-h99WiT4/cGvy4UXlHoeO7iTZmpG9hnpeRxvLJklJ5Sa8gOQGQgwVnywVLsf0KgbZdJOtJ2N4XISymIiJV8D2Sg==
   dependencies:
     "@douyinfe/semi-icons" "^2.80.0"
     "@douyinfe/semi-illustrations" "^2.80.0"
     "@douyinfe/semi-ui" "^2.80.0"
-    "@flowgram.ai/editor" "0.2.9"
+    "@flowgram.ai/editor" "0.2.14"
     chalk "^5.3.0"
     commander "^11.0.0"
     immer "~10.1.1"
@@ -1549,401 +1549,403 @@
     lodash "^4.17.21"
     nanoid "^4.0.2"
 
-"@flowgram.ai/form@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/form/-/form-0.2.9.tgz"
-  integrity sha512-+wCCsBA91GYqxDsFmzrYc5Y473eI25Bl8b38wg0AcEXhUkaQ4wmfhAo6RxsU/b1n0TTSCrIwGszIm5MsTC0VqQ==
+"@flowgram.ai/form@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/form/-/form-0.2.14.tgz"
+  integrity sha512-GCDdhJbhEz3MAmCwYsGuaaEVplZCxQTywXkUpUeInxA+47h4r/gxc96FvdPP5n9p2zpUWejdn9PaU2ZMxHkjqw==
   dependencies:
-    "@flowgram.ai/reactive" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/reactive" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     fast-equals "^2.0.0"
     lodash "^4.17.21"
     nanoid "^4.0.2"
 
-"@flowgram.ai/free-auto-layout-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-auto-layout-plugin/-/free-auto-layout-plugin-0.2.9.tgz"
-  integrity sha512-75qLz68Zej8zp1shyQ09asWYQiUFYGKzL37mG0tm6TiwdqVVgOsGuCqCfg26HJFp5Ax1pFfyDqOrWPcCk351pw==
+"@flowgram.ai/free-auto-layout-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-auto-layout-plugin/-/free-auto-layout-plugin-0.2.14.tgz"
+  integrity sha512-akXXowOXnNnHzHvxBUyj6h78ft9aUmPAelgqWPy4AxfRf2kFebRMbZC/dY7eVmlQmjUCyPkYS24z93BHyUUiTQ==
   dependencies:
     "@dagrejs/graphlib" "2.2.2"
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/free-container-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-container-plugin/-/free-container-plugin-0.2.9.tgz"
-  integrity sha512-NrJMm5rx/80CIpq2wgNR1KXIyIDECoTxfUFfH2DHtEH5kA8GuJ4Hqbwcmiyu4GK6Mu4s+yQOADHZyxWKXJWYOA==
+"@flowgram.ai/free-container-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-container-plugin/-/free-container-plugin-0.2.14.tgz"
+  integrity sha512-U8FkE2Z4XsqFQyC7FqvXLxOLUxSfGETjtbwRhGV8/0h2qU1FHG5J/rJdXxdc6XFPiLcwMtwrUuLW67N7+vVJ8w==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/free-history-plugin" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/free-lines-plugin" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/shortcuts-plugin" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/free-history-plugin" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/free-lines-plugin" "0.2.14"
+    "@flowgram.ai/i18n" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/shortcuts-plugin" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/free-group-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-group-plugin/-/free-group-plugin-0.2.9.tgz"
-  integrity sha512-S+S8OTfxTbbhMyc3U8lEp1N0aZdrE9vsQmKYvszyRaCUEKLsaLxSrgKcSk3ClyTDh9Q2hkDpnEdAsLADbwJdPQ==
+"@flowgram.ai/free-group-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-group-plugin/-/free-group-plugin-0.2.14.tgz"
+  integrity sha512-mBYUgCFVn81784dnPac9IBMFgMvDW/n7wW63Lr8HdwfeLQIG4SOQV4sYlfzGLYIRJBh+BF5Aoo6tT3E8ZsVaiQ==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/free-container-plugin" "0.2.9"
-    "@flowgram.ai/free-history-plugin" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/free-lines-plugin" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/shortcuts-plugin" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/free-container-plugin" "0.2.14"
+    "@flowgram.ai/free-history-plugin" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/free-lines-plugin" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/shortcuts-plugin" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/free-history-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-history-plugin/-/free-history-plugin-0.2.9.tgz"
-  integrity sha512-JHOJHx9LjpbZ85f7Ni8Q/M5zSGkETZo6d5gYnPdeCPd7ffHaSu0ZKg4lwQBxHEydRnVIprIIrmyZsvc/MPp8ag==
+"@flowgram.ai/free-history-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-history-plugin/-/free-history-plugin-0.2.14.tgz"
+  integrity sha512-l531v8EEKPLg5DxZtcw5K+APlwfc0uSfrjGHtYBiIh1DrUAjy05rYoQHOqiaOXGsFMav4FhCbnc2K9zJjAU3Wg==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/form-core" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/history" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/form-core" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/history" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/free-hover-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-hover-plugin/-/free-hover-plugin-0.2.9.tgz"
-  integrity sha512-sYSN4NakwtS7KxPkqg+GvIGCHrJoy0GQjP2wYG45N70j8MmOU9jPhjM+AIfNNLsCv1Tcj2mvvrfUfrv1fxBkMw==
+"@flowgram.ai/free-hover-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-hover-plugin/-/free-hover-plugin-0.2.14.tgz"
+  integrity sha512-SUuDK/B9+djt5xKjGOtOO7Yld1UACw9ldSrfzfUCw9x2Xb8xPx3vgy16YvU1oRuXxR0eg691+u01e2jTIYmHqQ==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/select-box-plugin" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/select-box-plugin" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/free-layout-core@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-layout-core/-/free-layout-core-0.2.9.tgz"
-  integrity sha512-xLVQbPxlNGPhSD9WiQT2aXMJMzsc2+gOmsunWc0xZILh2uECO8YTu9F7/DsmcZpPB8JRXxMM03+WxyHH9ayVQQ==
+"@flowgram.ai/free-layout-core@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-layout-core/-/free-layout-core-0.2.14.tgz"
+  integrity sha512-V8joaDkZPEiPM0DwvoaWwYCGJRZfZ8/g1GY6yJmP3yCj2aNrEdW04ej2SR1+nu2O1JCqPX8eWHvVtd/kp+4YRg==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/form-core" "0.2.9"
-    "@flowgram.ai/node" "0.2.9"
-    "@flowgram.ai/reactive" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/form-core" "0.2.14"
+    "@flowgram.ai/node" "0.2.14"
+    "@flowgram.ai/reactive" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash-es "^4.17.21"
     nanoid "^4.0.2"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/free-layout-editor@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-layout-editor/-/free-layout-editor-0.2.9.tgz"
-  integrity sha512-cmCLihSwGQof+D1IybqRoJbxzrxEJ2jnl3Hv1iMuy+gwloamf6lc6pT1wqQMN3lH1jTuySPxUbigt1Eqf+MYZw==
+"@flowgram.ai/free-layout-editor@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-layout-editor/-/free-layout-editor-0.2.14.tgz"
+  integrity sha512-5fserSpPtuUkTD1yNNWvEHe8Ik/fQ8Zc6CnGuVN2z90FtlOpDdUGFO7ROzt/1B7XxWLocz5Iyy/xq9epexB3PA==
   dependencies:
-    "@flowgram.ai/editor" "0.2.9"
-    "@flowgram.ai/free-auto-layout-plugin" "0.2.9"
-    "@flowgram.ai/free-history-plugin" "0.2.9"
-    "@flowgram.ai/free-hover-plugin" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/free-lines-plugin" "0.2.9"
-    "@flowgram.ai/free-stack-plugin" "0.2.9"
-    "@flowgram.ai/history" "0.2.9"
-    "@flowgram.ai/minimap-plugin" "0.2.9"
-    "@flowgram.ai/select-box-plugin" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/editor" "0.2.14"
+    "@flowgram.ai/free-auto-layout-plugin" "0.2.14"
+    "@flowgram.ai/free-history-plugin" "0.2.14"
+    "@flowgram.ai/free-hover-plugin" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/free-lines-plugin" "0.2.14"
+    "@flowgram.ai/free-stack-plugin" "0.2.14"
+    "@flowgram.ai/history" "0.2.14"
+    "@flowgram.ai/minimap-plugin" "0.2.14"
+    "@flowgram.ai/select-box-plugin" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     clsx "^1.1.1"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/free-lines-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-lines-plugin/-/free-lines-plugin-0.2.9.tgz"
-  integrity sha512-nITWaz3Ivy3gYen3WXmT0aE/4IDssDvAJIYB7orpSlnV26PhhP280T+qrjfPsKgD6W391/Hy66zbdPwrYVHrPA==
+"@flowgram.ai/free-lines-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-lines-plugin/-/free-lines-plugin-0.2.14.tgz"
+  integrity sha512-eOBdtrmhPO5KVeohoGu60tCNNWAlCs2rBi38Q2WHZB3C5Rf5u72ejHFIe3VIS3MY4Jw+tmRxIkfis5Zd9RMGrA==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/free-stack-plugin" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/free-stack-plugin" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     bezier-js "^6.1.4"
     clsx "^1.1.1"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/free-node-panel-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-node-panel-plugin/-/free-node-panel-plugin-0.2.9.tgz"
-  integrity sha512-/GjIDe0FOZ+AkkFRJR2QGV72K9rS/+9kBLQA4F2DDXcEFocH764KW5brjAbcFVhkf5u+QIZZURvp1JD5u46uNg==
+"@flowgram.ai/free-node-panel-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-node-panel-plugin/-/free-node-panel-plugin-0.2.14.tgz"
+  integrity sha512-hV1zhljULT8CbshzNrl9LSwq8+GWKBqcuIO4pLtv913FpZcihpz9hvrrqtgUKtzfEOuTZdajcdZjTQ90Zbyqwg==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/free-history-plugin" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/free-history-plugin" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/free-snap-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-snap-plugin/-/free-snap-plugin-0.2.9.tgz"
-  integrity sha512-hPIFD6maZdihCJjFHPYy3KUQ0w2AfSrmTm+UbyQVOorNxCW9S0SNlRQRY/WxS9cL9WIbaXSjXaFnHoLCifAACQ==
+"@flowgram.ai/free-snap-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-snap-plugin/-/free-snap-plugin-0.2.14.tgz"
+  integrity sha512-MZto1ndtrLwlfbDjg3y99mq0zqZ1quajgjJ0kFv1hBiRN/4scvOdMjQHGlgQ5lbLn0iGTmgZUzVe94ZXwD6d4w==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/free-stack-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/free-stack-plugin/-/free-stack-plugin-0.2.9.tgz"
-  integrity sha512-ivH41FvZeDkWL1BTT8WNtob50HbalSghUVIgRirxr85WUuNfLcGnOXBLMy5I00a+0O757JL+JqUdqJqlh/GDcw==
+"@flowgram.ai/free-stack-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/free-stack-plugin/-/free-stack-plugin-0.2.14.tgz"
+  integrity sha512-Mnc+mdvaGRf/HR9QQCr36dqti9WwvuQcQjnwBnEAC7yn51Sqrf/CfcJu5fBfgaDgtNszH3xu/ZT/AMlW+4P/bw==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/group-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/group-plugin/-/group-plugin-0.2.9.tgz"
-  integrity sha512-E1phmQ6SKD86PvKLjUV/NrYosXhIdwjadWtBZH/39tBGn+IXBh6IMd+rbxEra0aC4aTCl4FjfTuiOA0kTLi/WQ==
+"@flowgram.ai/group-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/group-plugin/-/group-plugin-0.2.14.tgz"
+  integrity sha512-XydM3xdeVPrjnfU5yW9z+PGbvbkw41X4O7n6xruU6ZT6T2Nzn3DazrHS++3Rrtr34yKu7l2L2FrMziSKLgIfKw==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/history-node-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/history-node-plugin/-/history-node-plugin-0.2.9.tgz"
-  integrity sha512-u2X1u1j5lGf4uub5KtKu41f/w6bGN5MqBeoMIBImmyMmfWJ/L5veZbQi2DQmIAnvBil9GoJlE8ep2eKMQ557tA==
+"@flowgram.ai/history-node-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/history-node-plugin/-/history-node-plugin-0.2.14.tgz"
+  integrity sha512-bjCd+QcMYhCTIJzqgX5WJl3KsY0Q81MP9z3A3mnIj87UvASbLpn0V7Wd3/n4HZlloPXv3LRc2sjzGdgZtx4yvQ==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/form" "0.2.9"
-    "@flowgram.ai/form-core" "0.2.9"
-    "@flowgram.ai/history" "0.2.9"
-    "@flowgram.ai/node" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
-    inversify "^6.0.1"
-    lodash "^4.17.21"
-    reflect-metadata "~0.2.2"
-
-"@flowgram.ai/history@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/history/-/history-0.2.9.tgz"
-  integrity sha512-SFlE81WUTVwYcerHpVF9sdYunBFy6092Rd46R6eYEJqAHTJwInIlPVyozQCcRvzVIFS6dRJcw0JMI1SvL6Q24A==
-  dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
-    inversify "^6.0.1"
-    lodash "^4.17.21"
-    nanoid "^4.0.2"
-    reflect-metadata "~0.2.2"
-
-"@flowgram.ai/i18n-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/i18n-plugin/-/i18n-plugin-0.2.9.tgz"
-  integrity sha512-xw3WP720dYq2LKHzFdW298qNJFrBnZk8wZkKiegmAAvNiK86E0KD4Y1VsZf6kH+ormiTohxBxLhuEWXJigvYFw==
-  dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/i18n" "0.2.9"
-
-"@flowgram.ai/i18n@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/i18n/-/i18n-0.2.9.tgz"
-  integrity sha512-deZM4U0FBiHoH21KSJ6GMZ9G1m51mqSbveZTqphw8F5gXU3AKpGLIFhBlcg68txR32L2pjup1b+zDK7vAvStQg==
-  dependencies:
-    "@flowgram.ai/utils" "0.2.9"
-
-"@flowgram.ai/materials-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/materials-plugin/-/materials-plugin-0.2.9.tgz"
-  integrity sha512-f32sTAtcNq9BJCHK/4stribEd6RrpKwDHIlyPAt8bZy/t3VbQur6TwSL1r9YgjebcgKzYfJJw/lEfkWJ5xwaYQ==
-  dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/form-core" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
-    inversify "^6.0.1"
-    reflect-metadata "~0.2.2"
-
-"@flowgram.ai/minimap-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/minimap-plugin/-/minimap-plugin-0.2.9.tgz"
-  integrity sha512-Fft02XQBmoKLl4/VG0HkSpb44DIVllovxNDO30tG6SyVXVmL71UX9+Cst7cuifduLlPnrxAYBOFGJEFq8Zxnww==
-  dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/form" "0.2.14"
+    "@flowgram.ai/form-core" "0.2.14"
+    "@flowgram.ai/history" "0.2.14"
+    "@flowgram.ai/node" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/node-core-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/node-core-plugin/-/node-core-plugin-0.2.9.tgz"
-  integrity sha512-4uF4jSD/9mmHYtj+gISvv51DfqoSCYPg1fvooxbvsokRkl0tDVBRaeQcGDVNKuznVCH4122BxM8noaHv+n8tog==
+"@flowgram.ai/history@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/history/-/history-0.2.14.tgz"
+  integrity sha512-fqcgm3+mvxEmMl9SnZSw4LVtDJ+xwzMOePi5E9Her3l0k581JtHBA+A07So8x3WzBXPXp0hLloa/9dz0/lt4zA==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/form-core" "0.2.9"
-    "@flowgram.ai/node" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
-    inversify "^6.0.1"
-    reflect-metadata "~0.2.2"
-
-"@flowgram.ai/node-variable-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/node-variable-plugin/-/node-variable-plugin-0.2.9.tgz"
-  integrity sha512-Bi4X9aayqJPvEpT09QTnfy+A820JCahSlLqIT0wzUTpctG8AL1cI9CmN66vZPdkwAaZCdHO09uumdTFUUfggYA==
-  dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/form-core" "0.2.9"
-    "@flowgram.ai/node" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
-    "@flowgram.ai/variable-plugin" "0.2.9"
-    inversify "^6.0.1"
-    lodash "^4.17.21"
-    reflect-metadata "~0.2.2"
-
-"@flowgram.ai/node@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/node/-/node-0.2.9.tgz"
-  integrity sha512-z3SKw/H3AD5H7GPoStfemRwiEqpkO4u+R83HtulRrMlfBRHqUNOTIWXPgdNW9XOE/NDQB5aFicRcLd25ECBkww==
-  dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/form" "0.2.9"
-    "@flowgram.ai/form-core" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     nanoid "^4.0.2"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/playground-react@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/playground-react/-/playground-react-0.2.9.tgz"
-  integrity sha512-Vp4n6663Q7ECO3HhfzO33D4/vscDFGq2Da9DfX9pnedBNMhQXQFOdh2YeRDB+bSLCtm3m/eEW9jjCJ5gqTz8HQ==
+"@flowgram.ai/i18n-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/i18n-plugin/-/i18n-plugin-0.2.14.tgz"
+  integrity sha512-x1HnNsp1cSNgOGbX8ZjnPisZQKyB6pdqzACqsmFJ5FRhFU+vLDaseVgbeGMn+L3JAWZqj9lL0Wzfk8WAEsE+7g==
   dependencies:
-    "@flowgram.ai/background-plugin" "0.2.9"
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/shortcuts-plugin" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/i18n" "0.2.14"
+
+"@flowgram.ai/i18n@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/i18n/-/i18n-0.2.14.tgz"
+  integrity sha512-Tz5pmTTlg7ZKVuHETgCgCuneIjxkgCKuC4lv/kVaSwcom4pFZHQOIHURvGivMes0BbNJpf/aMX+rjnGJrWi+1w==
+  dependencies:
+    "@flowgram.ai/utils" "0.2.14"
+    i18n-js "^4.5.1"
+
+"@flowgram.ai/materials-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/materials-plugin/-/materials-plugin-0.2.14.tgz"
+  integrity sha512-3YBpk9+4JtemVxF3/kBXJyVDo52LwxHaRyhZiexkXZXAed7KxYq+DZNQq0qPXdVFARYkBxHmgAUQiubY98/OPQ==
+  dependencies:
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/form-core" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/reactive@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/reactive/-/reactive-0.2.9.tgz"
-  integrity sha512-ErwSMXIHABwJpiRTAa6hQxqIWsP2f7COKKU0eRragAmqnjU3pMpBbuKICI5mGbmFlBPowKJmFfUk6caTeGWs7w==
+"@flowgram.ai/minimap-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/minimap-plugin/-/minimap-plugin-0.2.14.tgz"
+  integrity sha512-lUc0aN6NdJYIEunXpOAFczSiRiQsSoAfQP/f0EyTETiKs4xtdX8FDdabFgsEv1Ggtuo53g2jtmEGRSV8UDyzGQ==
   dependencies:
-    "@flowgram.ai/utils" "0.2.9"
-
-"@flowgram.ai/redux-devtool-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/redux-devtool-plugin/-/redux-devtool-plugin-0.2.9.tgz"
-  integrity sha512-C6zO5MFYaV0mnjz6yI1w8SLll9wuBnRUVCy0KttjlRWEpDiN+iIV2QqR6SxpjYw/zM2He0rLpXaTC124YMtsyA==
-  dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/variable-core" "0.2.9"
-    inversify "^6.0.1"
-    reflect-metadata "~0.2.2"
-    styled-components "^5"
-
-"@flowgram.ai/renderer@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/renderer/-/renderer-0.2.9.tgz"
-  integrity sha512-Fi4SuiCLnXMNAIaiCZztnq6V3HHuRCa4O2O0Xc2j+U8zna6AtLe2bxx9REpndMgjQEMkmJ3cSDOr3wbAun5jVA==
-  dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/i18n" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     lodash "^4.17.21"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/select-box-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/select-box-plugin/-/select-box-plugin-0.2.9.tgz"
-  integrity sha512-Kx77dBFAb22Lcd0UHez9/gVncx8ADOdkxeVJCJXw4Vcn4lZq7hQFAxAPEf9jZqSwXxlA41UmYUiyPKwlCOSDuQ==
+"@flowgram.ai/node-core-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/node-core-plugin/-/node-core-plugin-0.2.14.tgz"
+  integrity sha512-WyrjuSu0LSjuUAqLOT8fGn5bg3XP1+u2ENCecQZxXq5frV0JSwHYyKklJmIzFwM5t5vNzNwGZAV4cttbDF47lw==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/renderer" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/form-core" "0.2.14"
+    "@flowgram.ai/node" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/shortcuts-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/shortcuts-plugin/-/shortcuts-plugin-0.2.9.tgz"
-  integrity sha512-LbDbae78UA1hiVIwKhDh+mZ/99diUixr8wmrGY5U+8NGjzLON1XhyUJLJhrmk5+LsiOixjs3fLyMEJuHfNP7tw==
+"@flowgram.ai/node-variable-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/node-variable-plugin/-/node-variable-plugin-0.2.14.tgz"
+  integrity sha512-/tkIO3IY2XAcOSfLKr/XFRfVlDyUXZGsVDefNvXV053Sez1GJGsOF7Jn4zUdrBhwaDmwmN+2RdHdhRvgYBudMQ==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/form-core" "0.2.14"
+    "@flowgram.ai/node" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
+    "@flowgram.ai/variable-plugin" "0.2.14"
+    inversify "^6.0.1"
+    lodash "^4.17.21"
+    reflect-metadata "~0.2.2"
+
+"@flowgram.ai/node@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/node/-/node-0.2.14.tgz"
+  integrity sha512-ab7AbC6b0iQSduYmwzoJQ/qSZuYtuk98PWb05GIeuG2yq/YzBuJFUACUyuQA15+Kdbbqu4yvVI2C1ozSSV/82A==
+  dependencies:
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/form" "0.2.14"
+    "@flowgram.ai/form-core" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
+    inversify "^6.0.1"
+    lodash "^4.17.21"
+    nanoid "^4.0.2"
+    reflect-metadata "~0.2.2"
+
+"@flowgram.ai/playground-react@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/playground-react/-/playground-react-0.2.14.tgz"
+  integrity sha512-NmJ67qbdbwoc/6xSiH6jkStG5YVQ/WB0VqMjH64E0cDfzJ9P1UGzcZT2yHKg2iKzPJS3rNT1WOazfkbS/CHSsA==
+  dependencies:
+    "@flowgram.ai/background-plugin" "0.2.14"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/shortcuts-plugin" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
+    inversify "^6.0.1"
+    reflect-metadata "~0.2.2"
+
+"@flowgram.ai/reactive@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/reactive/-/reactive-0.2.14.tgz"
+  integrity sha512-Ll28dzS2aaff1G6PsuMycEYVbRTO60vJRqVD3pqw43MXmePq/tuyg4m7k9o9Ror91EsOU7UzOSsj3GrTb5jEwQ==
+  dependencies:
+    "@flowgram.ai/utils" "0.2.14"
+
+"@flowgram.ai/redux-devtool-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/redux-devtool-plugin/-/redux-devtool-plugin-0.2.14.tgz"
+  integrity sha512-VERxwBnaSCRNMzjK7U8ZVdU05HY52wfiVmreH0ELqlmgCxxpOTEv7qbcOgrGhbeO1ACuVHN0BlrxrnNOPm5mDw==
+  dependencies:
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/variable-core" "0.2.14"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
     styled-components "^5"
 
-"@flowgram.ai/ts-config@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/ts-config/-/ts-config-0.2.9.tgz"
-  integrity sha512-1KRsbt3lRYKe6UKw3ntwNOCH1+o1yQC3IN5vXjNtBtlsW0x50pbCc2XvNOWjFEqH2ijLgVS91UbrOwYo5mozcQ==
+"@flowgram.ai/renderer@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/renderer/-/renderer-0.2.14.tgz"
+  integrity sha512-wJxVqUMkRQFQ3WyRokqDycb9rEN21J1sZug1jMMJTQ2ggHsIeJPfNmmTkQEl5n5JyYnm2iIUVk7DbZy78MOniA==
+  dependencies:
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/i18n" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
+    inversify "^6.0.1"
+    lodash "^4.17.21"
+    reflect-metadata "~0.2.2"
 
-"@flowgram.ai/utils@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/utils/-/utils-0.2.9.tgz"
-  integrity sha512-xaaHPf2avidtnjWvH7uByUcKuokpo0DaVxaoMWJVALfSNryBsXjInHgbLlA8oFtKki7ho/alR34jl5pD9gNS4g==
+"@flowgram.ai/select-box-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/select-box-plugin/-/select-box-plugin-0.2.14.tgz"
+  integrity sha512-ZLTKzjFm7mZ2cBCgjei+tJamAFJFdWJYMolXW1F3+XTMJdivyXsX0HHGpPCbSIL7fQRmFOh1kee5uitrGvkhbA==
+  dependencies:
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/renderer" "0.2.14"
+    inversify "^6.0.1"
+    reflect-metadata "~0.2.2"
+
+"@flowgram.ai/shortcuts-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/shortcuts-plugin/-/shortcuts-plugin-0.2.14.tgz"
+  integrity sha512-iHrVL/cH5pHKTTi/xoc7rFJe/jZ6oNTs1UWs/uUFIdLcIA/WVqTkCa6JPdID8T5JfFU2cZrlVyZvAXt8jrKPVQ==
+  dependencies:
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
+    inversify "^6.0.1"
+    reflect-metadata "~0.2.2"
+    styled-components "^5"
+
+"@flowgram.ai/ts-config@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/ts-config/-/ts-config-0.2.14.tgz"
+  integrity sha512-seIyyfKkToE/zsS0I3K/tjIqf/pNLsW9nKJRKJ6JxhQs6QvDnE1n+dVhtgQFB6S0a+tLyV5aHg6+Fym5fGD0fQ==
+
+"@flowgram.ai/utils@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/utils/-/utils-0.2.14.tgz"
+  integrity sha512-rHCsY/k6UuYPTbZWqumDxapFeW+/OyxbpZ+Ald1MLnxc3IVe51E5Wq9WEWHKiqhJp+9Zl/B2XtSGVEF+ATWbTw==
   dependencies:
     clsx "^1.1.1"
     inversify "^6.0.1"
     nanoid "^4.0.2"
     reflect-metadata "~0.2.2"
 
-"@flowgram.ai/variable-core@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/variable-core/-/variable-core-0.2.9.tgz"
-  integrity sha512-hKmju+kIx2F0gqAXTmNM9JXgRg8/gmjWtsv4zZewXYnczW4zfYdf/+LrP5YnTmj4Jg2pBYqohFgo0PFvLK1Hqg==
+"@flowgram.ai/variable-core@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/variable-core/-/variable-core-0.2.14.tgz"
+  integrity sha512-Nhq71Ke+c4fMW0+PFqZ9g521+5+JcxrML+AmIZMkGNeOTcNaXRocfW++mii0V53K59mWUycdJ74NwtpV+28gjQ==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
     fast-equals "^2.0.0"
     inversify "^6.0.1"
     lodash "^4.17.21"
@@ -1951,31 +1953,31 @@
     reflect-metadata "~0.2.2"
     rxjs "^7.8.1"
 
-"@flowgram.ai/variable-layout@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/variable-layout/-/variable-layout-0.2.9.tgz"
-  integrity sha512-vSK8qWHzKJXfrJEy4wQj+c/ntqDrc3Hp7upqX1Wfky1tQFmzlMcPeUbkXwWD5eFQRYx1KaTUeZ5YAZv97cXDHg==
+"@flowgram.ai/variable-layout@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/variable-layout/-/variable-layout-0.2.14.tgz"
+  integrity sha512-hU0e4VbSeU0dtbEMql50d3l29yAZiBRSl+jOZTdDfhq4TaPpYiezll4Vzc//uoI4NxzhbUDzUA2/68XgbrXDww==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
-    "@flowgram.ai/variable-core" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
+    "@flowgram.ai/variable-core" "0.2.14"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
     styled-components "^5"
 
-"@flowgram.ai/variable-plugin@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.npmjs.org/@flowgram.ai/variable-plugin/-/variable-plugin-0.2.9.tgz"
-  integrity sha512-W3UqxZdO9Edk9x0uWwNGz7+jqZG7ObPeqc6IRlqJu92iQ9jWU4YwrniSYznWSZvTFxqLunw4vnJ6TQVHANFulw==
+"@flowgram.ai/variable-plugin@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.npmjs.org/@flowgram.ai/variable-plugin/-/variable-plugin-0.2.14.tgz"
+  integrity sha512-NxU3rCKz9oi0UcjUPg73SF1u5BGLFft1wcxeDNbI/lq9JB6av7+YW7RkWHWIBS9vKfnJ7AzmXrT7QIQQayHAJQ==
   dependencies:
-    "@flowgram.ai/core" "0.2.9"
-    "@flowgram.ai/document" "0.2.9"
-    "@flowgram.ai/free-layout-core" "0.2.9"
-    "@flowgram.ai/utils" "0.2.9"
-    "@flowgram.ai/variable-core" "0.2.9"
-    "@flowgram.ai/variable-layout" "0.2.9"
+    "@flowgram.ai/core" "0.2.14"
+    "@flowgram.ai/document" "0.2.14"
+    "@flowgram.ai/free-layout-core" "0.2.14"
+    "@flowgram.ai/utils" "0.2.14"
+    "@flowgram.ai/variable-core" "0.2.14"
+    "@flowgram.ai/variable-layout" "0.2.14"
     inversify "^6.0.1"
     reflect-metadata "~0.2.2"
     styled-components "^5"
@@ -3126,6 +3128,11 @@ bezier-js@^6.1.4:
   version "6.1.4"
   resolved "https://registry.npmjs.org/bezier-js/-/bezier-js-6.1.4.tgz"
   integrity sha512-PA0FW9ZpcHbojUCMu28z9Vg/fNkwTj5YhusSAjHHDfHDGLxJ6YUKrAN2vk1fP2MMOxVw4Oko16FMlRGVBGqLKg==
+
+bignumber.js@*:
+  version "9.3.0"
+  resolved "https://registry.npmjs.org/bignumber.js/-/bignumber.js-9.3.0.tgz"
+  integrity sha512-EM7aMFTXbptt/wZdMlBv2t8IViwQL+h6SLHosp8Yf0dqJMTnY6iL32opnAB6kAdL0SZPuvcAzFr31o0c/R3/RA==
 
 bl@^4.1.0:
   version "4.1.0"
@@ -4533,6 +4540,15 @@ html-entities@^2.6.0:
   resolved "https://registry.npmjs.org/html-entities/-/html-entities-2.6.0.tgz"
   integrity sha512-kig+rMn/QOVRvr7c86gQ8lWXq+Hkv6CbAH1hLu+RG338StTpE8Z0b44SDVaqVu7HGKf27frdmUYEs9hTUX/cLQ==
 
+i18n-js@^4.5.1:
+  version "4.5.1"
+  resolved "https://registry.npmjs.org/i18n-js/-/i18n-js-4.5.1.tgz"
+  integrity sha512-n7jojFj1WC0tztgr0I8jqTXuIlY1xNzXnC3mjKX/YjJhimdM+jXM8vOmn9d3xQFNC6qDHJ4ovhdrGXrRXLIGkA==
+  dependencies:
+    bignumber.js "*"
+    lodash "*"
+    make-plural "*"
+
 iconv-lite@^0.4.24:
   version "0.4.24"
   resolved "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.24.tgz"
@@ -5010,7 +5026,7 @@ lodash.merge@^4.6.2:
   resolved "https://registry.npmjs.org/lodash.merge/-/lodash.merge-4.6.2.tgz"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
-lodash@^4.0.1, lodash@^4.17.21:
+lodash@*, lodash@^4.0.1, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -5051,6 +5067,11 @@ make-error@^1.1.1:
   version "1.3.6"
   resolved "https://registry.npmjs.org/make-error/-/make-error-1.3.6.tgz"
   integrity sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==
+
+make-plural@*:
+  version "7.4.0"
+  resolved "https://registry.npmjs.org/make-plural/-/make-plural-7.4.0.tgz"
+  integrity sha512-4/gC9KVNTV6pvYg2gFeQYTW3mWaoJt7WZE5vrp1KnQDgW92JtYZnzmZT81oj/dUTqAIu0ufI2x3dkgu3bB1tYg==
 
 markdown-extensions@^2.0.0:
   version "2.0.0"
