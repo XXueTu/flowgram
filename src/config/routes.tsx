@@ -1,11 +1,11 @@
 import {
-  ApiOutlined,
-  AppstoreOutlined,
-  CloudOutlined,
-  DashboardOutlined,
-  ScheduleOutlined,
-  SettingOutlined,
-  TeamOutlined
+    ApiOutlined,
+    AppstoreOutlined,
+    CloudOutlined,
+    DashboardOutlined,
+    ScheduleOutlined,
+    SettingOutlined,
+    TeamOutlined
 } from "@ant-design/icons";
 import React from "react";
 import { Navigate } from "react-router-dom";
@@ -143,7 +143,7 @@ export const routeConfigs: RouteConfig[] = [
     menuOrder: 2,
     children: [
       {
-        path: "/workflow/list",
+        path: "/workflow-list",
         element: () => import("../pages/workflow-list"),
         permissions: [PermissionCode.WORKFLOW_VIEW],
         name: "工作空间列表",
@@ -270,6 +270,24 @@ export const routeConfigs: RouteConfig[] = [
     path: "/editor/:canvasId/:workflowId",
     element: () => import("../pages/editor"),
     hideInMenu: true, // 编辑器页面隐藏在菜单中
+  },
+  {
+    path: "/publish-management/:workspaceId",
+    element: () => import("../pages/publish-management"),
+    permissions: [PermissionCode.WORKFLOW_VIEW],
+    hideInMenu: true, // 发布管理页面隐藏在菜单中
+  },
+  {
+    path: "/api-detail/:workspaceId/:apiId",
+    element: () => import("../pages/api-detail"),
+    permissions: [PermissionCode.WORKFLOW_VIEW],
+    hideInMenu: true, // API详情页面隐藏在菜单中
+  },
+  {
+    path: "/workflow-list",
+    element: () => import("../pages/workflow-list"),
+    permissions: [PermissionCode.WORKFLOW_VIEW],
+    hideInMenu: true, // 工作空间列表页面
   },
 
   // 系统管理（隐藏菜单，可通过URL直接访问或其他方式进入）

@@ -17,6 +17,25 @@ export const API_ROUTES = {
   // API 发布相关接口
   API: {
     PUBLISH: "/workflow/api/publish",
+    LIST: "/workflow/api/list",
+    ON_OFF: "/workflow/api/onoff",
+    EDIT: "/workflow/api/edit",
+    RECORDS: "/workflow/api/records",
+    SECRET_KEY_LIST: "/workflow/api/secretkey/list",
+    SECRET_KEY_CREATE: "/workflow/api/secretkey/create",
+    SECRET_KEY_UPDATE_STATUS: "/workflow/api/secretkey/update/status",
+    SECRET_KEY_UPDATE_EXPIRATION: "/workflow/api/secretkey/update/expirationtime",
+    SECRET_KEY_DELETE: "/workflow/api/secretkey/delete",
+    HISTORY: "/workflow/api/history",
+    CALL: "/workflow/api/call",
+    CALL_TEMPLATE: "/workflow/api/call/template",
+    EXPORT_CURL: "/workflow/api/export/curl",
+    CALL_STATISTICS: "/workflow/api/call/statistics",
+  },
+
+  // JOB 发布相关接口
+  JOB: {
+    LIST: "/workflow/job/list",
   },
 
   // Case 相关接口

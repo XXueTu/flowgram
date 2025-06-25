@@ -440,6 +440,13 @@ const WorkSpaceListPage: React.FC = () => {
             >
               编排
             </Button>
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => navigate(`/publish-management/${record.id}`)}
+            >
+              发布管理
+            </Button>
             <Dropdown
               menu={{
                 items: menuItems,
