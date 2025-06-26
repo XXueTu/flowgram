@@ -1,11 +1,4 @@
-import {
-  ApiOutlined,
-  AppstoreOutlined,
-  CloudOutlined,
-  DashboardOutlined,
-  SettingOutlined,
-  TeamOutlined
-} from "@ant-design/icons";
+import { ApiOutlined, AppstoreOutlined, CloudOutlined, DashboardOutlined, SettingOutlined, TeamOutlined } from "@ant-design/icons";
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { createLazyComponent } from "../utils/lazy-import";
@@ -134,15 +127,15 @@ export const routeConfigs: RouteConfig[] = [
   },
 
   {
-    path: "/workflow",
-    element: () => import("../pages/workflow-list"),
+    path: "/flow",
+    element: () => Promise.resolve({ default: ResourcePage }),
     permissions: [PermissionCode.WORKFLOW_VIEW],
     name: "编排",
     icon: <ApiOutlined />,
     menuOrder: 2,
     children: [
       {
-        path: "/workflow-list",
+        path: "/flow/list",
         element: () => import("../pages/workflow-list"),
         permissions: [PermissionCode.WORKFLOW_VIEW],
         name: "工作空间列表",
@@ -282,12 +275,12 @@ export const routeConfigs: RouteConfig[] = [
     permissions: [PermissionCode.WORKFLOW_VIEW],
     hideInMenu: true, // API详情页面隐藏在菜单中
   },
-  {
-    path: "/workflow-list",
-    element: () => import("../pages/workflow-list"),
-    permissions: [PermissionCode.WORKFLOW_VIEW],
-    hideInMenu: true, // 工作空间列表页面
-  },
+  // {
+  //   path: "/workflow-list",
+  //   element: () => import("../pages/workflow-list"),
+  //   permissions: [PermissionCode.WORKFLOW_VIEW],
+  //   hideInMenu: true, // 工作空间列表页面
+  // },
 
   // 系统管理（隐藏菜单，可通过URL直接访问或其他方式进入）
   {
