@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { Typography, Tooltip } from '@douyinfe/semi-ui';
+import { Tooltip, Typography } from '@douyinfe/semi-ui';
 
 import { TypeTag } from '../type-tag';
 import './index.css';

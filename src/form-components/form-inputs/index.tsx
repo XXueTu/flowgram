@@ -1,10 +1,9 @@
-import { DynamicValueInput } from '@flowgram.ai/form-materials';
 import { Field } from '@flowgram.ai/free-layout-editor';
 
 import { useNodeRenderContext } from '../../hooks';
 import { JsonSchema } from '../../typings';
-import { Feedback } from '../feedback';
-import { FormItem } from '../form-item';
+import { TypeTag } from '../type-tag';
+import { FormInputItem, FormInputsContainer } from './styles';
 
 export function FormInputs() {
   const { readonly } = useNodeRenderContext();
@@ -19,27 +18,14 @@ export function FormInputs() {
         const content = Object.keys(properties).map((key) => {
           const property = properties[key];
           return (
-            <Field key={key} name={`inputsValues.${key}`} defaultValue={property.default}>
-              {({ field, fieldState }) => (
-                <FormItem
-                  name={key}
-                  type={property.type as string}
-                  required={required.includes(key)}
-                >
-                  <DynamicValueInput
-                    value={field.value}
-                    onChange={field.onChange}
-                    readonly={readonly}
-                    hasError={Object.keys(fieldState?.errors || {}).length > 0}
-                    schema={property}
-                  />
-                  <Feedback errors={fieldState?.errors} />
-                </FormItem>
-              )}
-            </Field>
+            <FormInputItem key={key}>
+              <TypeTag type={property.type as string} />
+              <span>{key}</span>
+              {required.includes(key) && <span style={{ color: '#f93920' }}>*</span>}
+            </FormInputItem>
           );
         });
-        return <>{content}</>;
+        return <FormInputsContainer>{content}</FormInputsContainer>;
       }}
     </Field>
   );

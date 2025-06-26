@@ -1,4 +1,4 @@
-import { Collapse, Input, Modal, Select, Tag } from "@douyinfe/semi-ui";
+import { Collapse, Input, Modal, Select } from "@douyinfe/semi-ui";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { useRef, useState } from "react";
 
@@ -263,7 +263,7 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
       <FormHeader />
       <FormContent>
         <div style={{ display: "flex", gap: 10, fontSize: "12px", alignItems: "baseline" }}>
-          <Field name="custom.language">{({ field }: any) => <Tag>{field.value}</Tag>}</Field>
+          {/* <Field name="custom.language">{({ field }: any) => <Tag>{field.value}</Tag>}</Field> */}
         </div>
         <FormInputs />
         <FormOutputs />
