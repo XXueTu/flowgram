@@ -251,11 +251,15 @@ export const RunDetailModal: React.FC<RunDetailModalProps> = ({
           padding: '20px', 
           height: '600px',
           display: 'flex',
-          gap: '20px'
+          gap: '20px',
+          minWidth: 0
         }}>
           {/* 左侧 - 组件列表 */}
           <div style={{ 
-            width: '350px', 
+            width: '350px',
+            minWidth: '300px',
+            maxWidth: '400px',
+            flex: '0 0 350px',
             borderRight: '1px solid #e6e8eb',
             paddingRight: '20px',
             display: 'flex',
@@ -291,23 +295,43 @@ export const RunDetailModal: React.FC<RunDetailModalProps> = ({
           </div>
 
           {/* 右侧 - 详细信息区域 */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ 
+            flex: '1 1 0', 
+            minWidth: 0,
+            display: 'flex', 
+            flexDirection: 'column',
+            overflow: 'hidden'
+          }}>
             {/* 选中组件的详细信息 */}
             {selectedComponent ? (
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ 
+                flex: 1, 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '16px',
+                minWidth: 0,
+                overflow: 'hidden'
+              }}>
                 <Card>
                   <div style={{ 
                     display: 'flex', 
                     justifyContent: 'space-between', 
                     alignItems: 'center', 
-                    marginBottom: '12px' 
+                    marginBottom: '12px',
+                    minWidth: 0
                   }}>
-                    <Title heading={6} style={{ margin: 0 }}>
+                    <Title heading={6} style={{ margin: 0, flex: '0 0 auto' }}>
                       组件信息: {selectedComponent.name}
                     </Title>
                     
                     {/* 右侧属性信息 */}
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      gap: '16px', 
+                      alignItems: 'center',
+                      flex: '0 0 auto',
+                      flexWrap: 'wrap'
+                    }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <Text type="secondary" style={{ fontSize: '12px' }}>ID:</Text>
                         <Text style={{ fontSize: '12px' }}>{selectedComponent.id}</Text>
@@ -351,9 +375,20 @@ export const RunDetailModal: React.FC<RunDetailModalProps> = ({
                   )}
                 </Card>
 
-                <div style={{ display: 'flex', gap: '16px', flex: 1 }}>
+                <div style={{ 
+                  display: 'flex', 
+                  gap: '16px', 
+                  flex: 1,
+                  minHeight: 0,
+                  overflow: 'hidden'
+                }}>
                   {/* 输入数据 */}
-                  <Card style={{ flex: 1 }}>
+                  <Card style={{ 
+                    flex: '1 1 0', 
+                    minWidth: 0,
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                       <Title heading={6} style={{ margin: 0 }}>输入</Title>
                       <Button 
@@ -363,22 +398,33 @@ export const RunDetailModal: React.FC<RunDetailModalProps> = ({
                         查看完整数据
                       </Button>
                     </div>
-                    <pre style={{ 
-                      background: '#f8f9fa', 
-                      padding: '12px', 
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      overflow: 'hidden',
-                      height: '150px',
-                      margin: 0,
-                      fontFamily: 'Monaco, Consolas, "Courier New", monospace'
+                    <div style={{ 
+                      flex: 1,
+                      minHeight: 0,
+                      overflow: 'auto'
                     }}>
-                      {getJsonPreview(selectedComponent.input, 300)}
-                    </pre>
+                      <pre style={{ 
+                        background: '#f8f9fa', 
+                        padding: '12px', 
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        margin: 0,
+                        fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-all'
+                      }}>
+                        {getJsonPreview(selectedComponent.input, 500)}
+                      </pre>
+                    </div>
                   </Card>
 
                   {/* 输出数据 */}
-                  <Card style={{ flex: 1 }}>
+                  <Card style={{ 
+                    flex: '1 1 0', 
+                    minWidth: 0,
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                       <Title heading={6} style={{ margin: 0 }}>输出</Title>
                       <Button 
@@ -388,18 +434,24 @@ export const RunDetailModal: React.FC<RunDetailModalProps> = ({
                         查看完整数据
                       </Button>
                     </div>
-                    <pre style={{ 
-                      background: '#f8f9fa', 
-                      padding: '12px', 
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      overflow: 'hidden',
-                      height: '150px',
-                      margin: 0,
-                      fontFamily: 'Monaco, Consolas, "Courier New", monospace'
+                    <div style={{ 
+                      flex: 1,
+                      minHeight: 0,
+                      overflow: 'auto'
                     }}>
-                      {getJsonPreview(selectedComponent.output, 300)}
-                    </pre>
+                      <pre style={{ 
+                        background: '#f8f9fa', 
+                        padding: '12px', 
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        margin: 0,
+                        fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-all'
+                      }}>
+                        {getJsonPreview(selectedComponent.output, 500)}
+                      </pre>
+                    </div>
                   </Card>
                 </div>
               </div>
