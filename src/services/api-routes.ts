@@ -12,6 +12,9 @@ export const API_ROUTES = {
     GET_TRACE: "/workflow/canvas/trace",
     RUN_HISTORY: "/workflow/canvas/run/history",
     RUN_DETAIL: "/workflow/canvas/run/detail",
+    SAVE: "/workflow/canvas/save",
+    LOAD: "/workflow/canvas/load",
+    STOP: "/workflow/canvas/stop",
   },
 
   // API 发布相关接口
@@ -36,6 +39,9 @@ export const API_ROUTES = {
   // JOB 发布相关接口
   JOB: {
     LIST: "/workflow/job/list",
+    ON_OFF: "/workflow/job/on_off",
+    EDIT: "/workflow/job/edit",
+    RECORDS: "/workflow/job/records",
   },
 
   // Case 相关接口
@@ -46,18 +52,23 @@ export const API_ROUTES = {
     DELETE: "/workflow/case/delete",
     EDIT: "/workflow/case/edit",
     CREATE: "/workflow/case/create",
+    UPDATE: "/workflow/case/update",
+    RUN: "/workflow/case/run",
+    DUPLICATE: "/workflow/case/duplicate",
   },
 
   // User 相关接口
   USER: {
     LOGIN: "/workflow/user/login",
     REGISTER: "/workflow/user/register",
+    REFRESH_TOKEN: "/workflow/user/refresh_token",
     LOGOUT: "/workflow/user/logout",
     INFO: "/workflow/user/info",
     LIST: "/workflow/user/list",
     BIND_ROLE: "/workflow/user/bindrole",
     UPDATE_STATUS: "/workflow/user/update/status",
     UPDATE_INFO: "/workflow/user/update/info",
+    UPDATE: "/workflow/user/update",
   },
 
   // WorkSpace 相关接口（编排）
@@ -72,6 +83,14 @@ export const API_ROUTES = {
     ENV_EDIT: "/workflow/workspace/env/edit",
     EXPORT: "/workflow/workspace/export",
     IMPORT: "/workflow/workspace/import",
+    CREATE: "/workflow/workspace/create",
+    UPDATE: "/workflow/workspace/update",
+    DELETE: "/workflow/workspace/delete",
+    DETAIL: "/workflow/workspace/detail",
+    MEMBER_LIST: "/workflow/workspace/member/list",
+    MEMBER_ADD: "/workflow/workspace/member/add",
+    MEMBER_REMOVE: "/workflow/workspace/member/remove",
+    MEMBER_UPDATE_ROLE: "/workflow/workspace/member/update_role",
   },
 
   // Tag 相关接口
@@ -79,6 +98,25 @@ export const API_ROUTES = {
     LIST: "/workflow/tag/list",
     EDIT: "/workflow/tag/edit",
     REMOVE: "/workflow/tag/remove",
+  },
+
+  // 数据源相关
+  DATASOURCE: {
+    LIST: "/workflow/datasource/list",
+    ADD: "/workflow/datasource/add",
+    EDIT: "/workflow/datasource/edit",
+    DELETE: "/workflow/datasource/delete",
+    TEST: "/workflow/datasource/test",
+  },
+
+  // 首页统计相关接口
+  HOME: {
+    STATISTICS: "/workflow/basics/home/statistics",
+  },
+
+  // 下拉框相关接口
+  DROPDOWN: {
+    LIST: "/workflow/basics/dropdown",
   },
 } as const;
 

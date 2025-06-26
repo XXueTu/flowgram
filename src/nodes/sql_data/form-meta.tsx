@@ -1,6 +1,6 @@
 import { Collapse, Input, Modal, Select, Tag } from "@douyinfe/semi-ui";
 import Editor, { Monaco } from "@monaco-editor/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { IFlowValue, JsonSchemaEditor } from "@flowgram.ai/form-materials";
 import { Field, FieldRenderProps, FormMeta, FormRenderProps, ValidateTrigger } from "@flowgram.ai/free-layout-editor";
@@ -8,6 +8,7 @@ import { mapValues } from "lodash-es";
 
 import { FormContent, FormHeader, FormInputs, FormOutputs, PropertiesEdit } from "../../form-components";
 import { useIsSidebar } from "../../hooks";
+import { DropdownKind, dropdownService, GetDropDownListResponseItem } from "../../services";
 import { FlowNodeJSON, JsonSchema } from "../../typings";
 
 const errorHandlingModes = [
@@ -51,6 +52,25 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
   const editorRef = useRef<any>(null);
   const [visible, setVisible] = useState(false);
   const [currentSQL, setCurrentSQL] = useState("");
+  const [dataSourceOptions, setDataSourceOptions] = useState<GetDropDownListResponseItem[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // 获取MySQL数据源列表
+  const fetchDataSources = async () => {
+    setLoading(true);
+    try {
+      const dataSources = await dropdownService.getDataSourcesByKind(DropdownKind.MYSQL);
+      setDataSourceOptions(dataSources);
+    } catch (error) {
+      console.error('获取数据源列表失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataSources();
+  }, []);
 
   const handleEditorDidMount = (editor: any, monaco: Monaco) => {
     editorRef.current = editor;
@@ -114,13 +134,26 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                 <Field name="custom.datasourceId">
                   {({ field }) => (
                     <div style={{ marginBottom: 16 }}>
-                      <div style={{ marginBottom: 8 }}>数据源 ID</div>
-                      <Input
+                      <div style={{ marginBottom: 8 }}>数据源</div>
+                      <Select
                         value={field.value as number}
-                        onChange={(value) => field.onChange(Number(value) || 0)}
-                        placeholder="请输入数据源 ID"
-                        type="number"
+                        onChange={(value) => {
+                          // 如果清除选择，设置为 null 或 undefined
+                          if (value === null || value === undefined) {
+                            field.onChange(null);
+                          } else {
+                            field.onChange(Number(value));
+                          }
+                        }}
+                        placeholder="请选择数据源"
                         style={{ width: "100%" }}
+                        loading={loading}
+                        optionList={dataSourceOptions.map(item => ({
+                          label: item.label,
+                          value: item.value
+                        }))}
+                        filter
+                        showClear
                       />
                     </div>
                   )}
@@ -282,7 +315,17 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
       <FormHeader />
       <FormContent>
         <div style={{ display: "flex", gap: 10, fontSize: "12px", alignItems: "baseline" }}>
-          <Field name="custom.datasourceId">{({ field }: any) => <Tag>数据源: {field.value}</Tag>}</Field>
+          <Field name="custom.datasourceId">
+            {({ field }: any) => {
+              const datasourceId = field.value;
+              if (!datasourceId || datasourceId === 0 || datasourceId === null || datasourceId === undefined || isNaN(Number(datasourceId))) {
+                return <Tag>数据源: 未选择</Tag>;
+              }
+              const selectedDataSource = dataSourceOptions.find(item => item.value === datasourceId);
+              const displayText = selectedDataSource ? selectedDataSource.label : `ID: ${datasourceId}`;
+              return <Tag>数据源: {displayText}</Tag>;
+            }}
+          </Field>
         </div>
         <FormInputs />
         <FormOutputs />

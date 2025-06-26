@@ -88,6 +88,31 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             letter-spacing: 0.5px !important;
             margin: 0 !important;
           }
+          
+          .ant-pro-global-header {
+            padding-left: 24px !important;
+            padding-right: 24px !important;
+          }
+          
+          .ant-pro-global-header-logo {
+            padding-left: 0 !important;
+            margin-right: 40px !important;
+          }
+          
+          .ant-pro-top-nav-header-main-left {
+            margin-left: 0 !important;
+            padding-left: 0 !important;
+          }
+          
+          .ant-menu-horizontal {
+            margin-left: 0 !important;
+            padding-left: 0 !important;
+          }
+          
+          .ant-menu-horizontal > .ant-menu-item,
+          .ant-menu-horizontal > .ant-menu-submenu {
+            margin-left: 0 !important;
+          }
         `}
       </style>
       <ProLayout

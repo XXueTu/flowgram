@@ -1,5 +1,5 @@
 import { Collapse, Input, Select, Tag, TextArea } from "@douyinfe/semi-ui";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { IFlowValue, JsonSchemaEditor } from "@flowgram.ai/form-materials";
 import { Field, FieldRenderProps, FormMeta, FormRenderProps, ValidateTrigger } from "@flowgram.ai/free-layout-editor";
@@ -8,6 +8,7 @@ import { mapValues } from "lodash-es";
 import { llmDefaultOutput } from ".";
 import { FormContent, FormHeader, FormInputs, FormOutputs, PropertiesEdit } from "../../form-components";
 import { useIsSidebar } from "../../hooks";
+import { DropdownKind, dropdownService, GetDropDownListResponseItem } from "../../services";
 import { FlowNodeJSON, JsonSchema } from "../../typings";
 
 const errorHandlingModes = [
@@ -22,6 +23,25 @@ const outputTypes = [
 
 export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
   const isSidebar = useIsSidebar();
+  const [modelOptions, setModelOptions] = useState<GetDropDownListResponseItem[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // 获取模型数据源列表
+  const fetchModelDataSources = async () => {
+    setLoading(true);
+    try {
+      const models = await dropdownService.getDataSourcesByKind(DropdownKind.MODEL);
+      setModelOptions(models);
+    } catch (error) {
+      console.error('获取模型列表失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchModelDataSources();
+  }, []);
 
   if (isSidebar) {
     return (
@@ -60,13 +80,26 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
                 <Field name="custom.modelId">
                   {({ field }) => (
                     <div style={{ marginBottom: 16 }}>
-                      <div style={{ marginBottom: 8 }}>模型 ID</div>
-                      <Input
+                      <div style={{ marginBottom: 8 }}>模型</div>
+                      <Select
                         value={field.value as number}
-                        onChange={(value) => field.onChange(Number(value) || 0)}
-                        placeholder="请输入模型 ID"
-                        type="number"
+                        onChange={(value) => {
+                          // 如果清除选择，设置为 null 或 undefined
+                          if (value === null || value === undefined) {
+                            field.onChange(null);
+                          } else {
+                            field.onChange(Number(value));
+                          }
+                        }}
+                        placeholder="请选择模型"
                         style={{ width: "100%" }}
+                        loading={loading}
+                        optionList={modelOptions.map(item => ({
+                          label: item.label,
+                          value: item.value
+                        }))}
+                        filter
+                        showClear
                       />
                     </div>
                   )}
@@ -238,7 +271,17 @@ export const renderForm = ({ form }: FormRenderProps<FlowNodeJSON>) => {
       <FormHeader />
       <FormContent>
         <div style={{ display: "flex", gap: 10, fontSize: "12px", alignItems: "baseline" }}>
-          <Field name="custom.modelId">{({ field }: any) => <Tag>模型ID: {field.value}</Tag>}</Field>
+          <Field name="custom.modelId">
+            {({ field }: any) => {
+              const modelId = field.value;
+              if (!modelId || modelId === 0 || modelId === null || modelId === undefined || isNaN(Number(modelId))) {
+                return <Tag>模型: 未选择</Tag>;
+              }
+              const selectedModel = modelOptions.find(item => item.value === modelId);
+              const displayText = selectedModel ? selectedModel.label : `ID: ${modelId}`;
+              return <Tag>模型: {displayText}</Tag>;
+            }}
+          </Field>
         </div>
         <FormInputs />
         <FormOutputs />

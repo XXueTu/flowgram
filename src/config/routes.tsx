@@ -1,11 +1,10 @@
 import {
-    ApiOutlined,
-    AppstoreOutlined,
-    CloudOutlined,
-    DashboardOutlined,
-    ScheduleOutlined,
-    SettingOutlined,
-    TeamOutlined
+  ApiOutlined,
+  AppstoreOutlined,
+  CloudOutlined,
+  DashboardOutlined,
+  SettingOutlined,
+  TeamOutlined
 } from "@ant-design/icons";
 import React from "react";
 import { Navigate } from "react-router-dom";
@@ -149,20 +148,20 @@ export const routeConfigs: RouteConfig[] = [
         name: "工作空间列表",
         menuOrder: 1,
       },
-      {
-        path: "/workflow/editor",
-        element: () => Promise.resolve({ default: () => <div>工作流编辑器</div> }),
-        permissions: [PermissionCode.WORKFLOW_CREATE, PermissionCode.WORKFLOW_EDIT],
-        name: "工作流编辑器",
-        menuOrder: 2,
-      },
-      {
-        path: "/workflow/template",
-        element: () => Promise.resolve({ default: () => <div>工作流模板</div> }),
-        permissions: [PermissionCode.WORKFLOW_VIEW],
-        name: "工作流模板",
-        menuOrder: 3,
-      },
+      // {
+      //   path: "/workflow/editor",
+      //   element: () => Promise.resolve({ default: () => <div>工作流编辑器</div> }),
+      //   permissions: [PermissionCode.WORKFLOW_CREATE, PermissionCode.WORKFLOW_EDIT],
+      //   name: "工作流编辑器",
+      //   menuOrder: 2,
+      // },
+      // {
+      //   path: "/workflow/template",
+      //   element: () => Promise.resolve({ default: () => <div>工作流模板</div> }),
+      //   permissions: [PermissionCode.WORKFLOW_VIEW],
+      //   name: "工作流模板",
+      //   menuOrder: 3,
+      // },
     ],
   },
   {
@@ -175,58 +174,58 @@ export const routeConfigs: RouteConfig[] = [
     children: [
       {
         path: "/resource/data-source",
-        element: () => Promise.resolve({ default: () => <div>数据源管理</div> }),
+        element: () => import("../pages/datasource-management"),
         permissions: [PermissionCode.RESOURCE_VIEW],
         name: "数据源",
         menuOrder: 1,
       },
-      {
-        path: "/resource/compute",
-        element: () => Promise.resolve({ default: () => <div>计算资源</div> }),
-        permissions: [PermissionCode.RESOURCE_VIEW],
-        name: "计算资源",
-        menuOrder: 2,
-      },
-      {
-        path: "/resource/storage",
-        element: () => Promise.resolve({ default: () => <div>存储资源</div> }),
-        permissions: [PermissionCode.RESOURCE_VIEW],
-        name: "存储资源",
-        menuOrder: 3,
-      },
+      // {
+      //   path: "/resource/compute",
+      //   element: () => Promise.resolve({ default: () => <div>计算资源</div> }),
+      //   permissions: [PermissionCode.RESOURCE_VIEW],
+      //   name: "计算资源",
+      //   menuOrder: 2,
+      // },
+      // {
+      //   path: "/resource/storage",
+      //   element: () => Promise.resolve({ default: () => <div>存储资源</div> }),
+      //   permissions: [PermissionCode.RESOURCE_VIEW],
+      //   name: "存储资源",
+      //   menuOrder: 3,
+      // },
     ],
   },
-  {
-    path: "/task",
-    element: () => Promise.resolve({ default: TaskPage }),
-    permissions: [PermissionCode.TASK_VIEW],
-    name: "任务",
-    icon: <ScheduleOutlined />,
-    menuOrder: 4,
-    children: [
-      {
-        path: "/task/running",
-        element: () => Promise.resolve({ default: () => <div>运行中任务</div> }),
-        permissions: [PermissionCode.TASK_VIEW],
-        name: "运行中",
-        menuOrder: 1,
-      },
-      {
-        path: "/task/history",
-        element: () => Promise.resolve({ default: () => <div>历史任务</div> }),
-        permissions: [PermissionCode.TASK_VIEW],
-        name: "历史任务",
-        menuOrder: 2,
-      },
-      {
-        path: "/task/schedule",
-        element: () => Promise.resolve({ default: () => <div>定时任务</div> }),
-        permissions: [PermissionCode.TASK_VIEW],
-        name: "定时任务",
-        menuOrder: 3,
-      },
-    ],
-  },
+  // {
+  //   path: "/task",
+  //   element: () => Promise.resolve({ default: TaskPage }),
+  //   permissions: [PermissionCode.TASK_VIEW],
+  //   name: "任务",
+  //   icon: <ScheduleOutlined />,
+  //   menuOrder: 4,
+  //   children: [
+  //     {
+  //       path: "/task/running",
+  //       element: () => Promise.resolve({ default: () => <div>运行中任务</div> }),
+  //       permissions: [PermissionCode.TASK_VIEW],
+  //       name: "运行中",
+  //       menuOrder: 1,
+  //     },
+  //     {
+  //       path: "/task/history",
+  //       element: () => Promise.resolve({ default: () => <div>历史任务</div> }),
+  //       permissions: [PermissionCode.TASK_VIEW],
+  //       name: "历史任务",
+  //       menuOrder: 2,
+  //     },
+  //     {
+  //       path: "/task/schedule",
+  //       element: () => Promise.resolve({ default: () => <div>定时任务</div> }),
+  //       permissions: [PermissionCode.TASK_VIEW],
+  //       name: "定时任务",
+  //       menuOrder: 3,
+  //     },
+  //   ],
+  // },
   {
     path: "/plugin",
     element: () => Promise.resolve({ default: PluginPage }),
