@@ -6,10 +6,14 @@ export const Row = styled.div`
   align-items: center;
   font-size: 12px;
   margin-bottom: 6px;
+  gap: 8px;
+  min-width: 0;
+  overflow: visible;
 `;
 
 export const LeftColumn = styled.div`
-  width: 120px;
-  margin-right: 5px;
+  min-width: 120px;
+  max-width: 200px;
+  flex: 0 0 120px;
   position: relative;
 `;

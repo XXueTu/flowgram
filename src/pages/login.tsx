@@ -287,7 +287,7 @@ const LoginPage: React.FC = () => {
           <div style={decorativeShapeStyle}></div>
           
           <div style={logoSectionStyle}>
-            <div style={brandLogoStyle}>FlowGram</div>
+            <div style={brandLogoStyle}>WorkFlow</div>
             <div style={brandDescStyle}>智能工作流编排平台</div>
             
             <div style={featureListStyle}>
@@ -305,7 +305,7 @@ const LoginPage: React.FC = () => {
               </div>
               <div style={featureItemStyle}>
                 <span className="feature-icon">✓</span>
-                团队协作管理
+                API 任务发布
               </div>
             </div>
           </div>

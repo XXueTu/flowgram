@@ -1,14 +1,14 @@
 import { useCallback, useContext, useEffect, useMemo } from 'react';
 
+import { SideSheet } from '@douyinfe/semi-ui';
 import {
   PlaygroundEntityContext,
-  useRefresh,
   useClientContext,
+  useRefresh,
 } from '@flowgram.ai/free-layout-editor';
-import { SideSheet } from '@douyinfe/semi-ui';
 
+import { IsSidebarContext, NodeRenderContext, SidebarContext } from '../../context';
 import { FlowNodeMeta } from '../../typings';
-import { SidebarContext, IsSidebarContext, NodeRenderContext } from '../../context';
 
 export const SidebarRenderer = () => {
   const { nodeRender, setNodeRender } = useContext(SidebarContext);
@@ -77,7 +77,7 @@ export const SidebarRenderer = () => {
   ) : null;
 
   return (
-    <SideSheet mask={false} visible={visible} onCancel={handleClose}>
+    <SideSheet style={{ width: '130%' }} mask={false} visible={visible} onCancel={handleClose}>
       <IsSidebarContext.Provider value={true}>{content}</IsSidebarContext.Provider>
     </SideSheet>
   );

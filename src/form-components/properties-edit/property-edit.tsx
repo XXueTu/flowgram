@@ -60,7 +60,7 @@ export const PropertyEdit: React.FC<PropertyEditProps> = (props) => {
           value={value.default}
           onChange={(val) => updateProperty('default', val)}
           schema={{...value, extra: { weak: true }}}
-          style={{ flexGrow: 1 }}
+          style={{ flexGrow: 1 , }}
         />
       }
       {props.onDelete && !disabled && (
