@@ -34,7 +34,9 @@ export const API_ROUTES = {
     CALL_TEMPLATE: "/workflow/api/call/template",
     EXPORT_CURL: "/workflow/api/export/curl",
     CALL_STATISTICS: "/workflow/api/call/statistics",
+    GET_DOC: "/workflow/api/get/apidoc",
   },
+  
 
   // JOB 发布相关接口
   JOB: {

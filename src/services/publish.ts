@@ -300,6 +300,21 @@ export interface ApiCallStatisticsResponse {
 }
 
 /**
+ * 获取API文档请求参数
+ */
+export interface ApiGetApiDocRequest {
+  apiId: string;
+}
+
+/**
+ * 获取API文档响应
+ */
+export interface ApiGetApiDocResponse {
+  apiName: string;
+  apiDoc: string;
+}
+
+/**
  * JOB 发布列表请求参数
  */
 export interface JobPublishListRequest {
@@ -448,6 +463,13 @@ export class PublishService {
    */
   public async getApiCallStatistics(params: ApiCallStatisticsRequest): Promise<ApiCallStatisticsResponse> {
     return this.apiClient.post<ApiCallStatisticsResponse>(API_ROUTES.API.CALL_STATISTICS, params);
+  }
+
+  /**
+   * 获取API文档
+   */
+  public async getApiDoc(params: ApiGetApiDocRequest): Promise<ApiGetApiDocResponse> {
+    return this.apiClient.post<ApiGetApiDocResponse>(API_ROUTES.API.GET_DOC, params);
   }
 
   /**

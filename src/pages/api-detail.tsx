@@ -33,7 +33,9 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { useNavigate, useParams } from 'react-router-dom';
+import remarkGfm from 'remark-gfm';
 import {
   Case,
   CaseListRequest,
@@ -44,6 +46,8 @@ import {
   ApiCallTemplateRequest,
   ApiEditRequest,
   ApiExportCurlRequest,
+  ApiGetApiDocRequest,
+  ApiGetApiDocResponse,
   ApiHistory,
   ApiHistoryRequest,
   ApiOnOffRequest,
@@ -110,6 +114,8 @@ interface ApiDetailState {
   caseListLoading: boolean;
   templateLoading: boolean;
   exportCurlLoading: boolean;
+  apiDoc: ApiGetApiDocResponse | null;
+  docLoading: boolean;
 }
 
 const ApiDetailPage: React.FC = () => {
@@ -140,6 +146,8 @@ const ApiDetailPage: React.FC = () => {
     caseListLoading: false,
     templateLoading: false,
     exportCurlLoading: false,
+    apiDoc: null,
+    docLoading: false,
   });
 
   const [editForm] = Form.useForm();
@@ -771,6 +779,9 @@ const ApiDetailPage: React.FC = () => {
           fetchCaseList();
         }
         break;
+      case 'doc':
+        fetchApiDoc();
+        break;
     }
   }, [state.activeTab]);
 
@@ -784,6 +795,105 @@ const ApiDetailPage: React.FC = () => {
   // 获取调用模板（修改为专门的函数调用）
   const handleGetTemplate = () => {
     fetchCallTemplate();
+  };
+
+  // 获取API文档
+  const fetchApiDoc = async () => {
+    if (!apiId) return;
+    
+    setState(prev => ({ ...prev, docLoading: true }));
+    try {
+      const params: ApiGetApiDocRequest = { apiId };
+      const response = await publishService.getApiDoc(params);
+      setState(prev => ({ ...prev, apiDoc: response }));
+    } catch (error) {
+      message.error('获取API文档失败，显示示例文档');
+      // Mock 数据
+      const mockDoc: ApiGetApiDocResponse = {
+        apiName: '用户信息查询API',
+        apiDoc: `# 用户信息查询API
+
+## 接口描述
+根据用户ID查询用户的详细信息，包括基本信息、权限等。
+
+## 请求参数
+| 参数名 | 类型 | 必填 | 描述 |
+|--------|------|------|------|
+| userId | string | 是 | 用户唯一标识符 |
+
+## 响应参数
+| 参数名 | 类型 | 描述 |
+|--------|------|------|
+| code | number | 响应状态码 |
+| message | string | 响应消息 |
+| data | object | 用户信息对象 |
+
+### data对象结构
+| 参数名 | 类型 | 描述 |
+|--------|------|------|
+| userId | string | 用户ID |
+| userName | string | 用户姓名 |
+| email | string | 邮箱地址 |
+| profile | object | 用户档案信息 |
+
+## 示例
+
+### 请求示例
+\`\`\`json
+{
+  "userId": "12345"
+}
+\`\`\`
+
+### 响应示例
+\`\`\`json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "userId": "12345",
+    "userName": "张三",
+    "email": "zhangsan@example.com",
+    "profile": {
+      "age": 25,
+      "department": "技术部",
+      "position": "前端工程师"
+    }
+  }
+}
+\`\`\`
+
+## 错误码说明
+| 错误码 | 描述 |
+|--------|------|
+| 400 | 请求参数错误 |
+| 404 | 用户不存在 |
+| 500 | 服务器内部错误 |
+`,
+      };
+      setState(prev => ({ ...prev, apiDoc: mockDoc }));
+    } finally {
+      setState(prev => ({ ...prev, docLoading: false }));
+    }
+  };
+
+  // 下载API文档
+  const handleDownloadDoc = () => {
+    if (!state.apiDoc) {
+      message.warning('暂无文档内容');
+      return;
+    }
+
+    const blob = new Blob([state.apiDoc.apiDoc], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${state.apiDoc.apiName}.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    message.success('文档下载成功');
   };
 
   const tabItems = [
@@ -1158,6 +1268,153 @@ const ApiDetailPage: React.FC = () => {
               },
             }}
           />
+        </Card>
+      ),
+    },
+    {
+      key: 'doc',
+      label: (
+        <span>
+          <FileTextOutlined />
+          接口文档
+        </span>
+      ),
+      children: (
+        <Card 
+          title="API文档"
+          loading={state.docLoading}
+          extra={
+            state.apiDoc && (
+              <Button
+                type="primary"
+                icon={<DownloadOutlined />}
+                onClick={handleDownloadDoc}
+              >
+                下载文档
+              </Button>
+            )
+          }
+        >
+          {state.apiDoc ? (
+            <div style={{ 
+              background: '#fafafa', 
+              padding: '16px', 
+              borderRadius: '6px',
+              minHeight: '400px',
+              maxHeight: '70vh',
+              overflow: 'auto'
+            }}>
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  table: ({ children }) => (
+                    <table style={{ 
+                      width: '100%', 
+                      borderCollapse: 'collapse', 
+                      margin: '16px 0',
+                      border: '1px solid #d9d9d9'
+                    }}>
+                      {children}
+                    </table>
+                  ),
+                  th: ({ children }) => (
+                    <th style={{ 
+                      padding: '8px 12px', 
+                      textAlign: 'left', 
+                      borderBottom: '2px solid #d9d9d9',
+                      background: '#f5f5f5',
+                      fontWeight: 'bold'
+                    }}>
+                      {children}
+                    </th>
+                  ),
+                  td: ({ children }) => (
+                    <td style={{ 
+                      padding: '8px 12px', 
+                      borderBottom: '1px solid #d9d9d9'
+                    }}>
+                      {children}
+                    </td>
+                  ),
+                  code: ({ children, className }) => {
+                    const isInline = !className;
+                    if (isInline) {
+                      return (
+                        <code style={{
+                          background: '#f6f8fa',
+                          padding: '2px 4px',
+                          borderRadius: '3px',
+                          fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
+                          fontSize: '0.85em'
+                        }}>
+                          {children}
+                        </code>
+                      );
+                    }
+                    return (
+                      <code style={{
+                        display: 'block',
+                        background: '#f6f8fa',
+                        padding: '12px',
+                        borderRadius: '6px',
+                        fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
+                        fontSize: '0.85em',
+                        lineHeight: '1.5',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                        border: '1px solid #e1e4e8'
+                      }}>
+                        {children}
+                      </code>
+                    );
+                  },
+                  pre: ({ children }) => (
+                    <pre style={{ margin: '16px 0' }}>
+                      {children}
+                    </pre>
+                  ),
+                  h1: ({ children }) => (
+                    <h1 style={{ 
+                      borderBottom: '2px solid #e1e4e8', 
+                      paddingBottom: '8px',
+                      marginTop: '24px',
+                      marginBottom: '16px'
+                    }}>
+                      {children}
+                    </h1>
+                  ),
+                  h2: ({ children }) => (
+                    <h2 style={{ 
+                      borderBottom: '1px solid #e1e4e8', 
+                      paddingBottom: '6px',
+                      marginTop: '20px',
+                      marginBottom: '12px'
+                    }}>
+                      {children}
+                    </h2>
+                  ),
+                  h3: ({ children }) => (
+                    <h3 style={{ 
+                      marginTop: '16px',
+                      marginBottom: '8px'
+                    }}>
+                      {children}
+                    </h3>
+                  )
+                }}
+              >
+                {state.apiDoc.apiDoc}
+              </ReactMarkdown>
+            </div>
+          ) : (
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '60px 20px',
+              color: '#999'
+            }}>
+              {state.docLoading ? '正在加载文档...' : '暂无文档内容'}
+            </div>
+          )}
         </Card>
       ),
     },
