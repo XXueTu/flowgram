@@ -42,235 +42,280 @@ const LoginPage: React.FC = () => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    background: '#f8fafc',
     overflow: 'hidden',
   };
 
-  const backgroundStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    zIndex: 0,
-  };
-
-  const contentStyle: React.CSSProperties = {
+  const leftPanelStyle: React.CSSProperties = {
+    flex: 1,
+    background: 'linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%)',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'relative',
-    zIndex: 1,
-    width: '100%',
-    maxWidth: 400,
-    padding: 20,
+    overflow: 'hidden',
   };
 
-  const cardStyle: React.CSSProperties = {
-    background: 'rgba(255, 255, 255, 0.95)',
-    backdropFilter: 'blur(10px)',
-    borderRadius: 20,
-    padding: 40,
-    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    animation: 'slideUp 0.6s ease-out',
+  const rightPanelStyle: React.CSSProperties = {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '40px',
+    background: '#ffffff',
+  };
+
+  const logoSectionStyle: React.CSSProperties = {
+    textAlign: 'center',
+    color: 'white',
+    zIndex: 2,
+    position: 'relative',
+  };
+
+  const brandLogoStyle: React.CSSProperties = {
+    fontSize: '48px',
+    fontWeight: 'bold',
+    marginBottom: '16px',
+    background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
+    lineHeight: 1.2,
+  };
+
+  const brandDescStyle: React.CSSProperties = {
+    fontSize: '18px',
+    opacity: 0.8,
+    fontWeight: 300,
+    marginBottom: '32px',
+  };
+
+  const featureListStyle: React.CSSProperties = {
+    textAlign: 'left',
+    maxWidth: '300px',
+  };
+
+  const featureItemStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '16px',
+    fontSize: '14px',
+    opacity: 0.9,
+  };
+
+  const formContainerStyle: React.CSSProperties = {
+    width: '100%',
+    maxWidth: '400px',
+    padding: '0 20px',
   };
 
   const headerStyle: React.CSSProperties = {
     textAlign: 'center',
-    marginBottom: 32,
+    marginBottom: '40px',
   };
 
-  const logoStyle: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  };
-
-  const logoIconStyle: React.CSSProperties = {
-    color: '#667eea',
-    marginRight: 12,
-  };
-
-  const logoTextStyle: React.CSSProperties = {
-    margin: '0 !important',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
+  const titleStyle: React.CSSProperties = {
+    color: '#1e293b',
+    fontSize: '32px',
+    fontWeight: 'bold',
+    marginBottom: '8px',
   };
 
   const subtitleStyle: React.CSSProperties = {
-    color: '#666',
-    fontSize: 14,
+    color: '#64748b',
+    fontSize: '16px',
+    fontWeight: 400,
   };
 
   const inputStyle: React.CSSProperties = {
-    borderRadius: 12,
-    border: '2px solid #f0f0f0',
+    borderRadius: '12px',
+    border: '2px solid #e2e8f0',
+    height: '52px',
+    fontSize: '16px',
     transition: 'all 0.3s ease',
   };
 
   const buttonStyle: React.CSSProperties = {
-    height: 48,
-    borderRadius: 12,
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    height: '52px',
+    borderRadius: '12px',
+    background: 'linear-gradient(135deg, #1e293b 0%, #475569 100%)',
     border: 'none',
-    fontWeight: 500,
-    fontSize: 16,
+    fontWeight: 600,
+    fontSize: '16px',
     transition: 'all 0.3s ease',
-    marginTop: 8,
+    marginTop: '8px',
   };
 
   const footerStyle: React.CSSProperties = {
     textAlign: 'center',
-    marginTop: 24,
+    marginTop: '32px',
   };
 
   const registerLinkStyle: React.CSSProperties = {
-    color: '#666',
+    color: '#64748b',
     cursor: 'pointer',
     transition: 'color 0.3s ease',
+    fontSize: '14px',
   };
 
   const linkTextStyle: React.CSSProperties = {
-    color: '#667eea',
-    fontWeight: 500,
+    color: '#1e293b',
+    fontWeight: 600,
   };
 
-  const shapeStyle1: React.CSSProperties = {
+  // 装饰性元素
+  const decorativeCircle1Style: React.CSSProperties = {
     position: 'absolute',
-    width: 80,
-    height: 80,
-    top: '20%',
-    left: '10%',
+    width: '200px',
+    height: '200px',
+    background: 'rgba(59, 130, 246, 0.1)',
     borderRadius: '50%',
-    background: 'rgba(255, 255, 255, 0.1)',
-    animation: 'float1 6s ease-in-out infinite',
-  };
-
-  const shapeStyle2: React.CSSProperties = {
-    position: 'absolute',
-    width: 120,
-    height: 120,
-    top: '60%',
+    top: '10%',
     right: '10%',
-    borderRadius: '50%',
-    background: 'rgba(255, 255, 255, 0.1)',
-    animation: 'float2 6s ease-in-out infinite 2s',
+    animation: 'pulse 4s ease-in-out infinite',
   };
 
-  const shapeStyle3: React.CSSProperties = {
+  const decorativeCircle2Style: React.CSSProperties = {
     position: 'absolute',
-    width: 60,
-    height: 60,
-    bottom: '20%',
-    left: '20%',
+    width: '150px',
+    height: '150px',
+    background: 'rgba(139, 92, 246, 0.1)',
     borderRadius: '50%',
-    background: 'rgba(255, 255, 255, 0.1)',
-    animation: 'float3 6s ease-in-out infinite 4s',
+    bottom: '20%',
+    left: '15%',
+    animation: 'pulse 4s ease-in-out infinite 2s',
+  };
+
+  const decorativeShapeStyle: React.CSSProperties = {
+    position: 'absolute',
+    width: '100px',
+    height: '100px',
+    background: 'rgba(6, 182, 212, 0.1)',
+    transform: 'rotate(45deg)',
+    top: '50%',
+    left: '5%',
+    animation: 'rotate 8s linear infinite',
   };
 
   return (
     <>
       <style>
         {`
-          @keyframes slideUp {
+          @keyframes pulse {
+            0%, 100% {
+              transform: scale(1);
+              opacity: 0.7;
+            }
+            50% {
+              transform: scale(1.1);
+              opacity: 0.3;
+            }
+          }
+
+          @keyframes rotate {
             from {
-              opacity: 0;
-              transform: translateY(30px);
+              transform: rotate(45deg);
             }
             to {
-              opacity: 1;
-              transform: translateY(0);
+              transform: rotate(405deg);
             }
           }
 
-          @keyframes float1 {
-            0%, 100% {
-              transform: translateY(0px) rotate(0deg);
-            }
-            50% {
-              transform: translateY(-20px) rotate(180deg);
-            }
+          .modern-input:hover {
+            border-color: #cbd5e1 !important;
           }
 
-          @keyframes float2 {
-            0%, 100% {
-              transform: translateY(0px) rotate(0deg);
-            }
-            50% {
-              transform: translateY(-25px) rotate(-180deg);
-            }
-          }
-
-          @keyframes float3 {
-            0%, 100% {
-              transform: translateY(0px) rotate(0deg);
-            }
-            50% {
-              transform: translateY(-15px) rotate(360deg);
-            }
-          }
-
-          .custom-input:hover {
-            border-color: #d9d9d9 !important;
-          }
-
-          .custom-input:focus,
-          .custom-input.ant-input-focused,
-          .custom-input .ant-input:focus {
-            border-color: #667eea !important;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
+          .modern-input:focus,
+          .modern-input.ant-input-focused,
+          .modern-input .ant-input:focus {
+            border-color: #1e293b !important;
+            box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.1) !important;
           }
 
           .input-icon {
-            color: #667eea !important;
+            color: #64748b !important;
+            font-size: 18px !important;
           }
 
-          .login-button:hover {
+          .modern-button:hover {
             transform: translateY(-2px) !important;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+            box-shadow: 0 10px 25px rgba(30, 41, 59, 0.3) !important;
           }
 
           .register-link:hover {
-            color: #333 !important;
+            color: #1e293b !important;
           }
 
           .register-link:hover .link-text {
-            color: #764ba2 !important;
+            color: #0f172a !important;
           }
 
-          @media (max-width: 480px) {
-            .login-content {
-              padding: 16px !important;
+          .feature-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            margin-right: 12px;
+            font-size: 12px;
+          }
+
+          @media (max-width: 768px) {
+            .responsive-container {
+              flex-direction: column !important;
             }
             
-            .login-card {
-              padding: 24px !important;
+            .left-panel {
+              min-height: 300px !important;
+              flex: none !important;
+            }
+            
+            .right-panel {
+              padding: 20px !important;
             }
           }
         `}
       </style>
-      <div style={containerStyle}>
-        <div style={backgroundStyle}>
-          <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden' }}>
-            <div style={shapeStyle1}></div>
-            <div style={shapeStyle2}></div>
-            <div style={shapeStyle3}></div>
+      <div style={containerStyle} className="responsive-container">
+        <div style={leftPanelStyle} className="left-panel">
+          <div style={decorativeCircle1Style}></div>
+          <div style={decorativeCircle2Style}></div>
+          <div style={decorativeShapeStyle}></div>
+          
+          <div style={logoSectionStyle}>
+            <div style={brandLogoStyle}>FlowGram</div>
+            <div style={brandDescStyle}>智能工作流编排平台</div>
+            
+            <div style={featureListStyle}>
+              <div style={featureItemStyle}>
+                <span className="feature-icon">✓</span>
+                可视化流程设计
+              </div>
+              <div style={featureItemStyle}>
+                <span className="feature-icon">✓</span>
+                智能节点编排
+              </div>
+              <div style={featureItemStyle}>
+                <span className="feature-icon">✓</span>
+                实时执行监控
+              </div>
+              <div style={featureItemStyle}>
+                <span className="feature-icon">✓</span>
+                团队协作管理
+              </div>
+            </div>
           </div>
         </div>
         
-        <div style={contentStyle} className="login-content">
-          <div style={cardStyle} className="login-card">
+        <div style={rightPanelStyle} className="right-panel">
+          <div style={formContainerStyle}>
             <div style={headerStyle}>
-              <div style={logoStyle}>
-                <div style={logoIconStyle}>
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                  </svg>
-                </div>
-                <Title level={2} style={logoTextStyle}>WorkFlow</Title>
-              </div>
-              <Text style={subtitleStyle}>欢迎回来，请登录您的账户</Text>
+              <Title level={2} style={titleStyle}>欢迎回来</Title>
+              <Text style={subtitleStyle}>请登录您的账户以继续使用</Text>
             </div>
 
             <Form 
@@ -279,7 +324,6 @@ const LoginPage: React.FC = () => {
               onFinish={onFinish} 
               autoComplete="off" 
               layout="vertical"
-              style={{ marginTop: 24 }}
             >
               <Form.Item 
                 name="username" 
@@ -290,7 +334,7 @@ const LoginPage: React.FC = () => {
                   placeholder="请输入用户名" 
                   size="large"
                   style={inputStyle}
-                  className="custom-input"
+                  className="modern-input"
                 />
               </Form.Item>
 
@@ -303,7 +347,7 @@ const LoginPage: React.FC = () => {
                   placeholder="请输入密码" 
                   size="large"
                   style={inputStyle}
-                  className="custom-input"
+                  className="modern-input"
                 />
               </Form.Item>
 
@@ -315,7 +359,7 @@ const LoginPage: React.FC = () => {
                   block 
                   size="large"
                   style={buttonStyle}
-                  className="login-button"
+                  className="modern-button"
                 >
                   {loading ? "登录中..." : "登录"}
                 </Button>
