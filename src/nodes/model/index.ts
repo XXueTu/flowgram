@@ -1,4 +1,4 @@
-import iconStart from "../../assets/icon-start.jpg";
+import iconAiBrain from "../../assets/icon-ai-brain.svg";
 import { FlowNodeJSON, FlowNodeRegistry } from "../../typings";
 import { WorkflowNodeType } from "../constants";
 import { formMeta } from './form-meta';
@@ -34,7 +34,7 @@ export const LLMNodeRegistry: FlowNodeRegistry = {
     },
   },
   info: {
-    icon: iconStart,
+    icon: iconAiBrain,
     description: "大模型节点，支持调用各种大模型服务。",
   },
   formMeta,

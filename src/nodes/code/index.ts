@@ -1,4 +1,4 @@
-import iconStart from "../../assets/icon-start.jpg";
+import iconCoding from "../../assets/icon-coding.svg";
 import { FlowNodeRegistry } from "../../typings";
 import { WorkflowNodeType } from "../constants";
 import { formMeta } from './form-meta';
@@ -20,7 +20,7 @@ export const CodeNodeRegistry: FlowNodeRegistry = {
     },
   },
   info: {
-    icon: iconStart,
+    icon: iconCoding,
     description: "代码执行节点，支持 JavaScript 和 Golang 代码执行。",
   },
   formMeta,

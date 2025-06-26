@@ -1,4 +1,4 @@
-import iconStart from "../../assets/icon-start.jpg";
+import iconApi from "../../assets/icon-api.svg";
 import { FlowNodeRegistry } from "../../typings";
 import { WorkflowNodeType } from "../constants";
 import { formMeta } from "./form-meta";
@@ -12,8 +12,8 @@ export const HttpNodeRegistry: FlowNodeRegistry = {
     },
   },
   info: {
-    icon: iconStart,
-    description: "自定义节点，可根据需要配置输入输出。",
+    icon: iconApi,
+    description: "HTTP 请求节点，支持发送各种类型的 HTTP 请求。",
   },
   formMeta,
   onAdd() {
@@ -21,7 +21,7 @@ export const HttpNodeRegistry: FlowNodeRegistry = {
       id: `http_${Date.now()}`,
       type: "http",
       data: {
-        title: "http",
+        title: "HTTP 请求",
         custom: {
           apiUrl: "https://api.example.com",
           apiMethod: "GET",

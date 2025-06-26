@@ -1,4 +1,4 @@
-import iconStart from "../../assets/icon-start.jpg";
+import iconDatabase from "../../assets/icon-database.svg";
 import { FlowNodeRegistry } from "../../typings";
 import { WorkflowNodeType } from "../constants";
 import { formMeta } from './form-meta';
@@ -23,7 +23,7 @@ export const SQLNodeRegistry: FlowNodeRegistry = {
     },
   },
   info: {
-    icon: iconStart,
+    icon: iconDatabase,
     description: "SQL 执行节点，支持执行 SQL 查询语句。",
   },
   formMeta,
