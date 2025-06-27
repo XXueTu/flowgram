@@ -130,7 +130,7 @@ export const routeConfigs: RouteConfig[] = [
     path: "/flow",
     element: () => Promise.resolve({ default: ResourcePage }),
     permissions: [PermissionCode.WORKFLOW_VIEW],
-    name: "编排",
+    name: "空间",
     icon: <ApiOutlined />,
     menuOrder: 2,
     children: [

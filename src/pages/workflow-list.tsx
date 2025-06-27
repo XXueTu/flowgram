@@ -484,14 +484,6 @@ const WorkSpaceListPage: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      {/* 页面标题 */}
-      <div style={{ marginBottom: '24px' }}>
-        <Title level={2} style={{ margin: 0 }}>编排工作空间</Title>
-        <Typography.Text type="secondary">
-          管理和创建您的数据处理工作流程
-        </Typography.Text>
-      </div>
-
       {/* 操作区域 */}
       <Card style={{ marginBottom: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>

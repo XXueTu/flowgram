@@ -26,6 +26,7 @@ import {
   Space,
   Statistic,
   Tag,
+  Tooltip,
   Typography
 } from 'antd';
 import dayjs from 'dayjs';
@@ -172,6 +173,23 @@ const WorkspaceOverviewPage: React.FC = () => {
   useEffect(() => {
     fetchWorkspaceInfo();
   }, [workspaceId]);
+
+  // 添加键盘快捷键支持
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Ctrl/Cmd + \ 切换侧边栏
+      if ((event.ctrlKey || event.metaKey) && event.key === '\\') {
+        event.preventDefault();
+        toggleCollapsed();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   // 工作空间类型映射
   const getWorkspaceTypeLabel = (type: string) => {
@@ -556,11 +574,41 @@ const WorkspaceOverviewPage: React.FC = () => {
         >
           返回
         </Button>
-        <Button
-          type="text"
-          icon={state.collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          onClick={toggleCollapsed}
-        />
+        <Tooltip 
+          title={
+            <div>
+              {state.collapsed ? '展开侧边栏' : '折叠侧边栏'}
+              <br />
+              <span style={{ fontSize: '12px', opacity: 0.8 }}>快捷键: ⌘/Ctrl + \</span>
+            </div>
+          } 
+          placement="bottom"
+        >
+          <Button
+            type="text"
+            icon={state.collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={toggleCollapsed}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '36px',
+              height: '36px',
+              borderRadius: '6px',
+              transition: 'all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)',
+              backgroundColor: 'transparent',
+              border: '1px solid transparent'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#f5f5f5';
+              e.currentTarget.style.borderColor = '#d9d9d9';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.borderColor = 'transparent';
+            }}
+          />
+        </Tooltip>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ fontSize: '24px' }}>
             {state.workspaceInfo?.workSpaceIcon || '📋'}
@@ -578,14 +626,56 @@ const WorkspaceOverviewPage: React.FC = () => {
           width={200} 
           collapsedWidth={60}
           collapsed={state.collapsed}
-          style={{ background: '#fff' }}
+          style={{ 
+            background: '#fff',
+            boxShadow: state.collapsed ? 'none' : '2px 0 8px 0 rgba(29, 35, 41, 0.05)',
+            transition: 'all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)',
+            zIndex: 1
+          }}
           theme="light"
           trigger={null}
         >
+          {/* 折叠状态下的悬浮按钮 */}
+          {state.collapsed && (
+            <div style={{ 
+              position: 'absolute', 
+              top: '12px', 
+              right: '-18px', 
+              zIndex: 1000,
+              background: '#fff',
+              borderRadius: '50%',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+            }}>
+              <Tooltip title="展开侧边栏" placement="right">
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<MenuUnfoldOutlined />}
+                  onClick={toggleCollapsed}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#666',
+                    transition: 'all 0.2s',
+                  }}
+                />
+              </Tooltip>
+            </div>
+          )}
+          
           <Menu
             mode="inline"
             selectedKeys={[state.activeMenuKey]}
-            style={{ height: '100%', borderRight: 0 }}
+            style={{ 
+              height: '100%', 
+              borderRight: 0,
+              paddingTop: state.collapsed ? '48px' : '12px',
+              transition: 'padding-top 0.2s'
+            }}
             items={menuItems}
             onClick={({ key }) => handleMenuClick(key)}
             inlineCollapsed={state.collapsed}
