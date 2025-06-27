@@ -4,7 +4,7 @@
 
 // 开发环境配置
 const development = {
-  API_BASE_URL: "http://14.103.249.105:9999", // 开发环境使用代理
+  API_BASE_URL: "http://127.0.0.1:8888", // 开发环境使用代理
   API_TIMEOUT: 30000,
 };
 

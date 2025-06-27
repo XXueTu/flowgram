@@ -1,8 +1,10 @@
 import {
   ApiOutlined,
   ArrowLeftOutlined,
+  CopyOutlined,
   DownloadOutlined,
   EditOutlined,
+  EyeOutlined,
   FileTextOutlined,
   HistoryOutlined,
   KeyOutlined,
@@ -27,7 +29,6 @@ import {
   Table,
   Tabs,
   Tag,
-  Tooltip,
   Typography
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -98,6 +99,9 @@ interface ApiDetailState {
   secretKeyModalVisible: boolean;
   testModalVisible: boolean;
   statisticsModalVisible: boolean;
+  jsonViewerModalVisible: boolean;
+  jsonViewerContent: string;
+  jsonViewerTitle: string;
   callTemplate: {
     url: string;
     header: string;
@@ -138,6 +142,9 @@ const ApiDetailPage: React.FC = () => {
     secretKeyModalVisible: false,
     testModalVisible: false,
     statisticsModalVisible: false,
+    jsonViewerModalVisible: false,
+    jsonViewerContent: '',
+    jsonViewerTitle: '',
     callTemplate: { url: '', header: '', body: '' },
     testResult: '',
     statistics: null,
@@ -188,16 +195,19 @@ const ApiDetailPage: React.FC = () => {
   }, [apiId, workspaceId]);
 
   // 获取调用记录
-  const fetchRecords = async () => {
+  const fetchRecords = async (searchParams?: typeof state.recordsSearchParams, pagination?: typeof state.recordsPagination) => {
     if (!apiId) return;
+    
+    const currentSearchParams = searchParams || state.recordsSearchParams;
+    const currentPagination = pagination || state.recordsPagination;
     
     setState(prev => ({ ...prev, recordsLoading: true }));
     try {
       const params: ApiRecordsRequest = {
-        current: state.recordsPagination.current,
-        pageSize: state.recordsPagination.pageSize,
+        current: currentPagination.current,
+        pageSize: currentPagination.pageSize,
         apiId,
-        ...state.recordsSearchParams,
+        ...currentSearchParams,
       };
       
       const response = await publishService.getApiRecords(params);
@@ -230,7 +240,16 @@ const ApiDetailPage: React.FC = () => {
           status: 'ERROR',
           traceId: 'trace_002',
           param: '{"userId": ""}',
-          extend: '{"error": "userId is required"}',
+          extend: '{"error": "userId is required", "message": "参数校验失败"}',
+        },
+        {
+          apiId: apiId,
+          apiName: '用户信息查询API',
+          callTime: '2024-01-15T10:20:00Z',
+          status: 'SUCCESS',
+          traceId: 'trace_003',
+          param: '{"userId": "67890", "includeProfile": true}',
+          extend: '{"responseTime": "95ms", "cacheHit": false}',
         },
       ];
       setState(prev => ({
@@ -595,8 +614,8 @@ const ApiDetailPage: React.FC = () => {
       key: 'status',
       width: 100,
       render: (status: string) => (
-        <Tag color={status === 'SUCCESS' ? 'green' : 'red'}>
-          {status === 'SUCCESS' ? '成功' : '失败'}
+        <Tag color={status === 'success' ? 'green' : 'red'}>
+          {status === 'success' ? '成功' : '失败'}
         </Tag>
       ),
     },
@@ -616,23 +635,41 @@ const ApiDetailPage: React.FC = () => {
       dataIndex: 'param',
       key: 'param',
       width: 200,
-      ellipsis: true,
       render: (param: string) => (
-        <Tooltip title={param}>
-          <Text style={{ fontSize: '12px' }}>{param}</Text>
-        </Tooltip>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Text ellipsis style={{ fontSize: '12px', flex: 1, maxWidth: '120px' }}>
+            {param}
+          </Text>
+          <Button
+            size="small"
+            type="link"
+            icon={<EyeOutlined />}
+            onClick={() => showJsonViewer(param, '请求参数')}
+            style={{ padding: '0 4px' }}
+            title="查看详情"
+          />
+        </div>
       ),
     },
     {
       title: '扩展信息',
       dataIndex: 'extend',
       key: 'extend',
-      width: 150,
-      ellipsis: true,
+      width: 200,
       render: (extend: string) => (
-        <Tooltip title={extend}>
-          <Text style={{ fontSize: '12px' }}>{extend}</Text>
-        </Tooltip>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Text ellipsis style={{ fontSize: '12px', flex: 1, maxWidth: '120px' }}>
+            {extend}
+          </Text>
+          <Button
+            size="small"
+            type="link"
+            icon={<EyeOutlined />}
+            onClick={() => showJsonViewer(extend, '扩展信息')}
+            style={{ padding: '0 4px' }}
+            title="查看详情"
+          />
+        </div>
       ),
     },
   ];
@@ -737,6 +774,63 @@ const ApiDetailPage: React.FC = () => {
     } catch (error) {
       message.error('密钥删除失败');
     }
+  };
+
+  // 显示JSON内容
+  const showJsonViewer = (content: string, title: string) => {
+    const formattedContent = formatJsonResponse(content);
+    setState(prev => ({
+      ...prev,
+      jsonViewerModalVisible: true,
+      jsonViewerContent: formattedContent,
+      jsonViewerTitle: title,
+    }));
+  };
+
+  // 复制JSON内容
+  const copyJsonContent = async () => {
+    try {
+      await navigator.clipboard.writeText(state.jsonViewerContent);
+      message.success('内容已复制到剪贴板');
+    } catch (error) {
+      message.error('复制失败');
+    }
+  };
+
+  // 处理调用记录搜索
+  const handleRecordsSearch = (values: any) => {
+    const newSearchParams = {
+      startTime: values.timeRange?.[0]?.valueOf(),
+      endTime: values.timeRange?.[1]?.valueOf(),
+      request: values.request,
+      response: values.response,
+    };
+    const newPagination = { ...state.recordsPagination, current: 1 };
+    
+    setState(prev => ({
+      ...prev,
+      recordsSearchParams: newSearchParams,
+      recordsPagination: newPagination,
+    }));
+    
+    // 直接传递新的搜索参数和分页参数
+    fetchRecords(newSearchParams, newPagination);
+  };
+
+  // 重置调用记录搜索
+  const handleRecordsSearchReset = () => {
+    recordsSearchForm.resetFields();
+    const newSearchParams = {};
+    const newPagination = { ...state.recordsPagination, current: 1 };
+    
+    setState(prev => ({
+      ...prev,
+      recordsSearchParams: newSearchParams,
+      recordsPagination: newPagination,
+    }));
+    
+    // 直接传递新的搜索参数和分页参数
+    fetchRecords(newSearchParams, newPagination);
   };
 
   // 添加一个ref来跟踪上一个tab
@@ -971,18 +1065,7 @@ const ApiDetailPage: React.FC = () => {
             <Form
               form={recordsSearchForm}
               layout="inline"
-              onFinish={(values) => {
-                setState(prev => ({
-                  ...prev,
-                  recordsSearchParams: {
-                    startTime: values.timeRange?.[0]?.valueOf(),
-                    endTime: values.timeRange?.[1]?.valueOf(),
-                    request: values.request,
-                    response: values.response,
-                  },
-                  recordsPagination: { ...prev.recordsPagination, current: 1 },
-                }));
-              }}
+              onFinish={handleRecordsSearch}
             >
               <Form.Item name="timeRange" label="时间范围">
                 <RangePicker showTime />
@@ -998,7 +1081,7 @@ const ApiDetailPage: React.FC = () => {
                   <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
                     搜索
                   </Button>
-                  <Button onClick={() => recordsSearchForm.resetFields()}>
+                  <Button onClick={handleRecordsSearchReset}>
                     重置
                   </Button>
                 </Space>
@@ -1021,14 +1104,19 @@ const ApiDetailPage: React.FC = () => {
                 showTotal: (total, range) => 
                   `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
                 onChange: (page, size) => {
+                  const newPagination = {
+                    ...state.recordsPagination,
+                    current: page,
+                    pageSize: size || 10,
+                  };
+                  
                   setState(prev => ({
                     ...prev,
-                    recordsPagination: {
-                      ...prev.recordsPagination,
-                      current: page,
-                      pageSize: size || 10,
-                    },
+                    recordsPagination: newPagination,
                   }));
+                  
+                  // 直接传递当前搜索参数和新的分页参数
+                  fetchRecords(state.recordsSearchParams, newPagination);
                 },
               }}
             />
@@ -1511,6 +1599,51 @@ const ApiDetailPage: React.FC = () => {
             </Space>
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* 显示JSON内容模态框 */}
+      <Modal
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span>{state.jsonViewerTitle}</span>
+            <Button
+              type="text"
+              icon={<CopyOutlined />}
+              onClick={copyJsonContent}
+              size="small"
+              title="复制内容"
+            />
+          </div>
+        }
+        open={state.jsonViewerModalVisible}
+        onCancel={() => setState(prev => ({ ...prev, jsonViewerModalVisible: false }))}
+        footer={[
+          <Button key="close" onClick={() => setState(prev => ({ ...prev, jsonViewerModalVisible: false }))}>
+            关闭
+          </Button>,
+          <Button key="copy" type="primary" icon={<CopyOutlined />} onClick={copyJsonContent}>
+            复制
+          </Button>,
+        ]}
+        width={600}
+      >
+        <TextArea
+          value={state.jsonViewerContent}
+          readOnly
+          style={{ 
+            fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace', 
+            fontSize: '12px',
+            border: '1px solid #d9d9d9',
+            borderRadius: '6px',
+            resize: 'none',
+            background: '#fafafa',
+            height: '400px',
+            padding: '12px',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            lineHeight: '1.5'
+          }}
+        />
       </Modal>
     </div>
   );
