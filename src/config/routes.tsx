@@ -138,7 +138,7 @@ export const routeConfigs: RouteConfig[] = [
         path: "/flow/list",
         element: () => import("../pages/workflow-list"),
         permissions: [PermissionCode.WORKFLOW_VIEW],
-        name: "工作空间列表",
+        name: "工作空间",
         menuOrder: 1,
       },
       // {
@@ -264,16 +264,40 @@ export const routeConfigs: RouteConfig[] = [
     hideInMenu: true, // 编辑器页面隐藏在菜单中
   },
   {
-    path: "/publish-management/:workspaceId",
-    element: () => import("../pages/publish-management"),
+    path: "/api-management/:workspaceId",
+    element: () => import("../pages/api-management"),
     permissions: [PermissionCode.WORKFLOW_VIEW],
-    hideInMenu: true, // 发布管理页面隐藏在菜单中
+    hideInMenu: true, // API管理页面隐藏在菜单中
+  },
+  {
+    path: "/job-management/:workspaceId",
+    element: () => import("../pages/job-management"),
+    permissions: [PermissionCode.WORKFLOW_VIEW],
+    hideInMenu: true, // 任务管理页面隐藏在菜单中
+  },
+  {
+    path: "/plugin-management/:workspaceId",
+    element: () => import("../pages/plugin-management"),
+    permissions: [PermissionCode.WORKFLOW_VIEW],
+    hideInMenu: true, // 插件管理页面隐藏在菜单中
   },
   {
     path: "/api-detail/:workspaceId/:apiId",
     element: () => import("../pages/api-detail"),
     permissions: [PermissionCode.WORKFLOW_VIEW],
     hideInMenu: true, // API详情页面隐藏在菜单中
+  },
+  {
+    path: "/workspace-overview/:workspaceId",
+    element: () => import("../pages/workspace-overview"),
+    permissions: [PermissionCode.WORKFLOW_VIEW],
+    hideInMenu: true, // 工作空间概览页面隐藏在菜单中
+  },
+  {
+    path: "/workflow-list",
+    element: () => import("../pages/workflow-list"),
+    permissions: [PermissionCode.WORKFLOW_VIEW],
+    hideInMenu: true, // 工作空间列表页面
   },
   // {
   //   path: "/workflow-list",

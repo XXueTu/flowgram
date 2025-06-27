@@ -340,55 +340,79 @@ const WorkSpaceListPage: React.FC = () => {
   // 表格列定义
   const columns: ColumnsType<WorkSpacePage> = [
     {
-      title: '工作空间名称',
+      title: '工作空间',
       dataIndex: 'workSpaceName',
       key: 'workSpaceName',
-      width: 150,
-      ellipsis: true,
-    },
-    {
-      title: '描述',
-      dataIndex: 'workSpaceDesc',
-      key: 'workSpaceDesc',
-      width: 150,
-      ellipsis: true,
+      width: 250,
+      render: (name, record) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        
+          <div>
+            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+              {name}
+            </div>
+         
+          </div>
+        </div>
+      ),
     },
     {
       title: '类型',
       dataIndex: 'workSpaceType',
       key: 'workSpaceType',
-      width: 120,
+      width: 100,
       render: (type) => {
         const typeConfig = workSpaceTypes.find(t => t.value === type);
-        return typeConfig ? typeConfig.label : type;
+        const typeColors: Record<string, string> = {
+          workflow: 'blue',
+          pipeline: 'green',
+          automation: 'orange',
+          integration: 'purple',
+        };
+        return (
+          <Tag color={typeColors[type] || 'default'}>
+            {typeConfig ? typeConfig.label : type}
+          </Tag>
+        );
       },
     },
     {
       title: '标签',
       dataIndex: 'workSpaceTag',
       key: 'workSpaceTag',
-      width: 100,
+      width: 150,
       render: (tags: string[]) => (
-        <>
-          {tags?.map((tag, index) => (
-            <Tag key={index} color="blue">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+          {tags?.slice(0, 2).map((tag, index) => (
+            <Tag key={index} style={{ fontSize: '12px', padding: '2px 6px' }}>
               {tag}
             </Tag>
           ))}
-        </>
+          {tags?.length > 2 && (
+            <Tag style={{ fontSize: '12px', padding: '2px 6px', color: '#666', background: '#f5f5f5' }}>
+              +{tags.length - 2}
+            </Tag>
+          )}
+        </div>
       ),
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       key: 'updateTime',
-      width: 180,
-      render: (time) => time ? new Date(time).toLocaleString() : '-',
+      width: 150,
+      render: (time) => time ? new Date(time).toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      }) : '-',
     },
     {
       title: '操作',
       key: 'action',
-      width: 150,
+      width: 200,
       fixed: 'right',
       render: (_, record) => {
         const menuItems = [
@@ -436,17 +460,11 @@ const WorkSpaceListPage: React.FC = () => {
             <Button
               type="primary"
               size="small"
-              onClick={() => handleOpenEditor(record)}
+              onClick={() => navigate(`/workspace-overview/${record.id}`)}
             >
-              编排
+              进入
             </Button>
-            <Button
-              type="primary"
-              size="small"
-              onClick={() => navigate(`/publish-management/${record.id}`)}
-            >
-              发布管理
-            </Button>
+          
             <Dropdown
               menu={{
                 items: menuItems,
@@ -466,6 +484,14 @@ const WorkSpaceListPage: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
+      {/* 页面标题 */}
+      <div style={{ marginBottom: '24px' }}>
+        <Title level={2} style={{ margin: 0 }}>编排工作空间</Title>
+        <Typography.Text type="secondary">
+          管理和创建您的数据处理工作流程
+        </Typography.Text>
+      </div>
+
       {/* 操作区域 */}
       <Card style={{ marginBottom: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
@@ -547,6 +573,7 @@ const WorkSpaceListPage: React.FC = () => {
           dataSource={state.workSpaces}
           rowKey="id"
           loading={state.loading}
+          scroll={{ x: 800 }}
           pagination={{
             current: state.current,
             pageSize: state.pageSize,
