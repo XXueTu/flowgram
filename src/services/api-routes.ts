@@ -79,6 +79,7 @@ export const API_ROUTES = {
     REMOVE: "/workflow/workspace/remove",
     EDIT: "/workflow/workspace/edit",
     LIST: "/workflow/workspace/list",
+    GET: "/workflow/workspace/get",
     EDIT_TAG: "/workflow/workspace/edit/tag",
     COPY: "/workflow/workspace/copy",
     ENV_LIST: "/workflow/workspace/env/list",

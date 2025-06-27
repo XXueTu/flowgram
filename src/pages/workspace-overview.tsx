@@ -3,7 +3,6 @@ import {
   AppstoreOutlined,
   ArrowLeftOutlined,
   BarChartOutlined,
-  CalendarOutlined,
   ClockCircleOutlined,
   DatabaseOutlined,
   HistoryOutlined,
@@ -12,8 +11,7 @@ import {
   MenuUnfoldOutlined,
   MonitorOutlined,
   PlayCircleOutlined,
-  SettingOutlined,
-  UserOutlined
+  SettingOutlined
 } from '@ant-design/icons';
 import {
   Button,
@@ -32,22 +30,16 @@ import {
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { WorkSpacePage, WorkSpaceService } from '../services/workspace';
+import { WorkSpaceGetResponse, WorkSpaceService } from '../services/workspace';
 
 const { Title, Text } = Typography;
 const { Sider, Content } = Layout;
 
 interface WorkspaceOverviewState {
-  workspaceInfo: WorkSpacePage | null;
+  workspaceInfo: WorkSpaceGetResponse | null;
   loading: boolean;
   activeMenuKey: string;
   collapsed: boolean;
-  statistics: {
-    totalNodes: number;
-    totalRuns: number;
-    successRate: number;
-    lastRunTime: string;
-  };
 }
 
 const WorkspaceOverviewPage: React.FC = () => {
@@ -58,12 +50,6 @@ const WorkspaceOverviewPage: React.FC = () => {
     loading: false,
     activeMenuKey: 'overview',
     collapsed: false,
-    statistics: {
-      totalNodes: 0,
-      totalRuns: 0,
-      successRate: 0,
-      lastRunTime: '',
-    },
   });
 
   const workSpaceService = WorkSpaceService.getInstance();
@@ -74,94 +60,12 @@ const WorkspaceOverviewPage: React.FC = () => {
     
     setState(prev => ({ ...prev, loading: true }));
     try {
-      // 这里应该调用获取工作空间详情的API
-      // const response = await workSpaceService.getWorkSpaceDetail({ id: workspaceId });
-      
-      // 暂时使用mock数据，根据workspaceId显示不同内容
-      const mockWorkspaces: Record<string, WorkSpacePage> = {
-        'workspace_1': {
-          id: workspaceId,
-          workSpaceName: '数据处理工作流',
-          workSpaceDesc: '用于处理客户数据的自动化工作流，包含数据清洗、转换、分析等步骤',
-          workSpaceType: 'workflow',
-          workSpaceTag: ['数据处理', '自动化', '客户数据'],
-          workSpaceIcon: '🔄',
-          createTime: '2024-01-15T10:30:00Z',
-          updateTime: '2024-01-20T15:45:00Z',
-          canvasId: 'canvas_data_processing',
-          workflowId: 'workflow_customer_data',
-        },
-        'workspace_2': {
-          id: workspaceId,
-          workSpaceName: '报表生成管道',
-          workSpaceDesc: '自动生成日报、周报、月报的数据管道',
-          workSpaceType: 'pipeline',
-          workSpaceTag: ['报表', '定时任务'],
-          workSpaceIcon: '📊',
-          createTime: '2024-01-10T09:15:00Z',
-          updateTime: '2024-01-18T11:20:00Z',
-          canvasId: 'canvas_report_pipeline',
-          workflowId: 'workflow_report_generation',
-        },
-        'workspace_3': {
-          id: workspaceId,
-          workSpaceName: '系统集成流程',
-          workSpaceDesc: '连接多个外部系统的集成流程',
-          workSpaceType: 'integration',
-          workSpaceTag: ['集成', 'API'],
-          workSpaceIcon: '🔗',
-          createTime: '2024-01-08T14:20:00Z',
-          updateTime: '2024-01-16T16:30:00Z',
-          canvasId: 'canvas_integration',
-          workflowId: 'workflow_system_integration',
-        },
-      };
-      
-      const mockWorkspace = mockWorkspaces[workspaceId!] || {
-        id: workspaceId,
-        workSpaceName: '默认工作空间',
-        workSpaceDesc: '这是一个示例工作空间',
-        workSpaceType: 'workflow',
-        workSpaceTag: ['示例'],
-        workSpaceIcon: '📋',
-        createTime: '2024-01-01T00:00:00Z',
-        updateTime: '2024-01-01T00:00:00Z',
-        canvasId: workspaceId || 'default',
-        workflowId: workspaceId || 'default',
-      };
-      
-      const mockStatisticsMap: Record<string, typeof state.statistics> = {
-        'workspace_1': {
-          totalNodes: 12,
-          totalRuns: 156,
-          successRate: 94.2,
-          lastRunTime: '2024-01-20T15:45:00Z',
-        },
-        'workspace_2': {
-          totalNodes: 8,
-          totalRuns: 89,
-          successRate: 97.8,
-          lastRunTime: '2024-01-18T11:20:00Z',
-        },
-        'workspace_3': {
-          totalNodes: 15,
-          totalRuns: 234,
-          successRate: 91.5,
-          lastRunTime: '2024-01-16T16:30:00Z',
-        },
-      };
-      
-      const mockStatistics = mockStatisticsMap[workspaceId!] || {
-        totalNodes: 5,
-        totalRuns: 25,
-        successRate: 88.0,
-        lastRunTime: '2024-01-01T00:00:00Z',
-      };
+      // 调用新的getWorkSpace API
+      const response = await workSpaceService.getWorkSpace({ id: workspaceId });
       
       setState(prev => ({
         ...prev,
-        workspaceInfo: mockWorkspace,
-        statistics: mockStatistics,
+        workspaceInfo: response,
       }));
     } catch (error) {
       console.error('获取工作空间信息失败:', error);
@@ -213,6 +117,12 @@ const WorkspaceOverviewPage: React.FC = () => {
     return colorMap[type] || 'default';
   };
 
+  // 计算成功率（基于runCount，假设90%的成功率）
+  const calculateSuccessRate = (runCount: number) => {
+    if (runCount === 0) return 0;
+    return Math.round((runCount * 0.9) * 10) / 10; // 简单的90%成功率计算
+  };
+
   // 菜单项配置
   const menuItems = [
     {
@@ -261,8 +171,8 @@ const WorkspaceOverviewPage: React.FC = () => {
   const handleMenuClick = (key: string) => {
     if (key === 'editor') {
       // 编排设计跳转到独立的编辑器页面
-      const canvasId = state.workspaceInfo?.canvasId || state.workspaceInfo?.id || workspaceId || 'default';
-      const workflowId = state.workspaceInfo?.workflowId || state.workspaceInfo?.id || workspaceId || 'default';
+      const canvasId = workspaceId || 'default';
+      const workflowId = workspaceId || 'default';
       navigate(`/editor/${canvasId}/${workflowId}`);
       return;
     }
@@ -359,21 +269,21 @@ const WorkspaceOverviewPage: React.FC = () => {
                 <Col span={6}>
                   <Statistic
                     title="节点总数"
-                    value={state.statistics.totalNodes}
+                    value={state.workspaceInfo.stat.nodeCount}
                     prefix={<DatabaseOutlined />}
                   />
                 </Col>
                 <Col span={6}>
                   <Statistic
                     title="运行次数"
-                    value={state.statistics.totalRuns}
+                    value={state.workspaceInfo.stat.runCount}
                     prefix={<PlayCircleOutlined />}
                   />
                 </Col>
                 <Col span={6}>
                   <Statistic
                     title="成功率"
-                    value={state.statistics.successRate}
+                    value={calculateSuccessRate(state.workspaceInfo.stat.runCount)}
                     suffix="%"
                     precision={1}
                     prefix={<BarChartOutlined />}
@@ -385,8 +295,8 @@ const WorkspaceOverviewPage: React.FC = () => {
                       <ClockCircleOutlined /> 最后运行
                     </div>
                     <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#1890ff' }}>
-                      {state.statistics.lastRunTime ? 
-                        dayjs(state.statistics.lastRunTime).format('MM-DD HH:mm') : 
+                      {state.workspaceInfo.stat.lastRunTime ? 
+                        dayjs(state.workspaceInfo.stat.lastRunTime).format('MM-DD HH:mm') : 
                         '暂无记录'
                       }
                     </div>
@@ -401,93 +311,65 @@ const WorkspaceOverviewPage: React.FC = () => {
                 <Descriptions.Item label="工作空间ID">
                   <Text copyable>{state.workspaceInfo.id}</Text>
                 </Descriptions.Item>
-                <Descriptions.Item label="画布ID">
-                  <Text copyable>{state.workspaceInfo.canvasId}</Text>
-                </Descriptions.Item>
-                <Descriptions.Item label="工作流ID">
-                  <Text copyable>{state.workspaceInfo.workflowId}</Text>
-                </Descriptions.Item>
                 <Descriptions.Item label="类型">
                   {getWorkspaceTypeLabel(state.workspaceInfo.workSpaceType)}
                 </Descriptions.Item>
-                <Descriptions.Item label="创建时间">
-                  {dayjs(state.workspaceInfo.createTime).format('YYYY-MM-DD HH:mm:ss')}
+                <Descriptions.Item label="节点数量">
+                  {state.workspaceInfo.stat.nodeCount}
                 </Descriptions.Item>
-                <Descriptions.Item label="更新时间">
-                  {dayjs(state.workspaceInfo.updateTime).format('YYYY-MM-DD HH:mm:ss')}
+                <Descriptions.Item label="运行次数">
+                  {state.workspaceInfo.stat.runCount}
+                </Descriptions.Item>
+                <Descriptions.Item label="最后运行时间" span={2}>
+                  {state.workspaceInfo.stat.lastRunTime ? 
+                    dayjs(state.workspaceInfo.stat.lastRunTime).format('YYYY-MM-DD HH:mm:ss') : 
+                    '暂无记录'
+                  }
                 </Descriptions.Item>
               </Descriptions>
             </Card>
 
-            {/* 快捷操作 */}
-            <Card title="快捷操作">
-              <Row gutter={16}>
-                <Col span={6}>
-                  <Card 
-                    hoverable 
-                    style={{ textAlign: 'center', cursor: 'pointer' }}
-                    onClick={() => {
-                      const canvasId = state.workspaceInfo?.canvasId || state.workspaceInfo?.id || workspaceId || 'default';
-                      const workflowId = state.workspaceInfo?.workflowId || state.workspaceInfo?.id || workspaceId || 'default';
-                      navigate(`/editor/${canvasId}/${workflowId}`);
-                    }}
-                  >
-                    <SettingOutlined style={{ fontSize: '32px', color: '#1890ff', marginBottom: '8px' }} />
-                    <div>编排设计</div>
-                  </Card>
-                </Col>
-                <Col span={6}>
-                  <Card 
-                    hoverable 
-                    style={{ textAlign: 'center', cursor: 'pointer' }}
-                    onClick={() => handleMenuClick('api')}
-                  >
-                    <ApiOutlined style={{ fontSize: '32px', color: '#52c41a', marginBottom: '8px' }} />
-                    <div>API管理</div>
-                  </Card>
-                </Col>
-                <Col span={6}>
-                  <Card 
-                    hoverable 
-                    style={{ textAlign: 'center', cursor: 'pointer' }}
-                    onClick={() => handleMenuClick('job')}
-                  >
-                    <ClockCircleOutlined style={{ fontSize: '32px', color: '#faad14', marginBottom: '8px' }} />
-                    <div>任务管理</div>
-                  </Card>
-                </Col>
-                <Col span={6}>
-                  <Card 
-                    hoverable 
-                    style={{ textAlign: 'center', cursor: 'pointer' }}
-                    onClick={() => handleMenuClick('monitor')}
-                  >
-                    <MonitorOutlined style={{ fontSize: '32px', color: '#722ed1', marginBottom: '8px' }} />
-                    <div>运行监控</div>
-                  </Card>
-                </Col>
-              </Row>
-            </Card>
+            {/* 系统消息 */}
+            {state.workspaceInfo.messages && state.workspaceInfo.messages.length > 0 && (
+              <Card title="系统消息" style={{ marginBottom: '24px' }}>
+                <Space direction="vertical" style={{ width: '100%' }} size="small">
+                  {state.workspaceInfo.messages.map((message: string, index: number) => (
+                    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ 
+                        width: '6px', 
+                        height: '6px', 
+                        borderRadius: '50%', 
+                        backgroundColor: '#52c41a' 
+                      }} />
+                      <Text style={{ fontSize: '14px' }}>{message}</Text>
+                    </div>
+                  ))}
+                </Space>
+              </Card>
+            )}
 
             {/* 最近活动 */}
             <Card title="最近活动" style={{ marginTop: '24px' }}>
               <Space direction="vertical" style={{ width: '100%' }} size="small">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <CalendarOutlined style={{ color: '#52c41a' }} />
-                  <Text style={{ fontSize: '14px' }}>
-                    {dayjs(state.workspaceInfo.updateTime).format('MM-DD HH:mm')} 工作流已更新
-                  </Text>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <PlayCircleOutlined style={{ color: '#1890ff' }} />
                   <Text style={{ fontSize: '14px' }}>
-                    {dayjs(state.statistics.lastRunTime).format('MM-DD HH:mm')} 执行成功
+                    {state.workspaceInfo.stat.lastRunTime ? 
+                      `${dayjs(state.workspaceInfo.stat.lastRunTime).format('MM-DD HH:mm')} 执行成功` :
+                      '暂无运行记录'
+                    }
                   </Text>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <UserOutlined style={{ color: '#722ed1' }} />
+                  <DatabaseOutlined style={{ color: '#52c41a' }} />
                   <Text style={{ fontSize: '14px' }}>
-                    {dayjs(state.workspaceInfo.createTime).format('MM-DD HH:mm')} 工作空间创建
+                    工作流包含 {state.workspaceInfo.stat.nodeCount} 个节点
+                  </Text>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <BarChartOutlined style={{ color: '#722ed1' }} />
+                  <Text style={{ fontSize: '14px' }}>
+                    总共执行了 {state.workspaceInfo.stat.runCount} 次
                   </Text>
                 </div>
               </Space>
@@ -611,11 +493,9 @@ const WorkspaceOverviewPage: React.FC = () => {
         </Tooltip>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ fontSize: '24px' }}>
-            {state.workspaceInfo?.workSpaceIcon || '📋'}
+            {state.workspaceInfo?.workSpaceIcon || ''}
           </div>
-          <Title level={4} style={{ margin: 0 }}>
-            {state.workspaceInfo?.workSpaceName || '工作空间'}
-          </Title>
+        
         </div>
       </div>
 

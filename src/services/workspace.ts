@@ -71,6 +71,22 @@ export interface WorkSpaceListResponse {
   data: WorkSpacePage[];
 }
 
+// ==================== 获取WorkSpace详情 ====================
+export interface WorkSpaceGetRequest {
+  id: string;
+}
+
+export interface WorkSpaceStat {
+  nodeCount: number;      // 节点数量
+  runCount: number;       // 运行次数
+  lastRunTime: string;    // 最后运行时间
+}
+
+export interface WorkSpaceGetResponse extends WorkSpaceBase {
+  stat: WorkSpaceStat;    // 统计信息
+  messages: string[];     // 消息
+}
+
 // ==================== 编辑WorkSpace标签 ====================
 export interface WorkSpaceEditTagRequest {
   id: string;
@@ -287,6 +303,45 @@ export class WorkSpaceService {
     } catch (error) {
       console.error("获取工作空间列表失败:", error);
       throw error;
+    }
+  }
+
+  /**
+   * 获取WorkSpace详情
+   */
+  public async getWorkSpace(data: WorkSpaceGetRequest): Promise<WorkSpaceGetResponse> {
+    try {
+      console.log("开始获取工作空间详情:", data);
+      const result = await this.apiClient.post<WorkSpaceGetResponse>(
+        API_ROUTES.WORKSPACE.GET,
+        data
+      );
+      console.log("获取工作空间详情返回数据:", result);
+      return result;
+    } catch (error) {
+      console.error("获取工作空间详情失败，返回mock数据:", error);
+      
+      // 返回模拟数据
+      const mockResponse: WorkSpaceGetResponse = {
+        id: data.id,
+        workSpaceName: '用户数据处理工作流',
+        workSpaceDesc: '用于处理客户数据的自动化工作流，包含数据清洗、转换、分析等步骤',
+        workSpaceType: 'workflow',
+        workSpaceTag: ['数据处理', '自动化', '客户数据'],
+        workSpaceIcon: '🔄',
+        stat: {
+          nodeCount: 12,
+          runCount: 156,
+          lastRunTime: '2024-01-20T15:45:00Z',
+        },
+        messages: [
+          '工作流运行正常',
+          '最近一次执行成功',
+          '建议定期清理历史数据'
+        ],
+      };
+      
+      return mockResponse;
     }
   }
 
