@@ -12,6 +12,29 @@ interface CanvasRunResponse {
   status: 'running' | 'completed' | 'failed';
 }
 
+// 单组件运行接口定义
+export interface CanvasRunSingleRequest {
+  id: string;                     // 空间ID
+  nodeId: string;                 // 节点ID
+  params: Record<string, any>;    // 组件运行参数
+}
+
+export interface CanvasRunSingleResponse {
+  id: string;                     // 空间ID
+  nodeId: string;                 // 节点ID
+  result: {
+    input: any;                   // 组件运行参数
+    output: any;                  // 组件运行结果
+    nodeId: string;               // 节点ID
+    nodeName: string;             // 节点名称
+    step: number;                 // 组件运行步骤
+    error: string;                // 组件运行错误信息
+    duration: number;             // 组件运行耗时
+    status: string;               // 组件运行状态
+    startTime: string;            // 组件运行开始时间
+  };
+}
+
 interface CanvasTraceComponentsRequest {
   id: string;
   serialId: string;
@@ -234,6 +257,22 @@ export class CanvasService {
       API_ROUTES.CANVAS.RUN,
       params
     );
+  }
+
+  /**
+   * 单组件运行
+   */
+  public async runSingle(request: CanvasRunSingleRequest): Promise<CanvasRunSingleResponse> {
+    try {
+      const result = await this.apiClient.post<CanvasRunSingleResponse>(
+        API_ROUTES.CANVAS.RUN_SINGLE,
+        request
+      );
+      return result;
+    } catch (error) {
+      console.error("单组件运行失败:", error);
+      throw error;
+    }
   }
 
   async getExecutionResults(request: { id: string; serialId: string; params: Record<string, any> }): Promise<any> {

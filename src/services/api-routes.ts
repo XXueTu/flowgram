@@ -8,6 +8,7 @@ export const API_ROUTES = {
     DETAIL: "/workflow/canvas/detail",
     DRAFT: "/workflow/canvas/draft",
     RUN: "/workflow/canvas/run",
+    RUN_SINGLE: "/workflow/canvas/run/single",
     TRACE_COMPONENTS: "/workflow/trace/components/query",
     GET_TRACE: "/workflow/canvas/trace",
     RUN_HISTORY: "/workflow/canvas/run/history",

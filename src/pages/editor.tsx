@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import "@flowgram.ai/free-layout-editor/index.css";
 import { useParams } from "react-router-dom";
 import { SidebarProvider, SidebarRenderer } from "../components/sidebar";
+import { SingleRunProvider } from "../components/single-run-sidebar/single-run-provider";
 import { DemoTools, TopRightTools } from "../components/tools";
 import { CanvasContext } from "../context";
 import { useEditorProps } from "../hooks";
@@ -20,12 +21,14 @@ const EditorContent = ({ data, canvasId }: { data: any; canvasId?: string }) => 
       <div className="doc-free-feature-overview">
         <FreeLayoutEditorProvider ref={ref} {...editorProps}>
           <SidebarProvider>
-            <div className="demo-container">
-              <EditorRenderer className="demo-editor" />
-            </div>
-            <DemoTools canvasId={canvasId} />
-            <TopRightTools canvasId={canvasId} />
-            <SidebarRenderer />
+            <SingleRunProvider>
+              <div className="demo-container">
+                <EditorRenderer className="demo-editor" />
+              </div>
+              <DemoTools canvasId={canvasId} />
+              <TopRightTools canvasId={canvasId} />
+              <SidebarRenderer />
+            </SingleRunProvider>
           </SidebarProvider>
         </FreeLayoutEditorProvider>
       </div>
